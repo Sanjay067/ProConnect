@@ -1,0 +1,43 @@
+# Dependencies
+/node_modules
+/client/node_modules
+/server/node_modules
+
+# Build output
+/client/build
+/dist
+/build
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# MongoDB
+*.wt
+*.log
+data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Coverage / testing
+coverage/
+*.lcov
+
+# Temporary files
+*.swp
+*.swo
