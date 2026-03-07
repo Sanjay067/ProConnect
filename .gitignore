@@ -8,6 +8,7 @@
 /dist
 /build
 
+
 # Environment variables
 .env
 .env.local
@@ -33,6 +34,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.sublime-workspace
+
+uploads/
 
 # Coverage / testing
 coverage/
