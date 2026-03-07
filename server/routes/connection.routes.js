@@ -12,10 +12,10 @@ import {
 const router = Router();
 
 router.get("/me", verifyAccessToken, getMyConnections);
-router.post("/send/:receiverId", verifyAccessToken, sendConnection);
-router.patch("/accept/:connectionId", verifyAccessToken, acceptConnection);
-router.delete("/reject/:connectionId", verifyAccessToken, rejectConnection);
-router.delete("/cancel/:connectionId", verifyAccessToken, cancelConnection);
-router.delete("/remove/:connectionId", verifyAccessToken, removeConnection);
+
+router.post("/:receiverId", verifyAccessToken, sendConnection);
+
+router.patch("/:connectionId/accept", verifyAccessToken, acceptConnection);
+router.patch("/:connectionId/reject", verifyAccessToken, rejectConnection);
 
 export default router;
