@@ -1,10 +1,52 @@
 import User from "../models/users.model.js";
-
+import crypto from "crypto";
 import Profile from "../models/profile.model.js";
+import PDFDocument from "pdfkit";
+import fs from "fs";
+
+const convertToPdf = (userData) => {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument();
+
+    const fileName = crypto.randomBytes(32).toString("hex") + ".pdf";
+    const filePath = `uploads/${fileName}`;
+
+    const stream = fs.createWriteStream(filePath);
+
+    doc.pipe(stream);
+
+    if (userData.userId.profilePicture) {
+      doc.image(`uploads/${userData.userId.profilePicture}`, {
+        align: "center",
+        width: 100,
+      });
+    }
+
+    doc.fontSize(14).text(`Name: ${userData.userId.name}`);
+    doc.fontSize(14).text(`Email: ${userData.userId.email}`);
+    doc.fontSize(14).text(`Username: ${userData.userId.username}`);
+    doc.fontSize(14).text(`Bio: ${userData.bio}`);
+    doc.fontSize(14).text(`Current Position: ${userData.currentPosition}`);
+
+    doc.moveDown().fontSize(16).text("Past Work:");
+
+    userData.pastWork.forEach((work) => {
+      doc.fontSize(14).text(`Company: ${work.companyName}`);
+      doc.text(`Position: ${work.position}`);
+      doc.text(`Years: ${work.years}`);
+      doc.moveDown();
+    });
+
+    doc.end();
+
+    stream.on("finish", () => resolve(fileName));
+    stream.on("error", reject);
+  });
+};
 
 export const updateAvatar = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user._id);
 
     if (!user) return res.status(400).json({ message: "User doesn't exist" });
 
@@ -26,7 +68,7 @@ export const updateAvatar = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const newUserData = req.body;
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user._id);
     if (!user) return res.status(400).json({ message: "User doesn't exist" });
 
     const { email, username, name } = newUserData;
@@ -59,8 +101,8 @@ export const updateUser = async (req, res) => {
 
 export const getMyProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
-
+    const user = await User.findById(req.user._id);
+    1;
     if (!user) return res.status(400).json({ message: "user doesn't exist" });
 
     const userProfile = await Profile.findOne({ userId: user._id }).populate(
@@ -97,7 +139,7 @@ export const getAllProfiles = async (req, res) => {
 
 export const updateMyProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user_id);
     if (!user) return res.status(400).json({ message: "User doesn't exist" });
 
     const userProfile = await Profile.findOne({ userId: user._id });
@@ -119,6 +161,31 @@ export const updateMyProfile = async (req, res) => {
       message: "Profile updated successfully",
       userProfile,
     });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const userProfileDownload = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId)
+      return res.status(400).json({ message: "User ID is required" });
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(400).json({ message: "User doesn't exist" });
+
+    const userProfile = await Profile.findOne({ userId: user._id }).populate(
+      "userId",
+      "name email username profilePicture",
+    );
+
+    if (!userProfile)
+      return res.status(400).json({ message: "Profile not found" });
+
+    const pdfPath = convertToPdf(userProfile);
+
+    return res.json({ message: "PDF generated successfully", pdfPath });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

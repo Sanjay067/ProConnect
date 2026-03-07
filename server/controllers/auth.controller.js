@@ -4,18 +4,26 @@ import bcrypt from "bcrypt";
 import Profile from "../models/profile.model.js";
 import jwt from "jsonwebtoken";
 
-
 export const signupHandler = async (req, res) => {
   try {
-    const { name, username, email, password, confirmedPassword } = req.body;
+    const { name, username, email, password, confirmPassword } = req.body;
 
     const existingUser = await User.findOne({ email });
+
+    if (existingUser)
+      return res
+        .status(400)
+        .json({ message: "User with this email already exists" });
+
     const existingUsername = await User.findOne({ username });
-    if (existingUser || existingUsername) {
-      return res.status(400).json({ message: "User already exists" });
+
+    if (existingUsername) {
+      return res
+        .status(400)
+        .json({ message: "User with this username already exists" });
     }
 
-    if (password !== confirmedPassword) {
+    if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 

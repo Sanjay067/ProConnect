@@ -5,6 +5,7 @@ import {
   getAllProfiles,
   updateMyProfile,
   updateUser,
+  userProfileDownload,
 } from "../controllers/user.controller.js";
 
 import { verifyAccessToken } from "../middlewares/verifyAccessToken.middleware.js";
@@ -28,6 +29,13 @@ router.get("/profiles/me", verifyAccessToken, getMyProfile);
 
 // Get all profiles
 router.get("/profiles", verifyAccessToken, getAllProfiles);
+
+// Download user profile
+router.get(
+  "/profiles/download/:userId",
+  verifyAccessToken,
+  userProfileDownload,
+);
 
 // Update profile (bio, pastWork, education)
 router.patch("/profiles/me", verifyAccessToken, updateMyProfile);
