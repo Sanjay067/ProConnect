@@ -1,0 +1,95 @@
+.container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.profileCard {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.headerSection {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.name {
+  margin: 0;
+}
+
+.username {
+  margin: 0.2rem 0;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.position {
+  margin: 0.5rem 0 0;
+  font-weight: bold;
+}
+
+.editButton {
+  margin-left: auto;
+  padding: 10px 20px;
+  background: #0a66c2;
+  color: white;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.sectionHeader {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+
+.firstSectionHeader {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.bioText {
+  white-space: pre-wrap;
+  color: #444;
+}
+
+.listItem {
+  margin-bottom: 1rem;
+}
+
+.itemTitle {
+  margin: 0;
+}
+
+.itemSubtitle {
+  margin: 0.2rem 0;
+  font-weight: bold;
+}
+
+.itemSubtitleRegular {
+  margin: 0.2rem 0;
+}
+
+.itemDate {
+  margin: 0;
+  color: #666;
+}
+
+.emptyText {
+  color: #666;
+}

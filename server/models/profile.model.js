@@ -39,7 +39,7 @@ const profileSchema = mongoose.Schema({
     type: String,
     default: "",
   },
-  currentPost: {
+  currentPosition: {
     type: String,
     default: "",
   },

@@ -52,7 +52,7 @@ export const updateAvatar = async (req, res) => {
 
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
-    user.profilePicture = req.file.filename;
+    user.profilePicture = req.file.path;
     await user.save();
 
     return res.status(200).json({
@@ -139,7 +139,7 @@ export const getAllProfiles = async (req, res) => {
 
 export const updateMyProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user_id);
+    const user = await User.findById(req.user._id);
     if (!user) return res.status(400).json({ message: "User doesn't exist" });
 
     const userProfile = await Profile.findOne({ userId: user._id });
@@ -147,7 +147,13 @@ export const updateMyProfile = async (req, res) => {
     if (!userProfile)
       return res.status(400).json({ message: "Profile not found" });
 
-    const allowedFields = ["bio", "pastWork", "education"];
+    const allowedFields = [
+      "bio",
+      "pastWork",
+      "education",
+      "currentPosition",
+      "currentPost",
+    ];
 
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {

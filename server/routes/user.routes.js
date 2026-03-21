@@ -7,22 +7,21 @@ import {
   updateUser,
   userProfileDownload,
 } from "../controllers/user.controller.js";
-
+import { uploadAvatar } from "../config/cloudinary.js";
 import { verifyAccessToken } from "../middlewares/verifyAccessToken.middleware.js";
-import multer from "multer";
 
 const router = Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, file.originalname);
+//   },
+// });
 
-const upload = multer({ storage });
+// const upload = multer({ storage });
 
 // Get current user's profile
 router.get("/profiles/me", verifyAccessToken, getMyProfile);
@@ -47,7 +46,7 @@ router.patch("/me", verifyAccessToken, updateUser);
 router.patch(
   "/profiles/me/avatar",
   verifyAccessToken,
-  upload.single("avatar"),
+  uploadAvatar.single("avatar"),
   updateAvatar,
 );
 

@@ -148,7 +148,9 @@ export const getMyConnections = async (req, res) => {
     const connections = await Connection.find({
       $or: [{ senderId: req.user._id }, { receiverId: req.user._id }],
       status: "accepted",
-    });
+    })
+      .populate("senderId", "name username profilePicture")
+      .populate("receiverId", "name username profilePicture");
 
     return res.status(200).json({
       message: "Connections fetched successfully",

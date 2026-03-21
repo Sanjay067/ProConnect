@@ -1,0 +1,126 @@
+.container {
+  background-color: beige;
+}
+
+.postCard {
+  background: white;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.postBody {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.engagementBar {
+  border-top: 1px solid #eee;
+  padding-top: 0.5rem;
+  display: flex;
+  gap: 15px;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.authorContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.authorDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.authorName {
+  margin: 0;
+  font-weight: bold;
+}
+
+.authorUsername {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.commentSection {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.commentForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.commentInput {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+}
+
+.commentSubmit {
+  padding: 8px 15px;
+  border-radius: 20px;
+  background: #0a66c2;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.loadingText, .emptyCommentText {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.commentItem {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.commentAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.commentBodyContainer {
+  background: #eee;
+  padding: 8px 12px;
+  border-radius: 8px;
+  flex: 1;
+}
+
+.commentAuthorName {
+  margin: 0;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.commentBodyText {
+  margin: 0;
+  font-size: 0.95rem;
+}

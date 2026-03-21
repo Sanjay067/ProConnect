@@ -4,7 +4,7 @@ import User from "../models/users.model.js";
 export const refreshTokenHandler = async (req, res) => {
   try {
     const token = req.cookies.refreshToken;
-
+    console.log("refresh token received", token);
     if (!token) return res.status(400).json({ message: "No refresh token" });
 
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_TOKEN);

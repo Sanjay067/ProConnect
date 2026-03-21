@@ -1,0 +1,100 @@
+.container {
+  height: 100vh;
+  width: 100%;
+  background-color: rgb(255, 248, 241);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 10px 10px 15px rgba(173, 173, 173);
+  height: 40rem;
+  width: 60rem;
+}
+
+.cardContainer_left {
+  width: 65%;
+  height: 100%;
+  background-color: white;
+}
+
+.cardContainer_left h1 {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.inputContainer {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.inputRow {
+  display: flex;
+  flex-direction: row;
+  width: 65%;
+}
+
+.inputRow input {
+  width: 50%;
+}
+
+.inputContainer input {
+  width: 65%;
+  font-size: 20px;
+}
+
+.cardContainer_right {
+  width: 35%;
+  height: 100%;
+  background-color: rgba(0, 149, 255, 0.794);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signUpbtn {
+  width: 65%;
+  margin-top: 2rem;
+  background-color: black;
+}
+
+.signUpbtn:hover {
+  transition: 1000ms;
+  background-color: #0077b5;
+}
+
+.loginBtn {
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* .loginFromHere {
+  color: white;
+  display: inline;
+  margin: 5px;
+  font-size: 1rem;
+} */
+
+.loginLink {
+  display: inline;
+  color: white;
+  margin: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.loginLink:hover {
+  transition: 500ms;
+  color: blue;
+}
