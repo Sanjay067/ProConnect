@@ -10,6 +10,7 @@ import userRoutes from "./routes/user.routes.js";
 import postRoutes from "./routes/posts.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import connectionRoutes from "./routes/connection.routes.js";
+import feedRoutes from "./routes/feed.routes.js";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/connections", connectionRoutes);
+app.use("/api/feed", feedRoutes);
 
 const start = async () => {
   try {

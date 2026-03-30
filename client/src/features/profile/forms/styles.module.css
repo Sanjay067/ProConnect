@@ -1,0 +1,85 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.input {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.input:focus {
+  border-color: #0a66c2;
+}
+
+.textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.saveButton {
+  flex: 2;
+  padding: 10px;
+  background: #0a66c2;
+  color: white;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.saveButton:hover {
+  background: #004182;
+}
+
+.saveButtonFull {
+  width: 100%;
+  padding: 10px;
+  background: #0a66c2;
+  color: white;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+  margin-top: 10px;
+}
+.saveButtonFull:hover {
+  background: #004182;
+}
+
+.deleteButton {
+  flex: 1;
+  padding: 10px;
+  background: #f8d7da;
+  color: #721c24;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.deleteButton:hover {
+  background: #f5c6cb;
+}

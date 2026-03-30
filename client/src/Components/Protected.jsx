@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import clientApi from "@/services/clientApi";
+import Loader from "@/Components/Loader";
 
 export default function ProtectedRoute({ children }) {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function ProtectedRoute({ children }) {
         // Try to hit a protected endpoint
         await clientApi.get("/users/profiles/me");
         setIsAuthenticated(true);
-        router.push("/dashboard");
+        // router.push("/home");
       } catch (error) {
         // If even refresh fails, interceptor redirects to /login
         // But we also handle it here as a safety net
@@ -25,7 +26,7 @@ export default function ProtectedRoute({ children }) {
     };
 
     checkAuth();
-  });
+  }, [router]);
 
   if (isLoading) {
     return (
@@ -37,7 +38,7 @@ export default function ProtectedRoute({ children }) {
           height: "100vh",
         }}
       >
-        <img src="/spin-loader.gif" alt="Loading..." width={50} />
+        <Loader />
       </div>
     );
   }

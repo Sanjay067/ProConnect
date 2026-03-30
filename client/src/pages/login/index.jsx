@@ -4,6 +4,8 @@ import UserLayout from "@/Layout/UserLayout";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { loginUser, registerUser } from "@/config/redux/action/authAction";
+import Loader from "@/Components/Loader";
+import clientApi from "@/services/clientApi";
 
 export default function Login() {
   const router = useRouter();
@@ -23,21 +25,23 @@ export default function Login() {
 
   //  Redirect after login (and handle hard refreshes)
   useEffect(() => {
+    const redirectToHome = () => router.replace("/home");
+
+    const checkCookieSession = async () => {
+      try {
+        await clientApi.get("/users/profiles/me");
+        redirectToHome();
+      } catch (error) {
+        // Not authenticated (or refresh failed). Stay on the login page.
+      }
+    };
+
     if (authState.loggedIn) {
-      router.push("/dashboard");
-    } else {
-      // If Redux is empty (like after a hard refresh), check if a valid cookie still exists!
-      const checkCookieSession = async () => {
-        try {
-          await clientApi.get("/users/profiles/me");
-          // If this succeeds, the cookie is active! Bye bye login page.
-          router.push("/dashboard");
-        } catch (error) {
-          // Token is dead or missing, stay here.
-        }
-      };
-      checkCookieSession();
+      redirectToHome();
+      return;
     }
+
+    checkCookieSession();
   }, [authState.loggedIn, router]);
 
   // Generic input handler
@@ -69,7 +73,7 @@ export default function Login() {
               <div className={styles.inputContainer}>
                 <h1>{isLogin ? "Login" : "Sign Up"}</h1>
                 {authState.isLoading && (
-                  <img src="/spin-loader.gif" alt="Loading..." width={40} />
+                  <Loader />
                 )}
 
                 <p

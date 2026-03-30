@@ -6,22 +6,15 @@ import {
   updateMyProfile,
   updateUser,
   userProfileDownload,
+  searchUsers,
 } from "../controllers/user.controller.js";
 import { uploadAvatar } from "../config/cloudinary.js";
 import { verifyAccessToken } from "../middlewares/verifyAccessToken.middleware.js";
 
 const router = Router();
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "uploads/");
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, file.originalname);
-//   },
-// });
-
-// const upload = multer({ storage });
+// Search users
+router.get("/search", verifyAccessToken, searchUsers);
 
 // Get current user's profile
 router.get("/profiles/me", verifyAccessToken, getMyProfile);

@@ -1,95 +1,240 @@
+.layout {
+  background-color: #f3f2ef;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
 .container {
-  padding: 2rem;
+  padding-top: 2rem;
   max-width: 800px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .profileCard {
   background: white;
-  padding: 2rem;
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #dce6f1;
+  position: relative;
+  overflow: hidden;
 }
 
-.headerSection {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  margin-bottom: 2rem;
+.banner {
+  height: 200px;
+  background-color: #a0b4b7;
+  width: 100%;
+}
+
+.headerContent {
+  padding: 0 1.5rem 1.5rem;
+  position: relative;
+}
+
+.avatarWrapper {
+  margin-top: -110px;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .avatar {
-  width: 120px;
-  height: 120px;
+  width: 152px;
+  height: 152px;
   border-radius: 50%;
   object-fit: cover;
+  border: 4px solid white;
+}
+
+.uploadIcon {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  background: white;
+  border-radius: 50%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  color: #666;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.headerTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.nameInfo {
+  flex: 1;
 }
 
 .name {
-  margin: 0;
+  font-size: 1.6rem;
+  margin: 0 0 0.2rem 0;
 }
 
-.username {
-  margin: 0.2rem 0;
-  color: #666;
+.headline {
   font-size: 1.1rem;
+  color: #000;
+  margin: 0 0 0.5rem 0;
 }
 
-.position {
-  margin: 0.5rem 0 0;
+.location {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 0.5rem 0;
+}
+
+.connections {
+  color: #0a66c2;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: inline-block;
+  text-decoration: none;
+}
+.connections:hover {
+  text-decoration: underline;
+}
+
+.rightPanel {
+  max-width: 250px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-weight: bold;
+  font-size: 0.9rem;
+  margin-top: 10px;
 }
 
-.editButton {
-  margin-left: auto;
-  padding: 10px 20px;
-  background: #0a66c2;
-  color: white;
-  border-radius: 20px;
+.pencilBtn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
   border: none;
   cursor: pointer;
-  font-weight: bold;
+  font-size: 1.2rem;
+  color: #666;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.pencilBtn:hover {
+  background: #f3f2ef;
+}
+
+.pillButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.pillPrimary {
+  padding: 6px 16px;
+  background: #0a66c2;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pillSecondary {
+  padding: 6px 16px;
+  background: white;
+  color: #0a66c2;
+  border: 1px solid #0a66c2;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pillOutline {
+  padding: 6px 16px;
+  background: white;
+  color: #666;
+  border: 1px solid #666;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ----------- OTHER CARDS ----------- */
+.sectionCard {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #dce6f1;
+  padding: 1.5rem;
+  position: relative;
 }
 
 .sectionHeader {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-  margin-top: 2rem;
+  font-size: 1.2rem;
+  margin: 0 0 1rem 0;
 }
 
-.firstSectionHeader {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-  margin-top: 0;
+.iconRow {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  gap: 5px;
 }
 
 .bioText {
   white-space: pre-wrap;
   color: #444;
+  line-height: 1.5;
+  font-size: 0.95rem;
 }
 
 .listItem {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
   margin-bottom: 1rem;
+}
+
+.listItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .itemTitle {
   margin: 0;
+  font-size: 1.1rem;
 }
 
 .itemSubtitle {
   margin: 0.2rem 0;
-  font-weight: bold;
+  font-size: 0.95rem;
 }
-
-.itemSubtitleRegular {
-  margin: 0.2rem 0;
-}
-
 .itemDate {
   margin: 0;
   color: #666;
+  font-size: 0.9rem;
 }
 
 .emptyText {
   color: #666;
+}
+
+.rightContent {
+  padding-left: 20px;
 }

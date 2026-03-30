@@ -35,6 +35,10 @@ const profileSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  headline: {
+    type: String,
+    default: "",
+  },
   bio: {
     type: String,
     default: "",

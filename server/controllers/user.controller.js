@@ -124,6 +124,7 @@ export const getAllProfiles = async (req, res) => {
 
     const users = allUsers.map((user) => {
       return {
+        _id: user._id,
         username: user.username,
         email: user.email,
         name: user.name,
@@ -153,6 +154,7 @@ export const updateMyProfile = async (req, res) => {
       "education",
       "currentPosition",
       "currentPost",
+      "headline"
     ];
 
     allowedFields.forEach((field) => {
@@ -162,6 +164,7 @@ export const updateMyProfile = async (req, res) => {
     });
 
     await userProfile.save();
+    await userProfile.populate("userId", "name email username profilePicture");
 
     return res.status(200).json({
       message: "Profile updated successfully",
@@ -192,6 +195,24 @@ export const userProfileDownload = async (req, res) => {
     const pdfPath = convertToPdf(userProfile);
 
     return res.json({ message: "PDF generated successfully", pdfPath });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const searchUsers = async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q) return res.status(200).json([]);
+    
+    const users = await User.find({
+      $or: [
+        { name: { $regex: q, $options: "i" } },
+        { username: { $regex: q, $options: "i" } }
+      ]
+    }).select("name username profilePicture");
+    
+    return res.status(200).json(users);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

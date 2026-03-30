@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProfiles } from "@/config/redux/action/profileAction";
+import {
+  getAllProfiles,
+  getUserProfile,
+} from "@/config/redux/action/profileAction";
 import { getMyConnections } from "@/config/redux/action/connectionAction.js";
 import UserLayout from "@/Layout/UserLayout";
 import ProtectedRoute from "@/Components/Protected";
@@ -10,17 +13,14 @@ import styles from "./styles.module.css";
 export default function NetworkPage() {
   const dispatch = useDispatch();
 
-  const { profiles, isLoading: profilesLoading } = useSelector(
-    (state) => state.profile,
-  );
+  const { allProfiles, isLoading: profilesLoading, profile: currentUser } =
+    useSelector((state) => state.profile);
   const { connections, isLoading: connectionsLoading } = useSelector(
     (state) => state.connection,
   );
 
-  // We need the current user's profile to figure out which side of the connection they are on
-  const { profile: currentUser } = useSelector((state) => state.profile);
-
   useEffect(() => {
+    dispatch(getUserProfile());
     dispatch(getAllProfiles());
     dispatch(getMyConnections());
   }, [dispatch]);
@@ -72,8 +72,8 @@ export default function NetworkPage() {
           {profilesLoading && <p>Loading network...</p>}
           
           <div className={styles.grid}>
-            {profiles?.length > 0
-              ? profiles.map((user) => (
+            {allProfiles?.length > 0
+              ? allProfiles.map((user) => (
                   <UserCard key={user._id || user.username} user={user} />
                 ))
               : !profilesLoading && <p>No new users to discover.</p>}

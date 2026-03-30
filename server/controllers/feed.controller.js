@@ -1,0 +1,61 @@
+import Connection from "../models/connections.model.js";
+import Post from "../models/posts.model.js";
+
+function computeScore(post) {
+  const likeScore = Math.log1p(post.likeCount || 0) * 2;
+  const commentScore = Math.log1p(post.commentCount || 0) * 3;
+
+  const createdAt = post.createdAt ? new Date(post.createdAt).getTime() : Date.now();
+  const ageHours = Math.max(0, (Date.now() - createdAt) / (1000 * 60 * 60));
+  const recencyScore = 1 / (1 + ageHours / 6); // ~1 for new, decays over time
+
+  return likeScore + commentScore + recencyScore;
+}
+
+export const getFeed = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const page = Math.max(1, Number(req.query.page || 1));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit || 20)));
+
+    const connections = await Connection.find({
+      status: "accepted",
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    }).select("senderId receiverId");
+
+    const connectedUserIds = new Set();
+    for (const c of connections) {
+      const sender = String(c.senderId);
+      const receiver = String(c.receiverId);
+      if (sender !== String(userId)) connectedUserIds.add(sender);
+      if (receiver !== String(userId)) connectedUserIds.add(receiver);
+    }
+
+    const authorIds = [userId, ...Array.from(connectedUserIds)];
+
+    const allPosts = await Post.find({ author: { $in: authorIds }, isActive: true })
+      .populate("author", "name username profilePicture")
+      .sort({ createdAt: -1 });
+
+    const scored = allPosts
+      .map((p) => ({ post: p, score: computeScore(p) }))
+      .sort((a, b) => b.score - a.score || new Date(b.post.createdAt) - new Date(a.post.createdAt));
+
+    const start = (page - 1) * limit;
+    const paged = scored.slice(start, start + limit).map((x) => ({
+      ...x.post.toObject(),
+      score: x.score,
+    }));
+
+    return res.status(200).json({
+      message: "Feed fetched successfully",
+      page,
+      limit,
+      total: scored.length,
+      posts: paged,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+

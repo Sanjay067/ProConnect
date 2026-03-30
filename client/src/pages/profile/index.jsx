@@ -1,172 +1,101 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getUserProfile,
-  updateProfile,
-} from "@/config/redux/action/profileAction";
+import { getUserProfile } from "@/config/redux/action/profileAction";
+import { getPosts } from "@/config/redux/action/postAction";
 import UserLayout from "@/Layout/UserLayout";
 import ProtectedRoute from "@/Components/Protected";
 import styles from "./styles.module.css";
+import PopupDialog from "@/features/profile/popupDialog";
+import Loader from "@/Components/Loader";
+import { getMyConnections } from "@/config/redux/action/connectionAction.js";
+
+// Import modular UI sections
+import ProfileHeader from "@/features/profile/ProfileHeader";
+import AboutSection from "@/features/profile/AboutSection";
+import ExperienceSection from "@/features/profile/ExperienceSection";
+import EducationSection from "@/features/profile/EducationSection";
+import ActivitySection from "@/features/profile/ActivitySection";
+
+// Import precise forms
+import IntroForm from "@/features/profile/forms/IntroForm";
+import AboutForm from "@/features/profile/forms/AboutForm";
+import ExperienceForm from "@/features/profile/forms/ExperienceForm";
+import EducationForm from "@/features/profile/forms/EducationForm";
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
 
   const { profile, isLoading } = useSelector((state) => state.profile);
+  const { posts } = useSelector((state) => state.post);
 
-  // Edit Mode state
-  const [isEditing, setIsEditing] = useState(false);
-
-  // Form State
-  const [bio, setBio] = useState("");
-  const [currentPosition, setCurrentPosition] = useState("");
+  // Dynamic Modal State
+  const [modalType, setModalType] = useState(null);
+  const [editIndex, setEditIndex] = useState(null);
 
   useEffect(() => {
     dispatch(getUserProfile());
+    dispatch(getPosts()); // Ensure we pull posts down so we can filter them for Activity
+    dispatch(getMyConnections());
   }, [dispatch]);
 
-  // Pre-fill the form whenever we open Edit Mode
-  const handleOpenEdit = () => {
-    setBio(profile?.bio || "");
-    setCurrentPosition(profile?.currentPosition || "");
-    setIsEditing(true);
+  const handleOpenModal = (type, index = null) => {
+    setModalType(type);
+    setEditIndex(index);
   };
 
-  const handleSaveProfile = async (e) => {
-    e.preventDefault();
-    // Dispatch our new updateProfile action!
-    await dispatch(updateProfile({ bio, currentPosition }));
-    setIsEditing(false); // Close the modal
+  const handleCloseModal = () => {
+    setModalType(null);
+    setEditIndex(null);
   };
 
   const user = profile?.userId;
+  
+  // Filter for ONLY this user's posts
+  const userPosts = posts?.filter(p => p.author?._id === user?._id);
+
+  const renderModalContent = () => {
+    switch (modalType) {
+      case "INTRO":
+        return <IntroForm profile={profile} onClose={handleCloseModal} />;
+      case "ABOUT":
+        return <AboutForm profile={profile} onClose={handleCloseModal} />;
+      case "EXPERIENCE":
+        return <ExperienceForm profile={profile} onClose={handleCloseModal} editIndex={editIndex} />;
+      case "EDUCATION":
+        return <EducationForm profile={profile} onClose={handleCloseModal} editIndex={editIndex} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <ProtectedRoute>
       <UserLayout>
-        <div className={styles.container}>
-          {isLoading && <p>Loading profile...</p>}
+        <div className={styles.layout}>
+          <div className={styles.container}>
+            {isLoading && !profile && <Loader />}
 
-          {profile && user && (
-            <div className={styles.profileCard}>
-              <div className={styles.headerSection}>
-                <img
-                  src={
-                    user.profilePicture ||
-                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                  }
-                  alt="Avatar"
-                  className={styles.avatar}
-                />
-                <div>
-                  <h1 className={styles.name}>{user.name}</h1>
-                  <p className={styles.username}>@{user.username}</p>
-                  <p className={styles.position}>
-                    {profile.currentPosition || "Open to work"}
-                  </p>
-                </div>
-                {!isEditing && (
-                  <button
-                    onClick={handleOpenEdit}
-                    className={styles.editButton}
-                  >
-                    Edit Profile
-                  </button>
+            {profile && user && (
+              <>
+                <ProfileHeader profile={profile} user={user} onEdit={handleOpenModal} />
+                
+                <ActivitySection posts={userPosts} />
+
+                <AboutSection profile={profile} onEdit={handleOpenModal} />
+                
+                <ExperienceSection profile={profile} onEdit={handleOpenModal} />
+                
+                <EducationSection profile={profile} onEdit={handleOpenModal} />
+
+                {/* Dynamic Modal Manager */}
+                {modalType && (
+                  <PopupDialog onClose={handleCloseModal}>
+                    {renderModalContent()}
+                  </PopupDialog>
                 )}
-              </div>
-
-              {/* ----- EDIT MODE FORM ----- */}
-              {isEditing ? (
-                <form
-                  onSubmit={handleSaveProfile}
-                  style={{
-                    marginTop: "2rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                  }}
-                >
-                  <label style={{ fontWeight: "bold" }}>Bio</label>
-                  <textarea
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    style={{
-                      padding: "10px",
-                      borderRadius: "5px",
-                      border: "1px solid #ccc",
-                      minHeight: "100px",
-                    }}
-                  />
-
-                  <div
-                    style={{ display: "flex", gap: "10px", marginTop: "1rem" }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setIsEditing(false)}
-                      style={{
-                        padding: "10px 20px",
-                        background: "#eee",
-                        borderRadius: "5px",
-                        border: "none",
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      style={{
-                        padding: "10px 20px",
-                        background: "#0a66c2",
-                        color: "white",
-                        borderRadius: "5px",
-                        border: "none",
-                      }}
-                    >
-                      Save Changes
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                /* ----- NORMAL VIEW MODE ----- */
-                <>
-                  <h2 className={styles.firstSectionHeader}>About</h2>
-                  <p className={styles.bioText}>
-                    {profile.bio || "No bio added yet."}
-                  </p>
-
-                  <h2 className={styles.sectionHeader}>Experience</h2>
-                  {profile.pastWork?.length > 0 ? (
-                    profile.pastWork.map((work, index) => (
-                      <div key={index} className={styles.listItem}>
-                        <h3 className={styles.itemTitle}>{work.position}</h3>
-                        <p className={styles.itemSubtitle}>
-                          {work.companyName}
-                        </p>
-                        <p className={styles.itemDate}>{work.years}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className={styles.emptyText}>No experience added yet.</p>
-                  )}
-
-                  <h2 className={styles.sectionHeader}>Education</h2>
-                  {profile.education?.length > 0 ? (
-                    profile.education.map((edu, index) => (
-                      <div key={index} className={styles.listItem}>
-                        <h3 className={styles.itemTitle}>{edu.school}</h3>
-                        <p className={styles.itemSubtitleRegular}>
-                          {edu.degree}
-                        </p>
-                        <p className={styles.itemDate}>{edu.year}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className={styles.emptyText}>No education added yet.</p>
-                  )}
-                </>
-              )}
-            </div>
-          )}
+              </>
+            )}
+          </div>
         </div>
       </UserLayout>
     </ProtectedRoute>

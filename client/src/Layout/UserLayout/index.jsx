@@ -3,8 +3,8 @@ import React from "react";
 
 export default function UserLayout({ children }) {
   return (
-    <div style={{ backgroundColor: "#fafed1", height: "100vh" }}>
-      <Navbar />
+    <div style={{ backgroundColor: "#fafed1", minHeight: "100vh" }}>
+      <Navbar style={{}} />
       {children}
     </div>
   );

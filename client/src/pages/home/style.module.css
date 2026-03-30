@@ -1,0 +1,15 @@
+.container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow-y: scroll;
+  height: 100vh;
+  scrollbar-width: none;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}

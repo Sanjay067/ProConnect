@@ -1,10 +1,13 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { sendConnections } from "@/config/redux/action/connectionAction.js";
 import styles from "./styles.module.css";
 
 export default function UserCard({ user }) {
   const dispatch = useDispatch();
+  const myId = useSelector((state) => state.profile.profile?.userId?._id);
+  const userId = user?._id;
+  const isSelf = myId && userId ? String(myId) === String(userId) : false;
 
   return (
     <div className={styles.userCard}>
@@ -22,12 +25,15 @@ export default function UserCard({ user }) {
         @{user.username}
       </p>
 
-      <button
-        onClick={() => dispatch(sendConnections(user._id))}
-        className={styles.connectButton}
-      >
-        Connect
-      </button>
+      {!isSelf && (
+        <button
+          onClick={() => dispatch(sendConnections(userId))}
+          className={styles.connectButton}
+          disabled={!userId}
+        >
+          Connect
+        </button>
+      )}
     </div>
   );
 }
