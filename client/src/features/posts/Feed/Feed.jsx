@@ -5,6 +5,7 @@ import { getFeed, createPost } from "@/config/redux/action/postAction";
 import PostCard from "../Postcard/PostCard";
 import styles from "./styles.module.css";
 import Loader from "@/Components/Loader";
+import PostBox from "../PostBox";
 
 export default function Feed() {
   const dispatch = useDispatch();
@@ -15,34 +16,9 @@ export default function Feed() {
     dispatch(getFeed());
   }, [dispatch]);
 
-  const handlePostSubmit = (e) => {
-    e.preventDefault();
-    if (postBody.trim()) {
-      dispatch(createPost({ body: postBody }));
-      setPostBody("");
-    }
-  };
-
   return (
     <div className={styles.feedWrapper}>
-      {/* --- CREATE POST BOX --- */}
-      <div className={styles.feedcontainer}>
-        <form
-          onSubmit={handlePostSubmit}
-          className={styles.postForm}
-        >
-          <input
-            type="text"
-            placeholder="Start a post..."
-            value={postBody}
-            onChange={(e) => setPostBody(e.target.value)}
-            className={styles.postInput}
-          />
-          <button type="submit" className={styles.postButton}>
-            Post
-          </button>
-        </form>
-      </div>
+      <PostBox />
 
       {/* --- LOADING & EMPTY STATES --- */}
       {isLoading && (
@@ -50,8 +26,6 @@ export default function Feed() {
           <Loader />
         </div>
       )}
-
-
 
       {/* --- POST LIST --- */}
       {/* 2. USE POSTCARD HERE */}

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   updateAvatar,
+  updateBanner,
   getMyProfile,
   getAllProfiles,
   updateMyProfile,
@@ -8,7 +9,7 @@ import {
   userProfileDownload,
   searchUsers,
 } from "../controllers/user.controller.js";
-import { uploadAvatar } from "../config/cloudinary.js";
+import { uploadAvatar, uploadBanner } from "../config/cloudinary.js";
 import { verifyAccessToken } from "../middlewares/verifyAccessToken.middleware.js";
 
 const router = Router();
@@ -41,6 +42,14 @@ router.patch(
   verifyAccessToken,
   uploadAvatar.single("avatar"),
   updateAvatar,
+);
+
+// Update banner
+router.patch(
+  "/profiles/me/banner",
+  verifyAccessToken,
+  uploadBanner.single("banner"),
+  updateBanner,
 );
 
 export default router;

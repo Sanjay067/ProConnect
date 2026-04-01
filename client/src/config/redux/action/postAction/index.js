@@ -27,11 +27,15 @@ export const createPost = createAsyncThunk(
   "user/createPost",
   async (postData, thunkAPI) => {
     try {
-      const { data } = await clientApi.post("/posts/", postData);
+      const { data } = await clientApi.post("/posts/", postData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || message.response?.data,
+        error.response?.data || error.message,
       );
     }
   },
@@ -53,9 +57,13 @@ export const toggleLikePost = createAsyncThunk(
 
 export const editPost = createAsyncThunk(
   "post/edit",
-  async ({ postId, body }, thunkAPI) => {
+  async ({ postId, postData }, thunkAPI) => {
     try {
-      const { data } = await clientApi.patch(`/posts/${postId}`, { body });
+      const { data } = await clientApi.patch(`/posts/${postId}`, postData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return { postId, ...data };
     } catch (error) {
       return thunkAPI.rejectWithValue(

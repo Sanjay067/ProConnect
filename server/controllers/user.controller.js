@@ -65,6 +65,28 @@ export const updateAvatar = async (req, res) => {
   }
 };
 
+export const updateBanner = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(400).json({ message: "User doesn't exist" });
+    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+
+    const userProfile = await Profile.findOne({ userId: user._id });
+    if (!userProfile) return res.status(400).json({ message: "Profile not found" });
+
+    userProfile.bannerPicture = req.file.path;
+    await userProfile.save();
+
+    return res.status(200).json({
+      message: "Banner picture updated",
+      bannerPicture: userProfile.bannerPicture,
+    });
+  } catch (error) {
+    console.error("uploadBanner error:", error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const updateUser = async (req, res) => {
   try {
     const newUserData = req.body;

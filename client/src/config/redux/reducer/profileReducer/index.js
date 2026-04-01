@@ -4,6 +4,7 @@ import {
   getAllProfiles,
   updateProfile,
   updateProfilePicture,
+  updateBannerPicture,
 } from "../../action/profileAction";
 
 const initialState = {
@@ -85,6 +86,22 @@ const profileSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload?.message || "Failed to update picture";
+      })
+      // Update banner picture cases
+      .addCase(updateBannerPicture.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateBannerPicture.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        if (state.profile) {
+          state.profile.bannerPicture = action.payload.bannerPicture;
+        }
+      })
+      .addCase(updateBannerPicture.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload?.message || "Failed to update banner";
       });
   },
 });

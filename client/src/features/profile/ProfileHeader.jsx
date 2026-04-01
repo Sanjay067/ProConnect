@@ -1,11 +1,12 @@
 import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
-import { updateProfilePicture } from "@/config/redux/action/profileAction";
+import { updateProfilePicture, updateBannerPicture } from "@/config/redux/action/profileAction";
 import styles from "@/pages/profile/styles.module.css";
 
 export default function ProfileHeader({ profile, user, onEdit }) {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
+  const bannerInputRef = useRef(null);
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -16,10 +17,40 @@ export default function ProfileHeader({ profile, user, onEdit }) {
     }
   };
 
+  const handleBannerChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("banner", file);
+      await dispatch(updateBannerPicture(formData));
+    }
+  };
+
   return (
     <div className={styles.profileCard} style={{ padding: 0 }}>
       {/* Banner */}
-      <div className={styles.banner}></div>
+      <div 
+        className={styles.banner}
+        style={{ 
+          backgroundImage: profile?.bannerPicture ? `url(${profile.bannerPicture})` : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          position: "relative",
+          cursor: "pointer"
+        }}
+        onClick={() => bannerInputRef.current?.click()}
+      >
+        <div style={{ position: "absolute", top: "15px", right: "20px", backgroundColor: "white", borderRadius: "50%", width: "35px", height: "35px", display: "flex", justifyContent: "center", alignItems: "center", boxShadow: "0 0 5px rgba(0,0,0,0.3)"}}>
+           <i className="fa-solid fa-camera" style={{ color: "#0a66c2", fontSize: "1rem" }}></i>
+        </div>
+        <input
+          type="file"
+          accept="image/*"
+          ref={bannerInputRef}
+          style={{ display: "none" }}
+          onChange={handleBannerChange}
+        />
+      </div>
 
       {/* Main Content */}
       <div className={styles.headerContent}>

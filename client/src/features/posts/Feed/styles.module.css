@@ -4,46 +4,6 @@
   min-height: 100vh;
 }
 
-.feedcontainer {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  margin-bottom: 2rem;
-}
-
-.postForm {
-  display: flex;
-  gap: 10px;
-}
-
-.postInput {
-  flex: 1;
-  padding: 10px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-}
-
-.postButton {
-  padding: 10px 20px;
-  border-radius: 20px;
-  background: #0a66c2;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.postButton:hover {
-  background: #004182;
-}
-
-.loader {
-  display: flex;
-  justify-content: center;
-  padding: 2rem;
-}
-
 .emptyMessage {
   text-align: center;
   color: #666;

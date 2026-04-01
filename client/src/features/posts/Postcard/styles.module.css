@@ -124,3 +124,39 @@
   margin: 0;
   font-size: 0.95rem;
 }
+
+/* --- Media Appending UI --- */
+
+.mediaContainer {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f9f9f9;
+}
+
+.postMedia {
+  width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  display: block;
+}
+
+.seeMoreBtn {
+  background: none;
+  border: none;
+  color: #666;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 5px;
+  font-size: 0.95rem;
+}
+
+.seeMoreBtn:hover {
+  color: #0a66c2;
+  text-decoration: underline;
+}

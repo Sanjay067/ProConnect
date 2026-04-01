@@ -33,7 +33,7 @@ router
   .post(verifyAccessToken, uploadPostMedia.array("media", 5), createPost);
 router
   .route("/:postId")
-  .patch(verifyAccessToken, isPostAuthor, editPost)
+  .patch(verifyAccessToken, isPostAuthor, uploadPostMedia.array("media", 5), editPost)
   .delete(verifyAccessToken, isPostAuthor, deletePost);
 
 // Like/unlike a post

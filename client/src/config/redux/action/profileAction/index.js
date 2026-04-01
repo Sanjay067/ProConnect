@@ -70,3 +70,25 @@ export const updateProfilePicture = createAsyncThunk(
     }
   },
 );
+
+export const updateBannerPicture = createAsyncThunk(
+  "user/updateBannerPicture",
+  async (formData, thunkAPI) => {
+    try {
+      const { data } = await clientApi.patch(
+        "/users/profiles/me/banner",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || { message: error.message },
+      );
+    }
+  },
+);

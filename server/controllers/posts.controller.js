@@ -61,20 +61,59 @@ export const createPost = async (req, res) => {
 
 export const editPost = async (req, res) => {
   try {
-    const { body } = req.body;
+    const { body, existingMedia } = req.body;
 
     if (body === undefined || body.trim().length === 0) {
       return res.status(400).json({ message: "Post body is required" });
     }
     const post = await Post.findById(req.params.postId);
 
-    // Skip save if nothing changed
-    if (post.body === body.trim()) {
-      return res.status(200).json({ message: "No changes detected" });
+    const originalMedia = post.media || [];
+    let finalMedia = [];
+
+    if (existingMedia) {
+      try {
+        finalMedia = JSON.parse(existingMedia);
+      } catch (e) {
+        // Fallback for array notation or empty
+        finalMedia = [];
+      }
     }
 
-    post.body = body;
+    // Determine mathematically which files were deleted entirely
+    const deletedMedia = originalMedia.filter(
+      (om) => !finalMedia.find((fm) => fm.publicId === om.publicId)
+    );
+
+    // Physically obliterate them from the Cloudinary hosting bucket
+    for (const file of deletedMedia) {
+      try {
+        await cloudinary.uploader.destroy(file.publicId);
+      } catch (err) {
+        console.error(`Failed to delete from Cloudinary: ${file.publicId}`, err);
+      }
+    }
+
+    // Map any brand new incoming media buffers to the final array
+    if (req.files && req.files.length > 0) {
+      const newMedia = req.files.map((file) => ({
+        url: file.path,
+        publicId: file.filename,
+        type: file.mimetype.startsWith("image/")
+          ? "image"
+          : file.mimetype.startsWith("video/")
+            ? "video"
+            : "file",
+      }));
+      finalMedia = [...finalMedia, ...newMedia];
+    }
+
+    post.body = body.trim();
+    post.media = finalMedia;
     await post.save();
+    
+    // Hydrate the author block back down to Redux
+    await post.populate("author", "name username profilePicture");
 
     return res.status(200).json({
       message: "Post updated successfully",

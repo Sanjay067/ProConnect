@@ -75,14 +75,20 @@ const postSlice = createSlice({
         state.message = action.payload?.message || action.payload;
       })
       .addCase(toggleLikePost.fulfilled, (state, action) => {
-        // Find the exact post in our Redux array that was just liked
+        // Sync localized user post cache
         const postIndex = state.posts.findIndex(
           (p) => p._id === action.payload.postId,
         );
-
         if (postIndex !== -1) {
-          // Update that specific post's likeCount with the fresh number from the backend
           state.posts[postIndex].likeCount = action.payload.likeCount;
+        }
+
+        // Sync global dashboard feed cache
+        const feedPostIndex = state.feedPosts.findIndex(
+          (p) => p._id === action.payload.postId,
+        );
+        if (feedPostIndex !== -1) {
+          state.feedPosts[feedPostIndex].likeCount = action.payload.likeCount;
         }
       })
       .addCase(toggleLikePost.rejected, (state, action) => {
@@ -96,6 +102,16 @@ const postSlice = createSlice({
         if (postIndex !== -1 && action.payload.post) {
           state.posts[postIndex] = {
             ...state.posts[postIndex],
+            ...action.payload.post,
+          };
+        }
+
+        const feedPostIndex = state.feedPosts.findIndex(
+          (p) => p._id === action.payload.postId,
+        );
+        if (feedPostIndex !== -1 && action.payload.post) {
+          state.feedPosts[feedPostIndex] = {
+            ...state.feedPosts[feedPostIndex],
             ...action.payload.post,
           };
         }

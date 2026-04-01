@@ -11,19 +11,28 @@ export default function PostCard({ post, isOwnProfile = false }) {
   const isPostAuthor =
     myId && post?.author?._id ? String(myId) === String(post.author._id) : false;
 
-  // Local state just for this specific post's comments
+  // Local state just for this specific post
+  const [isBodyExpanded, setIsBodyExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isEditingPost, setIsEditingPost] = useState(false);
   const [editedPostBody, setEditedPostBody] = useState(post?.body || "");
+  const [editedMedia, setEditedMedia] = useState(post?.media || []);
+  const [newMediaFiles, setNewMediaFiles] = useState([]);
+  const [newMediaPreviews, setNewMediaPreviews] = useState([]);
+  const [confirmDeletePost, setConfirmDeletePost] = useState(false);
+  const editFileRef = React.useRef(null);
+  
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedCommentBody, setEditedCommentBody] = useState("");
   const [replyingToCommentId, setReplyingToCommentId] = useState(null);
   const [replyBody, setReplyBody] = useState("");
   const [repliesByCommentId, setRepliesByCommentId] = useState({});
   const [loadingRepliesFor, setLoadingRepliesFor] = useState(null);
+
+  const MAX_POST_LENGTH = 150;
 
   // Fetch comments from the backend when the user clicks "Comment"
   const handleToggleComments = async () => {
@@ -173,29 +182,84 @@ export default function PostCard({ post, isOwnProfile = false }) {
 
   const handleStartEditPost = () => {
     setEditedPostBody(post?.body || "");
+    setEditedMedia(post?.media || []);
+    setNewMediaFiles([]);
+    setNewMediaPreviews([]);
     setIsEditingPost(true);
   };
 
   const handleCancelEditPost = () => {
     setEditedPostBody(post?.body || "");
+    setEditedMedia(post?.media || []);
+    setNewMediaFiles([]);
+    setNewMediaPreviews([]);
     setIsEditingPost(false);
   };
 
   const handleSaveEditPost = async () => {
     const nextBody = editedPostBody.trim();
-    if (!nextBody) return;
-    await dispatch(editPost({ postId: post._id, body: nextBody }));
+    if (!nextBody && editedMedia.length === 0 && newMediaFiles.length === 0) return;
+    
+    const formData = new FormData();
+    formData.append("body", nextBody);
+    formData.append("existingMedia", JSON.stringify(editedMedia));
+    
+    newMediaFiles.forEach((file) => formData.append("media", file));
+
+    await dispatch(editPost({ postId: post._id, postData: formData }));
     setIsEditingPost(false);
   };
 
   const handleDeletePost = async () => {
-    const ok = window.confirm("Delete this post?");
-    if (!ok) return;
+    setConfirmDeletePost(true);
+  };
+
+  const confirmAndExecuteDelete = async () => {
     await dispatch(deletePost(post._id));
+    setConfirmDeletePost(false);
+  };
+
+  const removeExistingMedia = (publicId) => {
+    setEditedMedia((prev) => prev.filter((m) => m.publicId !== publicId));
+  };
+
+  const removeNewMedia = (index) => {
+    setNewMediaFiles((prev) => prev.filter((_, i) => i !== index));
+    setNewMediaPreviews((prev) => prev.filter((_, i) => i !== index));
+    if (editFileRef.current) editFileRef.current.value = "";
+  };
+
+  const handleNewMediaChoice = (e) => {
+    const files = Array.from(e.target.files);
+    setNewMediaFiles((prev) => [...prev, ...files]);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewMediaPreviews((prev) => [
+          ...prev,
+          { url: reader.result, type: file.type.startsWith("video/") ? "video" : "image" }
+        ]);
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   return (
     <div className={styles.postCard}>
+      {confirmDeletePost && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(0,0,0,0.6)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 9999 }}>
+           <div style={{ backgroundColor: "white", padding: "24px", borderRadius: "10px", width: "400px", maxWidth: "90%", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
+              <h3 style={{ marginTop: 0, fontSize: "1.3rem", color: "#333" }}>Delete Post</h3>
+              <p style={{ color: "#666", marginBottom: "25px", lineHeight: "1.5" }}>Are you sure you want to permanently delete this post? This action cannot be undone.</p>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                 <button onClick={() => setConfirmDeletePost(false)} style={{ padding: "8px 16px", background: "none", border: "1px solid #ccc", borderRadius: "20px", cursor: "pointer", fontWeight: "bold", color: "#666", transition: "all 0.2s" }}>Cancel</button>
+                 <button onClick={confirmAndExecuteDelete} style={{ padding: "8px 20px", backgroundColor: "#e23", color: "white", border: "none", borderRadius: "20px", cursor: "pointer", fontWeight: "bold", transition: "all 0.2s" }}>Delete</button>
+              </div>
+           </div>
+        </div>
+      )}
+
       {/* Author Info */}
       <div className={styles.authorContainer}>
         <img
@@ -259,26 +323,94 @@ export default function PostCard({ post, isOwnProfile = false }) {
               resize: "vertical",
             }}
           />
-          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-            <button
-              className={styles.actionButton}
-              onClick={handleCancelEditPost}
-              type="button"
-            >
-              Cancel
-            </button>
-            <button
-              className={styles.commentSubmit}
-              onClick={handleSaveEditPost}
-              type="button"
-              disabled={!editedPostBody.trim()}
-            >
-              Save
-            </button>
+          
+          {/* Internal Post Editor Media Area */}
+          {(editedMedia.length > 0 || newMediaPreviews.length > 0) && (
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", margin: "10px 0" }}>
+              {editedMedia.map((m) => (
+                <div key={m.publicId} style={{ position: "relative", width: "100px", height: "100px" }}>
+                  {m.type === "video" ? (
+                    <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "5px", backgroundColor: "#000" }} />
+                  ) : (
+                    <img src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "5px" }} />
+                  )}
+                  <button type="button" onClick={() => removeExistingMedia(m.publicId)} style={{ position: "absolute", top: "5px", right: "5px", background: "rgba(0,0,0,0.6)", color: "white", border: "none", borderRadius: "50%", width: "24px", height: "24px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <i className="fa-solid fa-times" style={{ fontSize: "0.8rem" }}></i>
+                  </button>
+                </div>
+              ))}
+              {newMediaPreviews.map((m, i) => (
+                <div key={i} style={{ position: "relative", width: "100px", height: "100px" }}>
+                  {m.type === "video" ? (
+                    <video src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "5px", backgroundColor: "#000" }} />
+                  ) : (
+                    <img src={m.url} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "5px" }} />
+                  )}
+                  <button type="button" onClick={() => removeNewMedia(i)} style={{ position: "absolute", top: "5px", right: "5px", background: "rgba(0,0,0,0.6)", color: "white", border: "none", borderRadius: "50%", width: "24px", height: "24px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <i className="fa-solid fa-times" style={{ fontSize: "0.8rem" }}></i>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: "15px", alignItems: "center", justifyContent: "space-between", marginTop: "5px" }}>
+            <div style={{ display: "flex", gap: "15px" }}>
+               <input type="file" ref={editFileRef} style={{ display: "none" }} multiple accept="image/*,video/*" onChange={handleNewMediaChoice} />
+               <button type="button" onClick={() => { if(editFileRef.current) { editFileRef.current.accept="image/*"; editFileRef.current.click(); } }} style={{ background: "none", border: "none", cursor: "pointer", color: "#378fe9", fontSize: "1.2rem", padding: "0 5px" }}><i className="fa-solid fa-image"></i></button>
+               <button type="button" onClick={() => { if(editFileRef.current) { editFileRef.current.accept="video/*"; editFileRef.current.click(); } }} style={{ background: "none", border: "none", cursor: "pointer", color: "#5f9b41", fontSize: "1.2rem", padding: "0 5px" }}><i className="fa-solid fa-video"></i></button>
+            </div>
+            
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button
+                className={styles.actionButton}
+                onClick={handleCancelEditPost}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className={styles.commentSubmit}
+                onClick={handleSaveEditPost}
+                type="button"
+                disabled={!editedPostBody.trim() && editedMedia.length === 0 && newMediaFiles.length === 0}
+              >
+                Save
+              </button>
+            </div>
           </div>
         </div>
       ) : (
-        <p className={styles.postBody}>{post.body}</p>
+        <>
+          {post.body && (
+            <p className={styles.postBody}>
+              {isBodyExpanded || post.body.length <= MAX_POST_LENGTH
+                ? post.body
+                : `${post.body.slice(0, MAX_POST_LENGTH)}`}
+              {post.body.length > MAX_POST_LENGTH && !isBodyExpanded && (
+                <button
+                  onClick={() => setIsBodyExpanded(true)}
+                  className={styles.seeMoreBtn}
+                >
+                  ...see more
+                </button>
+              )}
+            </p>
+          )}
+          
+          {/* Post Media Rendering */}
+          {post.media && post.media.length > 0 && (
+            <div className={styles.mediaContainer}>
+              {post.media.map((mediaItem) => (
+                mediaItem.type === "video" ? (
+                  <video key={mediaItem.publicId} src={mediaItem.url} controls className={styles.postMedia} />
+                ) : (
+                  <img key={mediaItem.publicId} src={mediaItem.url} alt="Post media" className={styles.postMedia} />
+                )
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {/* Engagement Bar */}
