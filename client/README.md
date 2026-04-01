@@ -9,7 +9,7 @@
 
 <hr />
 
-## 📖 Client Architecture
+## Client Architecture
 
 The ProConnect frontend is a massive Single Page Application (SPA) driven by React and organized via Feature-Sliced Design.
 

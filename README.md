@@ -18,49 +18,54 @@
 
 <hr />
 
-## 📖 Overview
+## Overview
 
-**ProConnect** is a robust, production-ready full-stack application that faithfully reproduces the core mechanics and UI/UX flows of modern professional networking giant LinkedIn. 
+**ProConnect** is a robust, production-ready full-stack application that faithfully reproduces the core mechanics and UI/UX flows of modern professional networking giant LinkedIn.
 
 Built on the **MERN** (MongoDB, Express, React, Node) stack, it features comprehensive user authentication, interactive global feeds, rich-media processing integrations, and deeply nested object relationship management spanning across comments, likes, and modularized profile architectures.
 
-## ✨ Core Features
+## Core Features
 
-*   **Secure Authentication Pipeline:** Fully authenticated backend utilizing stateless JSON Web Tokens (JWT). Engineered with a bifurcated Access Token and HttpOnly Refresh Token ecosystem to maximize session security.
-*   **Dynamic Media Engine:** Direct integration with **Cloudinary** via `multer`. Supports robust `multipart/form-data` uploads for Avatars, Profile Banners, and Post rich-media (Images/Videos). Features an intelligent physical asset destruction logic upon deletion.
-*   **Real-time Interaction Feed:** A fast, responsive central dashboard feed. 
-    *   **Post Creation:** Replicates the immersive LinkedIn modal UI, featuring live client-side `FileReader` thumbnails prior to dispatching server-side buffers.
-    *   **Nested Engagement:** End-to-end support for Liking, Commenting, and deeply nested Replies. Controlled via a synchronized global Redux state tree mapped against localized `PostCard` components for zero-latency UI reactivity.
-*   **Comprehensive Profile Management:** Users can customize their professional identity with dynamically fetched Avatars, background cover Banners, Bios, and structured JSON arrays for Work/Education history.
-*   **Clean Component Architecture:** Front-end built with CSS Modules ensuring completely siloed component styling to prevent cascade pollution while mimicking precise LinkedIn color palettes and typography.
+- **Secure Authentication Pipeline:** Fully authenticated backend utilizing stateless JSON Web Tokens (JWT). Engineered with a bifurcated Access Token and HttpOnly Refresh Token ecosystem to maximize session security.
+- **Dynamic Media Engine:** Direct integration with **Cloudinary** via `multer`. Supports robust `multipart/form-data` uploads for Avatars, Profile Banners, and Post rich-media (Images/Videos). Features an intelligent physical asset destruction logic upon deletion.
+- **Real-time Interaction Feed:** A fast, responsive central dashboard feed.
+  - **Post Creation:** Replicates the immersive LinkedIn modal UI, featuring live client-side `FileReader` thumbnails prior to dispatching server-side buffers.
+  - **Nested Engagement:** End-to-end support for Liking, Commenting, and deeply nested Replies. Controlled via a synchronized global Redux state tree mapped against localized `PostCard` components for zero-latency UI reactivity.
+- **Comprehensive Profile Management:** Users can customize their professional identity with dynamically fetched Avatars, background cover Banners, Bios, and structured JSON arrays for Work/Education history.
+- **Clean Component Architecture:** Front-end built with CSS Modules ensuring completely siloed component styling to prevent cascade pollution while mimicking precise LinkedIn color palettes and typography.
 
-## 🛠️ Tech Stack & Architecture
+## Tech Stack & Architecture
 
 ### Frontend (Client)
-*   **React 18** - UI Rendering Engine
-*   **Redux Toolkit (RTK)** - Centralized Global State Management via declarative Thunks.
-*   **Axios** - Interceptor-powered RESTful API calls explicitly catching 401s for automated token refreshing.
-*   **CSS Modules** - Scoped styling matrices.
+
+- **React 18** - UI Rendering Engine
+- **Redux Toolkit (RTK)** - Centralized Global State Management via declarative Thunks.
+- **Axios** - Interceptor-powered RESTful API calls explicitly catching 401s for automated token refreshing.
+- **CSS Modules** - Scoped styling matrices.
 
 ### Backend (Server)
-*   **Node.js & Express.js** - Robust RESTful API architecture spanning multiple discrete controller boundaries.
-*   **MongoDB & Mongoose** - Heavily relational NoSQL schema design utilizing standard `ObjectIds` to cross-pollinate Users, Profiles, Posts, and Comments.
-*   **JWT & bcryptjs** - Secure cryptographic password hashing and authentication token generation.
-*   **Multer + CloudinaryStorage** - Immediate buffer streaming into cloud buckets strictly formatted and compressed to optimal networking dimensions (Avatars/Banners/Posts).
+
+- **Node.js & Express.js** - Robust RESTful API architecture spanning multiple discrete controller boundaries.
+- **MongoDB & Mongoose** - Heavily relational NoSQL schema design utilizing standard `ObjectIds` to cross-pollinate Users, Profiles, Posts, and Comments.
+- **JWT & bcryptjs** - Secure cryptographic password hashing and authentication token generation.
+- **Multer + CloudinaryStorage** - Immediate buffer streaming into cloud buckets strictly formatted and compressed to optimal networking dimensions (Avatars/Banners/Posts).
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 To run ProConnect locally, follow these steps:
 
 ### Prerequisites
-*   Node.js (v16.x or later)
-*   MongoDB Instance (Local or Atlas)
-*   Cloudinary Account (Cloud Name, API Key, API Secret)
+
+- Node.js (v16.x or later)
+- MongoDB Instance (Local or Atlas)
+- Cloudinary Account (Cloud Name, API Key, API Secret)
 
 ### 1. Project Setup
+
 Clone the repository, then install dependencies for both the frontend and backend environments:
+
 ```bash
 # Install root/server dependencies
 cd server
@@ -72,7 +77,9 @@ npm install
 ```
 
 ### 2. Environment Variables
+
 Create a `.env` file in the **server** directory matching the following matrix:
+
 ```env
 PORT=8000
 MONGODB_URI=your_mongo_database_uri
@@ -84,15 +91,18 @@ CLOUDINARY_API_SECRET=your_cloudinary_secret
 ```
 
 ### 3. Launch Application
+
 You can fire up both environments concurrently (or using split terminals):
 
 **Terminal 1 (Backend API):**
+
 ```bash
 cd server
 npm run dev
 ```
 
 **Terminal 2 (Frontend React):**
+
 ```bash
 cd client
 npm start
