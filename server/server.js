@@ -1,9 +1,11 @@
 // Essential Packages
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import { apiLimiter } from "./middlewares/rateLimits.js";
 
 // Routes
 import userRoutes from "./routes/user.routes.js";
@@ -15,15 +17,23 @@ import feedRoutes from "./routes/feed.routes.js";
 dotenv.config();
 
 const app = express();
+
+const clientOrigins = (process.env.CLIENT_ORIGIN || "http://localhost:3000")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: clientOrigins.length === 1 ? clientOrigins[0] : clientOrigins,
     credentials: true,
   }),
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
+app.use("/api", apiLimiter);
 app.get("/api", (req, res) => {
   res.status(200).json({ message: "Server is live" });
 });

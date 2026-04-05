@@ -19,10 +19,13 @@ export const getUserProfile = createAsyncThunk(
 
 export const getAllProfiles = createAsyncThunk(
   "user/allProfiles",
-  async (_, thunkAPI) => {
+  async (opts = {}, thunkAPI) => {
+    const { page = 1, limit = 24, append = false } = opts;
     try {
-      const { data } = await clientApi.get("/users/profiles");
-      return data;
+      const { data } = await clientApi.get("/users/profiles", {
+        params: { page, limit },
+      });
+      return { ...data, append };
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || {

@@ -15,6 +15,12 @@ const initialState = {
   message: "",
   profileFetched: false,
   allProfiles: [],
+  profilesPagination: {
+    page: 1,
+    limit: 24,
+    total: 0,
+    hasMore: false,
+  },
 };
 
 const profileSlice = createSlice({
@@ -42,13 +48,31 @@ const profileSlice = createSlice({
         state.message = action.payload?.message || action.payload;
       })
       // Get all profiles cases
-      .addCase(getAllProfiles.pending, (state) => {
-        state.isLoading = true;
+      .addCase(getAllProfiles.pending, (state, action) => {
+        if (!action.meta.arg?.append) {
+          state.isLoading = true;
+        }
       })
       .addCase(getAllProfiles.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.allProfiles = action.payload; // Store the array of people here
+        const {
+          profiles = [],
+          page,
+          limit,
+          total,
+          hasMore,
+          append,
+        } = action.payload;
+        state.profilesPagination = {
+          page: page ?? 1,
+          limit: limit ?? 24,
+          total: total ?? profiles.length,
+          hasMore: !!hasMore,
+        };
+        state.allProfiles = append
+          ? [...state.allProfiles, ...profiles]
+          : [...profiles];
       })
       .addCase(getAllProfiles.rejected, (state, action) => {
         state.isLoading = false;

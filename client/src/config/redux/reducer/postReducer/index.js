@@ -11,6 +11,13 @@ import {
 const initialState = {
   posts: [],
   feedPosts: [],
+  feedPagination: {
+    page: 1,
+    limit: 20,
+    total: 0,
+    hasMore: false,
+    truncated: false,
+  },
   activeCommentPostId: null,
   isError: false,
   isSuccess: false,
@@ -59,8 +66,10 @@ const postSlice = createSlice({
         state.message = "Posts fetched successfully";
         state.posts = action.payload.posts || [];
       })
-      .addCase(getFeed.pending, (state) => {
-        state.feedLoading = true;
+      .addCase(getFeed.pending, (state, action) => {
+        if (!action.meta.arg?.append) {
+          state.feedLoading = true;
+        }
         state.message = "Fetching feed....";
       })
       .addCase(getFeed.fulfilled, (state, action) => {
@@ -68,7 +77,25 @@ const postSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.message = "Feed fetched successfully";
-        state.feedPosts = action.payload.posts || [];
+        const {
+          posts = [],
+          page,
+          limit,
+          total,
+          hasMore,
+          truncated,
+          append,
+        } = action.payload;
+        state.feedPagination = {
+          page: page ?? 1,
+          limit: limit ?? 20,
+          total: total ?? posts.length,
+          hasMore: !!hasMore,
+          truncated: !!truncated,
+        };
+        state.feedPosts = append
+          ? [...state.feedPosts, ...posts]
+          : [...posts];
       })
       .addCase(getFeed.rejected, (state, action) => {
         state.feedLoading = false;
@@ -112,9 +139,8 @@ const postSlice = createSlice({
         state.message = action.payload?.message || "Failed to like post";
       })
       .addCase(editPost.fulfilled, (state, action) => {
-        const postIndex = state.posts.findIndex(
-          (p) => p._id === action.payload.postId,
-        );
+        const pid = String(action.payload.postId);
+        const postIndex = state.posts.findIndex((p) => String(p._id) === pid);
         if (postIndex !== -1 && action.payload.post) {
           state.posts[postIndex] = {
             ...state.posts[postIndex],
@@ -123,7 +149,7 @@ const postSlice = createSlice({
         }
 
         const feedPostIndex = state.feedPosts.findIndex(
-          (p) => p._id === action.payload.postId,
+          (p) => String(p._id) === pid,
         );
         if (feedPostIndex !== -1 && action.payload.post) {
           state.feedPosts[feedPostIndex] = {
@@ -137,10 +163,9 @@ const postSlice = createSlice({
         state.message = action.payload?.message || "Failed to edit post";
       })
       .addCase(deletePost.fulfilled, (state, action) => {
-        state.posts = state.posts.filter((p) => p._id !== action.payload.postId);
-        state.feedPosts = state.feedPosts.filter(
-          (p) => p._id !== action.payload.postId,
-        );
+        const pid = String(action.payload.postId);
+        state.posts = state.posts.filter((p) => String(p._id) !== pid);
+        state.feedPosts = state.feedPosts.filter((p) => String(p._id) !== pid);
       })
       .addCase(deletePost.rejected, (state, action) => {
         state.isError = true;

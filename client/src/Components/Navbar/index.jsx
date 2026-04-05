@@ -27,6 +27,10 @@ export default function Navbar() {
       // We still clear client-side auth state and redirect.
     } finally {
       dispatch(resetAuth());
+      dispatch(resetProfile());
+      dispatch(resetConnection());
+      dispatch(resetPost());
+      dispatch(clearSearch());
       router.replace("/login");
     }
   };

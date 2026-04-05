@@ -1,5 +1,6 @@
-import { Router } from 'express';
+import { Router } from "express";
 import { verifyAccessToken } from "../middlewares/verifyAccessToken.middleware.js";
+import { authLimiter } from "../middlewares/rateLimits.js";
 import {
     loginHandler,
     logoutHandler,
@@ -10,9 +11,9 @@ import { refreshTokenHandler } from "../controllers/authRefresh.controller.js";
 
 const router = Router();
 
-router.post("/refresh-token", refreshTokenHandler);
-router.post("/signup", signupHandler);
-router.post("/login", loginHandler);
+router.post("/refresh-token", authLimiter, refreshTokenHandler);
+router.post("/signup", authLimiter, signupHandler);
+router.post("/login", authLimiter, loginHandler);
 router.post("/logout", verifyAccessToken, logoutHandler);
 
 

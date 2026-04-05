@@ -1,4 +1,5 @@
 import User from "../models/users.model.js";
+import { accessCookieOptions, refreshCookieOptions } from "../utils/cookieOptions.js";
 
 import bcrypt from "bcrypt";
 import Profile from "../models/profile.model.js";
@@ -58,18 +59,8 @@ export const signupHandler = async (req, res) => {
     await profile.save();
 
     return res
-      .cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax",
-        maxAge: 60 * 60 * 1000,
-      })
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
+      .cookie("accessToken", accessToken, accessCookieOptions())
+      .cookie("refreshToken", refreshToken, refreshCookieOptions())
       .status(201)
       .json({
         message: "User Created Successfully",
@@ -111,18 +102,8 @@ export const loginHandler = async (req, res) => {
     await user.save();
 
     return res
-      .cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax",
-        maxAge: 60 * 60 * 1000,
-      })
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
+      .cookie("accessToken", accessToken, accessCookieOptions())
+      .cookie("refreshToken", refreshToken, refreshCookieOptions())
       .status(200)
       .json({ message: "Login Successfully", accessToken });
   } catch (error) {

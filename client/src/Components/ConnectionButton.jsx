@@ -7,6 +7,7 @@ import {
   cancelPendingConnection,
   removeAcceptedConnection,
 } from "@/config/redux/action/connectionAction";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import styles from "@/features/network/styles.module.css";
 
 function findConnectionWith(overview, myId, targetUserId) {
@@ -110,71 +111,18 @@ export default function ConnectionButton({ targetUserId, className }) {
           Remove
         </button>
         {confirmRemove && (
-          <div
-            style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(0,0,0,0.5)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 10000,
+          <ConfirmDialog
+            title="Remove connection"
+            message="Are you sure you want to remove this user as a connection?"
+            confirmLabel="Remove"
+            cancelLabel="Cancel"
+            confirmVariant="danger"
+            onCancel={() => setConfirmRemove(false)}
+            onConfirm={() => {
+              dispatch(removeAcceptedConnection(conn._id));
+              setConfirmRemove(false);
             }}
-          >
-            <div
-              style={{
-                background: "#fff",
-                padding: "24px",
-                borderRadius: "12px",
-                maxWidth: "400px",
-                width: "90%",
-              }}
-            >
-              <h3 style={{ marginTop: 0 }}>Remove connection</h3>
-              <p style={{ color: "#555" }}>
-                Are you sure you want to remove this user as a connection?
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  justifyContent: "flex-end",
-                  marginTop: "16px",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setConfirmRemove(false)}
-                  style={{
-                    padding: "8px 16px",
-                    border: "1px solid #ccc",
-                    borderRadius: "20px",
-                    background: "#fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    dispatch(removeAcceptedConnection(conn._id));
-                    setConfirmRemove(false);
-                  }}
-                  style={{
-                    padding: "8px 16px",
-                    border: "none",
-                    borderRadius: "20px",
-                    background: "#c00",
-                    color: "#fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          </div>
+          />
         )}
       </>
     );

@@ -175,21 +175,34 @@ export const getPublicUserProfile = async (req, res) => {
 
 export const getAllProfiles = async (req, res) => {
   try {
-    const allUsers = await User.find({});
-    if (allUsers.length === 0)
-      return res.status(400).json({ message: "No users found" });
+    const page = Math.max(1, Number(req.query.page || 1));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit || 24)));
+    const skip = (page - 1) * limit;
 
-    const users = allUsers.map((user) => {
-      return {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        name: user.name,
-        profilePicture: user.profilePicture,
-      };
+    const filter = { _id: { $ne: req.user._id } };
+    const total = await User.countDocuments(filter);
+
+    const rows = await User.find(filter)
+      .select("name username profilePicture")
+      .sort({ name: 1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const profiles = rows.map((u) => ({
+      _id: u._id,
+      username: u.username,
+      name: u.name,
+      profilePicture: u.profilePicture,
+    }));
+
+    return res.status(200).json({
+      profiles,
+      page,
+      limit,
+      total,
+      hasMore: skip + profiles.length < total,
     });
-
-    return res.status(200).json(users);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

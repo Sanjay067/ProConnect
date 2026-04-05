@@ -34,11 +34,21 @@ export const getFeed = async (req, res) => {
 
     const authorIds = [userId, ...Array.from(connectedUserIds)];
 
-    const allPosts = await Post.find({ author: { $in: authorIds }, isActive: true })
-      .populate("author", "name username profilePicture")
-      .sort({ createdAt: -1 });
+    const match = { author: { $in: authorIds }, isActive: true };
+    const totalInDb = await Post.countDocuments(match);
 
-    const postIds = allPosts.map((p) => p._id);
+    const maxFetch = Math.min(
+      2000,
+      Math.max(100, Number(process.env.FEED_MAX_CANDIDATES || 500)),
+    );
+    const fetchLimit = Math.min(maxFetch, totalInDb);
+
+    const recentPosts = await Post.find(match)
+      .populate("author", "name username profilePicture")
+      .sort({ createdAt: -1 })
+      .limit(fetchLimit);
+
+    const postIds = recentPosts.map((p) => p._id);
     const userLikes = await Like.find({
       userId,
       targetId: { $in: postIds },
@@ -46,9 +56,13 @@ export const getFeed = async (req, res) => {
     }).select("targetId");
     const likedSet = new Set(userLikes.map((l) => String(l.targetId)));
 
-    const scored = allPosts
+    const scored = recentPosts
       .map((p) => ({ post: p, score: computeScore(p) }))
-      .sort((a, b) => b.score - a.score || new Date(b.post.createdAt) - new Date(a.post.createdAt));
+      .sort(
+        (a, b) =>
+          b.score - a.score ||
+          new Date(b.post.createdAt) - new Date(a.post.createdAt),
+      );
 
     const start = (page - 1) * limit;
     const paged = scored.slice(start, start + limit).map((x) => ({
@@ -57,11 +71,17 @@ export const getFeed = async (req, res) => {
       isLiked: likedSet.has(String(x.post._id)),
     }));
 
+    const hasMore = start + paged.length < scored.length;
+    const truncated = totalInDb > fetchLimit;
+
     return res.status(200).json({
       message: "Feed fetched successfully",
       page,
       limit,
       total: scored.length,
+      totalInNetwork: totalInDb,
+      hasMore,
+      truncated,
       posts: paged,
     });
   } catch (error) {

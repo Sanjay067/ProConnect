@@ -18,8 +18,8 @@ const initialState = {
   message: "",
 };
 
-const connectonSlice = createSlice({
-  name: "connctions",
+const connectionSlice = createSlice({
+  name: "connection",
   initialState,
   reducers: {
     reset: () => initialState,
@@ -108,5 +108,5 @@ const connectonSlice = createSlice({
   },
 });
 
-export const { reset } = connectonSlice.actions;
-export default connectonSlice.reducer;
+export const { reset } = connectionSlice.actions;
+export default connectionSlice.reducer;

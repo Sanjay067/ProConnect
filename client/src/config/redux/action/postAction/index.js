@@ -12,16 +12,22 @@ export const getPosts = createAsyncThunk("user/posts", async (_, thunkAPI) => {
   }
 });
 
-export const getFeed = createAsyncThunk("feed/posts", async (_, thunkAPI) => {
-  try {
-    const { data } = await clientApi.get("/feed", { params: { page: 1, limit: 20 } });
-    return data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(
-      error.response?.data || { message: error.message },
-    );
-  }
-});
+export const getFeed = createAsyncThunk(
+  "feed/posts",
+  async (opts = {}, thunkAPI) => {
+    const { page = 1, limit = 20, append = false } = opts;
+    try {
+      const { data } = await clientApi.get("/feed", {
+        params: { page, limit },
+      });
+      return { ...data, append };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || { message: error.message },
+      );
+    }
+  },
+);
 
 export const createPost = createAsyncThunk(
   "user/createPost",
