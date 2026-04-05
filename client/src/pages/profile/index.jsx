@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "@/config/redux/action/profileAction";
 import { getPosts } from "@/config/redux/action/postAction";
-import UserLayout from "@/Layout/UserLayout";
-import ProtectedRoute from "@/Components/Protected";
+import UserLayout from "@/layout/UserLayout";
+import ProtectedRoute from "@/components/Protected";
 import styles from "./styles.module.css";
 import PopupDialog from "@/features/profile/popupDialog";
-import Loader from "@/Components/Loader";
-import { getMyConnections } from "@/config/redux/action/connectionAction.js";
+import Loader from "@/components/Loader";
+import { getConnectionsOverview } from "@/config/redux/action/connectionAction";
 
 // Import modular UI sections
 import ProfileHeader from "@/features/profile/ProfileHeader";
@@ -35,7 +35,7 @@ export default function ProfilePage() {
   useEffect(() => {
     dispatch(getUserProfile());
     dispatch(getPosts()); // Ensure we pull posts down so we can filter them for Activity
-    dispatch(getMyConnections());
+    dispatch(getConnectionsOverview());
   }, [dispatch]);
 
   const handleOpenModal = (type, index = null) => {

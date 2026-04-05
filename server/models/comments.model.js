@@ -17,7 +17,9 @@ const commentSchema = new mongoose.Schema(
 
     body: {
       type: String,
-      required: true,
+      required: function bodyRequiredWhenVisible() {
+        return !this.isDeleted;
+      },
     },
 
     parentComment: {

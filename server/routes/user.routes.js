@@ -8,6 +8,7 @@ import {
   updateUser,
   userProfileDownload,
   searchUsers,
+  getPublicUserProfile,
 } from "../controllers/user.controller.js";
 import { uploadAvatar, uploadBanner } from "../config/cloudinary.js";
 import { verifyAccessToken } from "../middlewares/verifyAccessToken.middleware.js";
@@ -19,6 +20,9 @@ router.get("/search", verifyAccessToken, searchUsers);
 
 // Get current user's profile
 router.get("/profiles/me", verifyAccessToken, getMyProfile);
+
+// Another user's profile (for deep links)
+router.get("/profile/:userId", verifyAccessToken, getPublicUserProfile);
 
 // Get all profiles
 router.get("/profiles", verifyAccessToken, getAllProfiles);

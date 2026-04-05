@@ -7,11 +7,24 @@ import {
   cancelConnection,
   removeConnection,
   getMyConnections,
+  getConnectionsOverview,
 } from "../controllers/connection.controller.js";
 
 const router = Router();
 
+router.get("/overview", verifyAccessToken, getConnectionsOverview);
 router.get("/me", verifyAccessToken, getMyConnections);
+
+router.delete(
+  "/pending/:connectionId",
+  verifyAccessToken,
+  cancelConnection,
+);
+router.delete(
+  "/accepted/:connectionId",
+  verifyAccessToken,
+  removeConnection,
+);
 
 router.post("/:receiverId", verifyAccessToken, sendConnection);
 

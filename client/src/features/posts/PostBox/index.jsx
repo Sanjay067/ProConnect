@@ -5,13 +5,13 @@ import { createPost } from "@/config/redux/action/postAction";
 
 export default function PostBox() {
   const dispatch = useDispatch();
-  const { isLoading } = useSelector((state) => state.post);
+  const { createPostLoading } = useSelector((state) => state.post);
   const myAvatar = useSelector(
     (state) =>
       state.profile.profile?.userId?.profilePicture ||
-      "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+      "https://cdn-icons-png.flaticon.com/512/149/149071.png",
   );
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalView, setModalView] = useState("text"); // "text" | "media"
   const [postBody, setPostBody] = useState("");
@@ -29,8 +29,8 @@ export default function PostBox() {
       formData.append("media", selectedFile);
     }
 
-    await dispatch(createPost(formData));
-    
+    dispatch(createPost(formData));
+
     // Reset & Close Modal
     setPostBody("");
     removeMedia();
@@ -60,7 +60,7 @@ export default function PostBox() {
     setModalView("text");
     setIsModalOpen(true);
   };
-  
+
   const openMediaModal = () => {
     setModalView("media");
     setIsModalOpen(true);
@@ -84,10 +84,12 @@ export default function PostBox() {
       </div>
       <div className={styles.triggerIcons}>
         <button className={styles.iconBtn} onClick={openMediaModal}>
-          <i className="fa-solid fa-image" style={{ color: "#378fe9" }}></i> Photo
+          <i className="fa-solid fa-image" style={{ color: "#378fe9" }}></i>{" "}
+          Photo
         </button>
         <button className={styles.iconBtn} onClick={openMediaModal}>
-          <i className="fa-solid fa-video" style={{ color: "#5f9b41" }}></i> Video
+          <i className="fa-solid fa-video" style={{ color: "#5f9b41" }}></i>{" "}
+          Video
         </button>
       </div>
 
@@ -95,79 +97,134 @@ export default function PostBox() {
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            
             {modalView === "text" ? (
               <>
                 <div className={styles.modalHeader}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                     <img src={myAvatar} alt="Avatar" className={styles.myAvatar} />
-                     <span style={{ fontWeight: "bold", fontSize: "1.2rem", color: "#666" }}>Create a post</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <img
+                      src={myAvatar}
+                      alt="Avatar"
+                      className={styles.myAvatar}
+                    />
+                    <span
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1.2rem",
+                        color: "#666",
+                      }}
+                    >
+                      Create a post
+                    </span>
                   </div>
                   <button className={styles.closeBtn} onClick={closeModal}>
                     <i className="fa-solid fa-times"></i>
                   </button>
                 </div>
-                
-                <form onSubmit={handlePostSubmit}>
-                   <textarea
-                     placeholder="What do you want to talk about?"
-                     value={postBody}
-                     onChange={(e) => setPostBody(e.target.value)}
-                     className={styles.modalTextArea}
-                     autoFocus
-                   />
-                   
-                   {/* --- Media Preview Area --- */}
-                   {previewUrl && (
-                     <div className={styles.previewContainer}>
-                       {selectedFile?.type.startsWith("video/") ? (
-                         <video src={previewUrl} controls className={styles.mediaPreview} />
-                       ) : (
-                         <img src={previewUrl} alt="Preview" className={styles.mediaPreview} />
-                       )}
-                       <button type="button" onClick={removeMedia} className={styles.removeMediaBtn}>
-                         <i className="fa-solid fa-times"></i>
-                       </button>
-                     </div>
-                   )}
 
-                   <div className={styles.modalFooter}>
-                     <div style={{ display: "flex", gap: "15px" }}>
-                        <button 
-                          type="button"
-                          className={styles.iconBtn}
-                          onClick={() => setModalView("media")}
-                        >
-                          <i className="fa-solid fa-image" style={{ color: "#378fe9", fontSize: "1.2rem" }}></i>
-                        </button>
-                        <button 
-                          type="button"
-                          className={styles.iconBtn}
-                          onClick={() => setModalView("media")}
-                        >
-                          <i className="fa-solid fa-video" style={{ color: "#5f9b41", fontSize: "1.2rem" }}></i>
-                        </button>
-                     </div>
-                     
-                     <button 
-                       type="submit" 
-                       className={styles.postButton} 
-                       disabled={isLoading || (!postBody.trim() && !selectedFile)}
-                     >
-                       {isLoading ? "Posting..." : "Post"}
-                     </button>
-                   </div>
+                <form onSubmit={handlePostSubmit}>
+                  <textarea
+                    placeholder="What do you want to talk about?"
+                    value={postBody}
+                    onChange={(e) => setPostBody(e.target.value)}
+                    className={styles.modalTextArea}
+                    autoFocus
+                  />
+
+                  {/* --- Media Preview Area --- */}
+                  {previewUrl && (
+                    <div className={styles.previewContainer}>
+                      {selectedFile?.type.startsWith("video/") ? (
+                        <video
+                          src={previewUrl}
+                          controls
+                          className={styles.mediaPreview}
+                        />
+                      ) : (
+                        <img
+                          src={previewUrl}
+                          alt="Preview"
+                          className={styles.mediaPreview}
+                        />
+                      )}
+                      <button
+                        type="button"
+                        onClick={removeMedia}
+                        className={styles.removeMediaBtn}
+                      >
+                        <i className="fa-solid fa-times"></i>
+                      </button>
+                    </div>
+                  )}
+
+                  <div className={styles.modalFooter}>
+                    <div style={{ display: "flex", gap: "15px" }}>
+                      <button
+                        type="button"
+                        className={styles.iconBtn}
+                        onClick={() => setModalView("media")}
+                      >
+                        <i
+                          className="fa-solid fa-image"
+                          style={{ color: "#378fe9", fontSize: "1.2rem" }}
+                        ></i>
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.iconBtn}
+                        onClick={() => setModalView("media")}
+                      >
+                        <i
+                          className="fa-solid fa-video"
+                          style={{ color: "#5f9b41", fontSize: "1.2rem" }}
+                        ></i>
+                      </button>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className={styles.postButton}
+                      disabled={
+                        createPostLoading ||
+                        (!postBody.trim() && !selectedFile)
+                      }
+                    >
+                      {createPostLoading ? "Posting..." : "Post"}
+                    </button>
+                  </div>
                 </form>
               </>
             ) : (
               <>
                 {/* --- File Selection View --- */}
                 <div className={styles.modalHeader}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                     <button className={styles.closeBtn} onClick={() => setModalView("text")}>
-                       <i className="fa-solid fa-arrow-left"></i>
-                     </button>
-                     <span style={{ fontWeight: "bold", fontSize: "1.2rem", color: "#666" }}>Select files</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "15px",
+                    }}
+                  >
+                    <button
+                      className={styles.closeBtn}
+                      onClick={() => setModalView("text")}
+                    >
+                      <i className="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <span
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "1.2rem",
+                        color: "#666",
+                      }}
+                    >
+                      Select files
+                    </span>
                   </div>
                   <button className={styles.closeBtn} onClick={closeModal}>
                     <i className="fa-solid fa-times"></i>
@@ -175,10 +232,33 @@ export default function PostBox() {
                 </div>
 
                 <div className={styles.uploadEmptyState}>
-                  <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: "5rem", color: "#0a66c2", marginBottom: "15px" }}></i>
-                  <h2 style={{ margin: "0 0 10px 0", fontSize: "1.5rem", color: "#333" }}>Select files to begin</h2>
-                  <p style={{ margin: "0 0 20px 0", color: "#666", fontSize: "1rem" }}>Share images or a single video in your post.</p>
-                  
+                  <i
+                    className="fa-solid fa-cloud-arrow-up"
+                    style={{
+                      fontSize: "5rem",
+                      color: "#0a66c2",
+                      marginBottom: "15px",
+                    }}
+                  ></i>
+                  <h2
+                    style={{
+                      margin: "0 0 10px 0",
+                      fontSize: "1.5rem",
+                      color: "#333",
+                    }}
+                  >
+                    Select files to begin
+                  </h2>
+                  <p
+                    style={{
+                      margin: "0 0 20px 0",
+                      color: "#666",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    Share images or a single video in your post.
+                  </p>
+
                   <input
                     type="file"
                     ref={fileRef}
@@ -186,7 +266,7 @@ export default function PostBox() {
                     onChange={handleChange}
                     accept="image/*,video/*"
                   />
-                  <button 
+                  <button
                     className={styles.uploadFromComputerBtn}
                     onClick={() => fileRef.current?.click()}
                   >
@@ -195,7 +275,6 @@ export default function PostBox() {
                 </div>
               </>
             )}
-
           </div>
         </div>
       )}

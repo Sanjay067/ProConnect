@@ -25,6 +25,8 @@ export const addComment = async (req, res) => {
     post.commentCount += 1;
     await post.save();
 
+    await comment.populate("author", "name username profilePicture");
+
     return res.status(201).json({
       message: "Comment added",
       comment,
@@ -62,6 +64,8 @@ export const replyToComment = async (req, res) => {
       post.commentCount += 1;
       await post.save();
     }
+
+    await reply.populate("author", "name username profilePicture");
 
     return res.status(201).json({
       message: "Reply added",
@@ -136,6 +140,7 @@ export const getComments = async (req, res) => {
     const comments = await Comment.find({
       postId,
       parentComment: null,
+      isDeleted: false,
     })
       .populate("author", "name username profilePicture")
       .sort({ createdAt: -1 });
@@ -169,6 +174,7 @@ export const getReplies = async (req, res) => {
 
     const replies = await Comment.find({
       parentComment: commentId,
+      isDeleted: false,
     })
       .populate("author", "name username profilePicture")
       .sort({ createdAt: 1 });

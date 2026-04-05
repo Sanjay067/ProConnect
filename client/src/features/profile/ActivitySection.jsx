@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "@/pages/profile/styles.module.css";
-import PostCard from "@/features/posts/Postcard/PostCard";
+import PostCard from "@/features/posts/PostCard";
 
 export default function ActivitySection({ posts }) {
   const { connections } = useSelector((state) => state.connection);
@@ -14,19 +14,53 @@ export default function ActivitySection({ posts }) {
   return (
     <div className={styles.sectionCard}>
       <h2 className={styles.sectionHeader}>Activity</h2>
-      <p style={{ color: "#0a66c2", fontWeight: "bold", margin: "-10px 0 1rem 0" }}>
+      <p
+        style={{
+          color: "#0a66c2",
+          fontWeight: "bold",
+          margin: "-10px 0 1rem 0",
+        }}
+      >
         {connections?.length || 0} connections
       </p>
 
       <div style={{ marginTop: "1rem" }}>
         {displayedPosts.length > 0 ? (
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "space-between" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+            }}
+          >
             {displayedPosts.map((post) => (
-              <div key={post._id} style={{ borderBottom: "1px solid #eee", paddingBottom: "10px", width: "48%" }}>
-                 <p style={{ color: "#666", fontSize: "0.8rem", margin: "0 0 5px 0" }}>You posted this</p>
-                 <div style={{ border: "1px solid #ddd", borderRadius: "8px", overflow: "hidden" }}>
-                    <PostCard post={post} isOwnProfile={true} />
-                 </div>
+              <div
+                key={post._id}
+                style={{
+                  borderBottom: "1px solid #eee",
+                  paddingBottom: "10px",
+                  width: "48%",
+                }}
+              >
+                <p
+                  style={{
+                    color: "#666",
+                    fontSize: "0.8rem",
+                    margin: "0 0 5px 0",
+                  }}
+                >
+                  You posted this
+                </p>
+                <div
+                  style={{
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <PostCard post={post} isOwnProfile={true} />
+                </div>
               </div>
             ))}
           </div>
@@ -53,7 +87,8 @@ export default function ActivitySection({ posts }) {
           userSelect: "none",
         }}
       >
-         {showAll ? "Show less activity" : "Show all activity"} <i className="fa-solid fa-arrow-right"></i>
+        {showAll ? "Show less activity" : "Show all activity"}{" "}
+        <i className="fa-solid fa-arrow-right"></i>
       </div>
     </div>
   );

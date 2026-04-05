@@ -52,7 +52,7 @@ export const acceptConnection = async (req, res) => {
       {
         status: "accepted",
       },
-      { new: true },
+      { returnDocument: 'after' },
     );
 
     if (!findConnection)
@@ -82,7 +82,7 @@ export const rejectConnection = async (req, res) => {
       {
         status: "rejected",
       },
-      { new: true },
+      { returnDocument: 'after' },
     );
 
     if (!findConnection)
@@ -155,6 +155,36 @@ export const getMyConnections = async (req, res) => {
     return res.status(200).json({
       message: "Connections fetched successfully",
       connections,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getConnectionsOverview = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const all = await Connection.find({
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    })
+      .populate("senderId", "name username profilePicture")
+      .populate("receiverId", "name username profilePicture");
+
+    const accepted = all.filter((c) => c.status === "accepted");
+    const pending = all.filter((c) => c.status === "pending");
+
+    const pendingSent = pending.filter(
+      (c) => String(c.senderId?._id || c.senderId) === String(userId),
+    );
+    const pendingReceived = pending.filter(
+      (c) => String(c.receiverId?._id || c.receiverId) === String(userId),
+    );
+
+    return res.status(200).json({
+      message: "Connections overview",
+      accepted,
+      pendingSent,
+      pendingReceived,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

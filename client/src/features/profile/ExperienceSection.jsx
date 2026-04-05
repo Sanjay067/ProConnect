@@ -1,20 +1,22 @@
 import React from "react";
 import styles from "@/pages/profile/styles.module.css";
 
-export default function ExperienceSection({ profile, onEdit }) {
+export default function ExperienceSection({ profile, onEdit, readOnly }) {
   return (
     <div className={styles.sectionCard}>
       <h2 className={styles.sectionHeader}>Experience</h2>
 
-      <div className={styles.iconRow}>
-        <button
-          onClick={() => onEdit("EXPERIENCE", null)}
-          className={styles.pencilBtn}
-          style={{ position: "relative", top: 0, right: 0 }}
-        >
-          <i className="fa-solid fa-plus"></i>
-        </button>
-      </div>
+      {!readOnly && onEdit && (
+        <div className={styles.iconRow}>
+          <button
+            onClick={() => onEdit("EXPERIENCE", null)}
+            className={styles.pencilBtn}
+            style={{ position: "relative", top: 0, right: 0 }}
+          >
+            <i className="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      )}
 
       <div style={{ marginTop: "1rem" }}>
         {profile.pastWork?.length > 0 ? (
@@ -33,13 +35,15 @@ export default function ExperienceSection({ profile, onEdit }) {
                   <p className={styles.itemDate}>{work.years}</p>
                 </div>
               </div>
-              <button
-                onClick={() => onEdit("EXPERIENCE", index)}
-                className={styles.pencilBtn}
-                style={{ position: "relative", top: 0, right: 0 }}
-              >
-                <i className="fa-solid fa-pencil"></i>
-              </button>
+              {!readOnly && onEdit && (
+                <button
+                  onClick={() => onEdit("EXPERIENCE", index)}
+                  className={styles.pencilBtn}
+                  style={{ position: "relative", top: 0, right: 0 }}
+                >
+                  <i className="fa-solid fa-pencil"></i>
+                </button>
+              )}
             </div>
           ))
         ) : (

@@ -11,6 +11,7 @@ const postSchema = new mongoose.Schema(
     body: {
       type: String,
       trim: true,
+      maxlength: 5000,
     },
 
     media: [
@@ -42,6 +43,6 @@ const postSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const Post = mongoose.model("Post", postSchema);
+postSchema.index({ createdAt: -1 });
 
-export default Post;
+export default mongoose.model("Post", postSchema);

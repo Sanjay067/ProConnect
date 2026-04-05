@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import ProtectedRoute from "@/Components/Protected";
-import UserLayout from "@/Layout/UserLayout";
+import ProtectedRoute from "@/components/Protected";
+import UserLayout from "@/layout/UserLayout";
 import { useDispatch } from "react-redux";
 import { getUserProfile } from "@/config/redux/action/profileAction";
 import Feed from "@/features/posts/Feed/Feed";

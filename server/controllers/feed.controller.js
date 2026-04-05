@@ -1,5 +1,6 @@
 import Connection from "../models/connections.model.js";
 import Post from "../models/posts.model.js";
+import Like from "../models/likes.model.js";
 
 function computeScore(post) {
   const likeScore = Math.log1p(post.likeCount || 0) * 2;
@@ -37,6 +38,14 @@ export const getFeed = async (req, res) => {
       .populate("author", "name username profilePicture")
       .sort({ createdAt: -1 });
 
+    const postIds = allPosts.map((p) => p._id);
+    const userLikes = await Like.find({
+      userId,
+      targetId: { $in: postIds },
+      targetType: "Post",
+    }).select("targetId");
+    const likedSet = new Set(userLikes.map((l) => String(l.targetId)));
+
     const scored = allPosts
       .map((p) => ({ post: p, score: computeScore(p) }))
       .sort((a, b) => b.score - a.score || new Date(b.post.createdAt) - new Date(a.post.createdAt));
@@ -45,6 +54,7 @@ export const getFeed = async (req, res) => {
     const paged = scored.slice(start, start + limit).map((x) => ({
       ...x.post.toObject(),
       score: x.score,
+      isLiked: likedSet.has(String(x.post._id)),
     }));
 
     return res.status(200).json({

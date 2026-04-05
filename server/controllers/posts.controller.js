@@ -1,4 +1,5 @@
 import Post from "../models/posts.model.js";
+import Like from "../models/likes.model.js";
 import { cloudinary } from "../config/cloudinary.js";
 
 export const activeCheck = async (req, res) => {
@@ -12,9 +13,24 @@ export const getAllUserPosts = async (req, res) => {
     const posts = await Post.find({ author: userId })
       .populate("author", "name username profilePicture")
       .sort({ createdAt: -1 });
+
+    const postIds = posts.map((p) => p._id);
+    const userLikes = await Like.find({
+      userId,
+      targetId: { $in: postIds },
+      targetType: "Post",
+    }).select("targetId");
+
+    const likedSet = new Set(userLikes.map((l) => String(l.targetId)));
+
+    const finalPosts = posts.map((p) => ({
+      ...p.toObject(),
+      isLiked: likedSet.has(String(p._id)),
+    }));
+
     return res
       .status(200)
-      .json({ message: "Posts fetched successfully", posts });
+      .json({ message: "Posts fetched successfully", posts: finalPosts });
   } catch (error) {
     return res
       .status(500)

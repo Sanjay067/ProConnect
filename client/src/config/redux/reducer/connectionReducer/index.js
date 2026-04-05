@@ -1,13 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   getMyConnections,
+  getConnectionsOverview,
   sendConnections,
   acceptConnections,
   rejectConnections,
-} from "../../action/connectionAction.js";
+  cancelPendingConnection,
+  removeAcceptedConnection,
+} from "../../action/connectionAction";
 
 const initialState = {
   connections: [],
+  overview: null,
   isLoading: false,
   isError: false,
   isSuccess: false,
@@ -22,14 +26,12 @@ const connectonSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // GET MY CONNECTIONS
       .addCase(getMyConnections.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getMyConnections.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        // The API returns { message, connections: [...] }
         state.connections = action.payload.connections || [];
       })
       .addCase(getMyConnections.rejected, (state, action) => {
@@ -38,7 +40,21 @@ const connectonSlice = createSlice({
         state.message = action.payload?.message || action.payload;
       })
 
-      // SEND CONNECTION
+      .addCase(getConnectionsOverview.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getConnectionsOverview.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.overview = action.payload;
+        state.connections = action.payload.accepted || [];
+      })
+      .addCase(getConnectionsOverview.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload?.message || action.payload;
+      })
+
       .addCase(sendConnections.pending, (state) => {
         state.isLoading = true;
       })
@@ -53,7 +69,6 @@ const connectonSlice = createSlice({
         state.message = action.payload?.message || action.payload;
       })
 
-      // ACCEPT CONNECTION
       .addCase(acceptConnections.pending, (state) => {
         state.isLoading = true;
       })
@@ -68,7 +83,6 @@ const connectonSlice = createSlice({
         state.message = action.payload?.message || action.payload;
       })
 
-      // REJECT CONNECTION
       .addCase(rejectConnections.pending, (state) => {
         state.isLoading = true;
       })
@@ -81,6 +95,15 @@ const connectonSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload?.message || action.payload;
+      })
+
+      .addCase(cancelPendingConnection.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.message = action.payload?.message || "Request cancelled";
+      })
+      .addCase(removeAcceptedConnection.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.message = action.payload?.message || "Connection removed";
       });
   },
 });

@@ -4,9 +4,9 @@ import {
   getAllProfiles,
   getUserProfile,
 } from "@/config/redux/action/profileAction";
-import { getMyConnections } from "@/config/redux/action/connectionAction.js";
-import UserLayout from "@/Layout/UserLayout";
-import ProtectedRoute from "@/Components/Protected";
+import { getConnectionsOverview } from "@/config/redux/action/connectionAction";
+import UserLayout from "@/layout/UserLayout";
+import ProtectedRoute from "@/components/Protected";
 import UserCard from "@/features/network/UserCard";
 import styles from "./styles.module.css";
 
@@ -22,7 +22,7 @@ export default function NetworkPage() {
   useEffect(() => {
     dispatch(getUserProfile());
     dispatch(getAllProfiles());
-    dispatch(getMyConnections());
+    dispatch(getConnectionsOverview());
   }, [dispatch]);
 
   return (

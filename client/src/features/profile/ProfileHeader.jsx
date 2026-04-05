@@ -3,10 +3,58 @@ import { useDispatch } from "react-redux";
 import { updateProfilePicture, updateBannerPicture } from "@/config/redux/action/profileAction";
 import styles from "@/pages/profile/styles.module.css";
 
-export default function ProfileHeader({ profile, user, onEdit }) {
+export default function ProfileHeader({ profile, user, onEdit, readOnly }) {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const bannerInputRef = useRef(null);
+
+  if (readOnly) {
+    const p = profile || {};
+    return (
+      <div className={styles.profileCard} style={{ padding: 0 }}>
+        <div
+          className={styles.banner}
+          style={{
+            backgroundImage: p?.bannerPicture
+              ? `url(${p.bannerPicture})`
+              : "none",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "140px",
+          }}
+        />
+        <div className={styles.headerContent}>
+          <div className={styles.avatarWrapper} style={{ cursor: "default" }}>
+            <img
+              src={
+                user?.profilePicture ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              }
+              alt=""
+              className={styles.avatar}
+            />
+          </div>
+          <div className={styles.headerTopRow}>
+            <div className={styles.nameInfo}>
+              <h1 className={styles.name}>{user?.name}</h1>
+              <p className={styles.headline}>
+                {p.headline || p.currentPosition || ""}
+              </p>
+            </div>
+            {p.education?.length > 0 && (
+              <div className={styles.rightPanel}>
+                <i
+                  className="fa-solid fa-building"
+                  style={{ width: "10px" }}
+                ></i>
+                <span>{p.education[0].school}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];

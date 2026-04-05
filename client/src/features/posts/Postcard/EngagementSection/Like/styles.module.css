@@ -1,0 +1,43 @@
+.likeRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.likeCountBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: #666;
+  font-size: 0.95rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.likeCountBtn:hover {
+  background: #f3f2ef;
+  color: #0a66c2;
+}
+
+.likeIcon {
+  font-size: 1.5rem;
+  color: #666;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.actionButton {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.blue {
+  color: rgb(0, 174, 255);
+}

@@ -1,38 +1,34 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { sendConnections } from "@/config/redux/action/connectionAction.js";
+import { useSelector } from "react-redux";
+import Link from "next/link";
+import ConnectionButton from "@/components/ConnectionButton";
 import styles from "./styles.module.css";
 
 export default function UserCard({ user }) {
-  const dispatch = useDispatch();
   const myId = useSelector((state) => state.profile.profile?.userId?._id);
   const userId = user?._id;
   const isSelf = myId && userId ? String(myId) === String(userId) : false;
 
   return (
     <div className={styles.userCard}>
-      <img
-        src={
-          user.profilePicture ||
-          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-        }
-        alt="Avatar"
-        className={styles.avatar}
-      />
+      <Link href={userId ? `/profile/${userId}` : "#"}>
+        <img
+          src={
+            user.profilePicture ||
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          }
+          alt="Avatar"
+          className={styles.avatar}
+        />
+      </Link>
 
-      <h3 className={styles.name}>{user.name}</h3>
-      <p className={styles.username}>
-        @{user.username}
-      </p>
+      <Link href={userId ? `/profile/${userId}` : "#"} style={{ textDecoration: "none", color: "inherit" }}>
+        <h3 className={styles.name}>{user.name}</h3>
+      </Link>
+      <p className={styles.username}>@{user.username}</p>
 
       {!isSelf && (
-        <button
-          onClick={() => dispatch(sendConnections(userId))}
-          className={styles.connectButton}
-          disabled={!userId}
-        >
-          Connect
-        </button>
+        <ConnectionButton targetUserId={userId} className={styles.connectButton} />
       )}
     </div>
   );

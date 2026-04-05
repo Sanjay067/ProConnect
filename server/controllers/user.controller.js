@@ -124,7 +124,6 @@ export const updateUser = async (req, res) => {
 export const getMyProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    1;
     if (!user) return res.status(400).json({ message: "user doesn't exist" });
 
     const userProfile = await Profile.findOne({ userId: user._id }).populate(
@@ -133,6 +132,42 @@ export const getMyProfile = async (req, res) => {
     );
 
     return res.json(userProfile);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+/** Public-ish profile for another user (authenticated viewers only). Omits email. */
+export const getPublicUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId)
+      return res.status(400).json({ message: "User ID is required" });
+
+    const user = await User.findById(userId).select(
+      "name username profilePicture",
+    );
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const userProfile = await Profile.findOne({ userId: user._id }).populate(
+      "userId",
+      "name username profilePicture",
+    );
+
+    if (!userProfile) {
+      return res.status(200).json({
+        profile: null,
+        user: {
+          _id: user._id,
+          name: user.name,
+          username: user.username,
+          profilePicture: user.profilePicture,
+        },
+      });
+    }
+
+    await userProfile.populate("userId", "name username profilePicture");
+    return res.status(200).json({ profile: userProfile });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -232,8 +267,8 @@ export const searchUsers = async (req, res) => {
         { name: { $regex: q, $options: "i" } },
         { username: { $regex: q, $options: "i" } }
       ]
-    }).select("name username profilePicture");
-    
+    }).select("_id name username profilePicture");
+
     return res.status(200).json(users);
   } catch (error) {
     return res.status(500).json({ message: error.message });

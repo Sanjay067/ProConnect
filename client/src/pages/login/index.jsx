@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
-import UserLayout from "@/Layout/UserLayout";
+import UserLayout from "@/layout/UserLayout";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { loginUser, registerUser } from "@/config/redux/action/authAction";
-import Loader from "@/Components/Loader";
+import Loader from "@/components/Loader";
 import clientApi from "@/services/clientApi";
 
 export default function Login() {

@@ -1,0 +1,18 @@
+.engagementBar {
+  border-top: 1px solid #eee;
+  padding-top: 0.5rem;
+  display: flex;
+  gap: 15px;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.commentIcon {
+  font-size: 1.3rem;
+}

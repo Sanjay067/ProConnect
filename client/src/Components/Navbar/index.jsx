@@ -7,6 +7,9 @@ import { clearSearch } from "@/config/redux/reducer/searchReducer";
 import { useRouter } from "next/router";
 import { logoutUser } from "@/config/redux/action/authAction";
 import { reset as resetAuth } from "@/config/redux/reducer/authReducer";
+import { reset as resetProfile } from "@/config/redux/reducer/profileReducer";
+import { reset as resetConnection } from "@/config/redux/reducer/connectionReducer";
+import { reset as resetPost } from "@/config/redux/reducer/postReducer";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -79,23 +82,24 @@ export default function Navbar() {
 
               {!isLoading &&
                 searchResults?.length > 0 &&
-                searchResults.map((user) => (
-                  <div
-                    key={user._id}
+                searchResults.map((u) => (
+                  <Link
+                    key={u._id || u.username}
+                    href={u._id ? `/profile/${u._id}` : "/network"}
                     className={styles.searchResultItem}
                     onClick={() => setQuery("")}
                   >
                     <img
                       src={
-                        user.profilePicture ||
+                        u.profilePicture ||
                         "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                       }
-                      alt="Avatar"
+                      alt=""
                       className={styles.searchAvatar}
                     />
                     <div>
                       <p style={{ margin: 0, fontWeight: "bold" }}>
-                        {user.name}
+                        {u.name}
                       </p>
                       <p
                         style={{
@@ -104,10 +108,10 @@ export default function Navbar() {
                           color: "#666",
                         }}
                       >
-                        @{user.username}
+                        @{u.username}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
 
               {!isLoading && searchResults?.length === 0 && (

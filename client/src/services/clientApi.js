@@ -11,7 +11,7 @@ const clientApi = axios.create({
 let isRefreshing = false;
 let failedQueue = [];
 
-//  Resolve/reject queued requests
+// Resolve/reject all queued requests
 const processQueue = (error) => {
   failedQueue.forEach((p) => {
     error ? p.reject(error) : p.resolve();
@@ -19,20 +19,27 @@ const processQueue = (error) => {
   failedQueue = [];
 };
 
-//  RESPONSE INTERCEPTOR
+// RESPONSE INTERCEPTOR
 clientApi.interceptors.response.use(
   (res) => res,
 
   async (error) => {
     const originalRequest = error.config;
 
-    //  Prevent retry loop on refresh endpoint
+    // Network errors / timeouts have no config — reject cleanly without crashing
+    if (!originalRequest || !originalRequest.url) {
+      return Promise.reject(error);
+    }
+
+    // If the refresh endpoint itself failed, flush the queue and reject.
+    // Do NOT redirect here — let each caller handle auth errors themselves.
     if (originalRequest.url.includes("/auth/refresh-token")) {
+      processQueue(error);
       return Promise.reject(error);
     }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      //  Queue requests while refreshing
+      // Queue parallel requests while a refresh is already in progress
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -44,14 +51,10 @@ clientApi.interceptors.response.use(
 
       try {
         await clientApi.post("/auth/refresh-token");
-
         processQueue(null);
-
         return clientApi(originalRequest);
       } catch (err) {
         processQueue(err);
-
-        //  Instead of redirect, emit event or return error
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

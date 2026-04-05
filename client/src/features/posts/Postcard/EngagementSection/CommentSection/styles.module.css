@@ -1,0 +1,82 @@
+.commentSection {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.commentForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.commentInput {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+}
+
+.commentSubmit {
+  padding: 8px 15px;
+  border-radius: 20px;
+  background: #0a66c2;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.loadingText, .emptyCommentText {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.commentItem {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.commentAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.commentBodyContainer {
+  background: #eee;
+  padding: 8px 12px;
+  border-radius: 8px;
+  flex: 1;
+}
+
+.commentAuthorLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.commentAuthorLink:hover .commentAuthorName {
+  color: #0a66c2;
+  text-decoration: underline;
+}
+
+.commentAuthorName {
+  margin: 0;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.commentBodyText {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-weight: bold;
+}

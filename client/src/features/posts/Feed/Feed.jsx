@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getFeed, createPost } from "@/config/redux/action/postAction";
 // 1. IMPORT IT HERE
-import PostCard from "../Postcard/PostCard";
+import PostCard from "../PostCard";
 import styles from "./styles.module.css";
-import Loader from "@/Components/Loader";
+import Loader from "@/components/Loader";
 import PostBox from "../PostBox";
 
 export default function Feed() {
   const dispatch = useDispatch();
-  const { feedPosts, isLoading } = useSelector((state) => state.post);
-  const [postBody, setPostBody] = useState("");
+  const { feedPosts, feedLoading } = useSelector((state) => state.post);
+  // const [postBody, setPostBody] = useState("");
 
   useEffect(() => {
     dispatch(getFeed());
@@ -21,7 +21,7 @@ export default function Feed() {
       <PostBox />
 
       {/* --- LOADING & EMPTY STATES --- */}
-      {isLoading && (
+      {feedLoading && (
         <div className={styles.loader}>
           <Loader />
         </div>
@@ -29,7 +29,7 @@ export default function Feed() {
 
       {/* --- POST LIST --- */}
       {/* 2. USE POSTCARD HERE */}
-      {!isLoading && feedPosts?.length === 0 && (
+      {!feedLoading && feedPosts?.length === 0 && (
         <p className={styles.emptyMessage}>
           No posts yet. Be the first to post!
         </p>

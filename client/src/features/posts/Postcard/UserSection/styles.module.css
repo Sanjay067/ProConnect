@@ -1,0 +1,37 @@
+.authorContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.authorDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.authorName {
+  margin: 0;
+  font-weight: bold;
+}
+
+.authorUsername {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-weight: bold;
+}

@@ -7,7 +7,7 @@ import {
   deletePost,
   editPost,
 } from "../controllers/posts.controller.js";
-import { toggleLikePost } from "../controllers/likes.controller.js";
+import { toggleLikePost, getPostLikes } from "../controllers/likes.controller.js";
 import { verifyAccessToken } from "../middlewares/verifyAccessToken.middleware.js";
 import { isPostAuthor } from "../middlewares/isPostAuthor.middleware.js";
 import commentRoutes from "./comments.routes.js";
@@ -38,6 +38,7 @@ router
 
 // Like/unlike a post
 router.post("/:postId/like", verifyAccessToken, toggleLikePost);
+router.get("/:postId/likes", verifyAccessToken, getPostLikes);
 
 // Mount comment routes under /:postId/comments
 router.use("/:postId/comments", commentRoutes);

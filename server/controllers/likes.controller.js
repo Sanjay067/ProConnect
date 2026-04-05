@@ -3,48 +3,64 @@ import Post from "../models/posts.model.js";
 import Comment from "../models/comments.model.js";
 
 export const toggleLikePost = async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.user._id;
+
   try {
-    const { postId } = req.params;
-
-    const post = await Post.findById(postId);
-    if (!post) return res.status(404).json({ message: "Post not found" });
-
-    const existingLike = await Like.findOne({
-      userId: req.user._id,
+    const existing = await Like.findOne({
+      userId,
       targetId: postId,
       targetType: "Post",
     });
 
-    if (existingLike) {
-      await Like.findByIdAndDelete(existingLike._id);
-      post.likeCount = Math.max(0, post.likeCount - 1);
-      await post.save();
-
-      return res.status(200).json({
-        message: "Post unliked",
+    if (existing) {
+      await Like.findByIdAndDelete(existing._id);
+      const updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        { $inc: { likeCount: -1 } },
+        { returnDocument: "after" },
+      );
+      return res.json({
         liked: false,
-        likeCount: post.likeCount,
+        likeCount: updatedPost.likeCount,
       });
     }
 
     await Like.create({
-      userId: req.user._id,
+      userId,
       targetId: postId,
       targetType: "Post",
     });
-
-    post.likeCount += 1;
-    await post.save();
-
-    return res.status(201).json({
-      message: "Post liked",
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $inc: { likeCount: 1 } },
+      { returnDocument: "after" },
+    );
+    return res.json({
       liked: true,
-      likeCount: post.likeCount,
+      likeCount: updatedPost.likeCount,
     });
   } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({ message: "Already liked" });
-    }
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const getPostLikes = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const likes = await Like.find({
+      targetId: postId,
+      targetType: "Post",
+    }).populate("userId", "name username profilePicture");
+
+    return res.status(200).json({
+      count: likes.length,
+      likes,
+    });
+  } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };

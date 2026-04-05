@@ -1,20 +1,22 @@
 import React from "react";
 import styles from "@/pages/profile/styles.module.css";
 
-export default function EducationSection({ profile, onEdit }) {
+export default function EducationSection({ profile, onEdit, readOnly }) {
   return (
     <div className={styles.sectionCard}>
       <h2 className={styles.sectionHeader}>Education</h2>
 
-      <div className={styles.iconRow}>
-        <button
-          onClick={() => onEdit("EDUCATION", null)}
-          className={styles.pencilBtn}
-          style={{ position: "relative", top: 0, right: 0 }}
-        >
-          <i className="fa-solid fa-plus"></i>
-        </button>
-      </div>
+      {!readOnly && onEdit && (
+        <div className={styles.iconRow}>
+          <button
+            onClick={() => onEdit("EDUCATION", null)}
+            className={styles.pencilBtn}
+            style={{ position: "relative", top: 0, right: 0 }}
+          >
+            <i className="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      )}
 
       <div style={{ marginTop: "1rem" }}>
         {profile.education?.length > 0 ? (
@@ -33,13 +35,15 @@ export default function EducationSection({ profile, onEdit }) {
                   <p className={styles.itemDate}>{edu.year}</p>
                 </div>
               </div>
-              <button
-                onClick={() => onEdit("EDUCATION", index)}
-                className={styles.pencilBtn}
-                style={{ position: "relative", top: 0, right: 0 }}
-              >
-                <i className="fa-solid fa-pencil"></i>
-              </button>
+              {!readOnly && onEdit && (
+                <button
+                  onClick={() => onEdit("EDUCATION", index)}
+                  className={styles.pencilBtn}
+                  style={{ position: "relative", top: 0, right: 0 }}
+                >
+                  <i className="fa-solid fa-pencil"></i>
+                </button>
+              )}
             </div>
           ))
         ) : (

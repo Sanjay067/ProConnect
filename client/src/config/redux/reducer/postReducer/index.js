@@ -11,9 +11,12 @@ import {
 const initialState = {
   posts: [],
   feedPosts: [],
+  activeCommentPostId: null,
   isError: false,
   isSuccess: false,
-  isLoading: false,
+  feedLoading: false,
+  postsLoading: false,
+  createPostLoading: false,
   message: "",
   postsFetched: false,
 };
@@ -23,73 +26,86 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    toggleCommentSection: (state, action) => {
+      const id = action.payload;
+      state.activeCommentPostId =
+        state.activeCommentPostId === id ? null : id;
+    },
+    updateCommentCount: (state, action) => {
+      const { postId, count } = action.payload;
+      const bump = (arr) => {
+        const i = arr.findIndex((p) => String(p._id) === String(postId));
+        if (i !== -1) {
+          arr[i].commentCount = Math.max(
+            0,
+            (arr[i].commentCount || 0) + count,
+          );
+        }
+      };
+      bump(state.posts);
+      bump(state.feedPosts);
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getPosts.pending, (state) => {
-        state.isLoading = true;
+        state.postsLoading = true;
         state.message = "Fetching all user posts....";
       })
       .addCase(getPosts.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.postsLoading = false;
         state.isError = false;
         state.isSuccess = true;
         state.message = "Posts fetched successfully";
         state.posts = action.payload.posts || [];
       })
       .addCase(getFeed.pending, (state) => {
-        state.isLoading = true;
+        state.feedLoading = true;
         state.message = "Fetching feed....";
       })
       .addCase(getFeed.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.feedLoading = false;
         state.isError = false;
         state.isSuccess = true;
         state.message = "Feed fetched successfully";
         state.feedPosts = action.payload.posts || [];
       })
       .addCase(getFeed.rejected, (state, action) => {
-        state.isLoading = false;
+        state.feedLoading = false;
         state.isError = true;
         state.message = action.payload?.message || action.payload;
       })
       .addCase(getPosts.rejected, (state, action) => {
-        state.isLoading = false;
+        state.postsLoading = false;
         state.isError = true;
         state.message = action.payload?.message || action.payload;
       })
       .addCase(createPost.pending, (state) => {
-        state.isLoading = true;
+        state.createPostLoading = true;
       })
       .addCase(createPost.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.createPostLoading = false;
         state.isSuccess = true;
-        // Pushing the new post object to the top of the feed!
         state.posts.unshift(action.payload.post);
         state.feedPosts.unshift(action.payload.post);
         state.message = "Post created successfully";
       })
       .addCase(createPost.rejected, (state, action) => {
-        state.isLoading = false;
+        state.createPostLoading = false;
         state.isError = true;
         state.message = action.payload?.message || action.payload;
       })
       .addCase(toggleLikePost.fulfilled, (state, action) => {
-        // Sync localized user post cache
-        const postIndex = state.posts.findIndex(
-          (p) => p._id === action.payload.postId,
-        );
-        if (postIndex !== -1) {
-          state.posts[postIndex].likeCount = action.payload.likeCount;
-        }
-
-        // Sync global dashboard feed cache
-        const feedPostIndex = state.feedPosts.findIndex(
-          (p) => p._id === action.payload.postId,
-        );
-        if (feedPostIndex !== -1) {
-          state.feedPosts[feedPostIndex].likeCount = action.payload.likeCount;
-        }
+        const { postId, likeCount, liked } = action.payload;
+        const sync = (arr) => {
+          const i = arr.findIndex((p) => String(p._id) === String(postId));
+          if (i !== -1) {
+            arr[i].likeCount = likeCount;
+            if (typeof liked === "boolean") arr[i].isLiked = liked;
+          }
+        };
+        sync(state.posts);
+        sync(state.feedPosts);
       })
       .addCase(toggleLikePost.rejected, (state, action) => {
         state.isError = true;
@@ -133,4 +149,6 @@ const postSlice = createSlice({
   },
 });
 
+export const { reset, toggleCommentSection, updateCommentCount } =
+  postSlice.actions;
 export default postSlice.reducer;
