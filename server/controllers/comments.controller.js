@@ -1,5 +1,6 @@
 import Comment from "../models/comments.model.js";
 import Post from "../models/posts.model.js";
+import { pushNotification } from "../services/notification.service.js";
 
 export const addComment = async (req, res) => {
   try {
@@ -26,6 +27,17 @@ export const addComment = async (req, res) => {
     await post.save();
 
     await comment.populate("author", "name username profilePicture");
+
+    if (String(post.author) !== String(req.user._id)) {
+      await pushNotification({
+        recipientId: post.author,
+        actorId: req.user._id,
+        type: "comment",
+        title: `${req.user.name} commented on your post`,
+        message: body.trim().slice(0, 140),
+        meta: { postId: post._id, commentId: comment._id },
+      });
+    }
 
     return res.status(201).json({
       message: "Comment added",

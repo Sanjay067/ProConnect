@@ -10,6 +10,8 @@ import { reset as resetAuth } from "@/config/redux/reducer/authReducer";
 import { reset as resetProfile } from "@/config/redux/reducer/profileReducer";
 import { reset as resetConnection } from "@/config/redux/reducer/connectionReducer";
 import { reset as resetPost } from "@/config/redux/reducer/postReducer";
+import NotificationBell from "@/components/NotificationBell";
+import { disconnectSocket } from "@/lib/socket";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -26,6 +28,7 @@ export default function Navbar() {
       // Logout may fail if auth middleware rejects due to missing/expired token.
       // We still clear client-side auth state and redirect.
     } finally {
+      disconnectSocket();
       dispatch(resetAuth());
       dispatch(resetProfile());
       dispatch(resetConnection());
@@ -148,6 +151,15 @@ export default function Navbar() {
           <div className={styles.feature}>
             <i className="fa-solid fa-network-wired"></i>
             <h4>Network</h4>
+          </div>
+        </Link>
+
+        <NotificationBell />
+
+        <Link href="/messages">
+          <div className={styles.feature}>
+            <i className="fa-regular fa-message"></i>
+            <h4>Messages</h4>
           </div>
         </Link>
 

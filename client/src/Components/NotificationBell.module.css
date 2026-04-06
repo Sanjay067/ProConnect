@@ -1,0 +1,121 @@
+.wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bell {
+  position: relative;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.35rem;
+  color: #333;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.bell:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  background: #cc1016;
+  color: #fff;
+  border-radius: 9px;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+}
+
+.panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 9999;
+  padding: 12px;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.linkBtn {
+  border: none;
+  background: none;
+  color: #0a66c2;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item,
+.itemRead {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.itemRead {
+  opacity: 0.65;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.msg {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.muted {
+  margin: 8px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.link {
+  font-size: 0.85rem;
+  color: #0a66c2;
+}
+
+.footerLink {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #0a66c2;
+}

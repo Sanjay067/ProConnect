@@ -4,8 +4,11 @@ import UserLayout from "@/layout/UserLayout";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { loginUser, registerUser } from "@/config/redux/action/authAction";
+import { reset as resetProfile } from "@/config/redux/reducer/profileReducer";
+import { reset as resetPost } from "@/config/redux/reducer/postReducer";
 import Loader from "@/components/Loader";
 import clientApi from "@/services/clientApi";
+import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
@@ -13,6 +16,11 @@ export default function Login() {
   const authState = useSelector((state) => state.auth);
 
   const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    dispatch(resetProfile());
+    dispatch(resetPost());
+  }, [dispatch]);
 
   //  Single form state
   const [form, setForm] = useState({
@@ -138,6 +146,14 @@ export default function Login() {
                 <button className={`btn ${styles.signUpbtn}`} type="submit">
                   {isLogin ? "Login" : "Sign Up"}
                 </button>
+
+                {isLogin && (
+                  <p style={{ marginTop: "12px", textAlign: "center" }}>
+                    <Link href="/forgot-password" style={{ color: "#0a66c2" }}>
+                      Forgot password?
+                    </Link>
+                  </p>
+                )}
               </div>
             </form>
           </div>

@@ -1,9 +1,18 @@
+import crypto from "crypto";
 import User from "../models/users.model.js";
 import { accessCookieOptions, refreshCookieOptions } from "../utils/cookieOptions.js";
+import { sendMail } from "../utils/mailer.js";
 
 import bcrypt from "bcrypt";
 import Profile from "../models/profile.model.js";
 import jwt from "jsonwebtoken";
+
+function clientBaseUrl() {
+  return (
+    process.env.CLIENT_ORIGIN?.split(",")[0]?.trim() ||
+    "http://localhost:3000"
+  );
+}
 
 export const signupHandler = async (req, res) => {
   try {
@@ -30,11 +39,15 @@ export const signupHandler = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const verifyToken = crypto.randomBytes(32).toString("hex");
     const newUser = new User({
       name,
       username,
       email,
       password: hashedPassword,
+      emailVerified: false,
+      emailVerificationToken: verifyToken,
+      emailVerificationExpires: new Date(Date.now() + 2 * 86400000),
     });
 
     const accessToken = jwt.sign(
@@ -58,6 +71,14 @@ export const signupHandler = async (req, res) => {
 
     await profile.save();
 
+    const vUrl = `${clientBaseUrl()}/verify-email?token=${verifyToken}`;
+    await sendMail({
+      to: newUser.email,
+      subject: "Verify your email",
+      text: `Verify: ${vUrl}`,
+      html: `<p>Please <a href="${vUrl}">verify your email</a>.</p>`,
+    });
+
     return res
       .cookie("accessToken", accessToken, accessCookieOptions())
       .cookie("refreshToken", refreshToken, refreshCookieOptions())
@@ -65,6 +86,7 @@ export const signupHandler = async (req, res) => {
       .json({
         message: "User Created Successfully",
         userName: newUser.username,
+        emailVerified: false,
       });
   } catch (error) {
     return res
@@ -105,7 +127,85 @@ export const loginHandler = async (req, res) => {
       .cookie("accessToken", accessToken, accessCookieOptions())
       .cookie("refreshToken", refreshToken, refreshCookieOptions())
       .status(200)
-      .json({ message: "Login Successfully", accessToken });
+      .json({
+        message: "Login Successfully",
+        accessToken,
+        emailVerified: user.emailVerified !== false,
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const forgotPasswordHandler = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email required" });
+    const user = await User.findOne({ email: email.trim() });
+    const msg = "If an account exists, a reset link was sent.";
+    if (!user) return res.json({ message: msg });
+
+    const token = crypto.randomBytes(32).toString("hex");
+    user.passwordResetToken = token;
+    user.passwordResetExpires = new Date(Date.now() + 3600000);
+    await user.save();
+
+    const url = `${clientBaseUrl()}/reset-password?token=${token}`;
+    await sendMail({
+      to: user.email,
+      subject: "Password reset",
+      text: `Reset your password: ${url}`,
+      html: `<p><a href="${url}">Reset your password</a> (expires in 1 hour).</p>`,
+    });
+    return res.json({ message: msg });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const resetPasswordHandler = async (req, res) => {
+  try {
+    const { token, password, confirmPassword } = req.body;
+    if (!token || !password)
+      return res.status(400).json({ message: "Missing fields" });
+    if (password !== confirmPassword)
+      return res.status(400).json({ message: "Passwords do not match" });
+
+    const user = await User.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: new Date() },
+    });
+    if (!user)
+      return res.status(400).json({ message: "Invalid or expired token" });
+
+    user.password = await bcrypt.hash(password, 10);
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    user.refreshToken = "";
+    await user.save();
+    return res.json({ message: "Password updated. You can sign in." });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const verifyEmailHandler = async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token)
+      return res.status(400).json({ message: "Token required" });
+    const user = await User.findOne({
+      emailVerificationToken: token,
+      emailVerificationExpires: { $gt: new Date() },
+    });
+    if (!user)
+      return res.status(400).json({ message: "Invalid or expired link" });
+
+    user.emailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
+    return res.json({ message: "Email verified successfully" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

@@ -41,16 +41,32 @@ export default function CommentSection({ post }) {
       const hasServerAuthor =
         serverAuthor &&
         typeof serverAuthor === "object" &&
-        serverAuthor.name;
+        (serverAuthor.name || serverAuthor.username);
+
+      let u = myUser;
+      if (!hasServerAuthor && !u?.name && !u?.username) {
+        try {
+          const me = await clientApi.get("/users/profiles/me");
+          u = me.data?.userId;
+        } catch {
+          /* ignore */
+        }
+      }
+
       const hydratedComment = {
         ...data.comment,
         author: hasServerAuthor
           ? serverAuthor
           : {
-              _id: myUser?._id || myId,
-              name: myUser?.name || "You",
-              username: myUser?.username,
-              profilePicture: myUser?.profilePicture,
+              _id: u?._id || myUser?._id || myId,
+              name:
+                u?.name ||
+                myUser?.name ||
+                u?.username ||
+                myUser?.username ||
+                "You",
+              username: u?.username || myUser?.username,
+              profilePicture: u?.profilePicture || myUser?.profilePicture,
             },
       };
       setComments((prev) => [hydratedComment, ...prev]);

@@ -1,5 +1,6 @@
 import Connection from "../models/connections.model.js";
 import User from "../models/users.model.js";
+import { pushNotification } from "../services/notification.service.js";
 
 export const sendConnection = async (req, res) => {
   try {
@@ -28,6 +29,15 @@ export const sendConnection = async (req, res) => {
     const connection = await Connection.create({
       senderId,
       receiverId,
+    });
+
+    await pushNotification({
+      recipientId: receiverId,
+      actorId: senderId,
+      type: "connection_request",
+      title: `${req.user.name} sent you a connection request`,
+      message: "",
+      meta: { connectionId: connection._id },
     });
 
     return res.status(200).json({
@@ -59,6 +69,15 @@ export const acceptConnection = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Connection not found or already processed" });
+
+    await pushNotification({
+      recipientId: findConnection.senderId,
+      actorId: req.user._id,
+      type: "connection_accept",
+      title: `${req.user.name} accepted your connection request`,
+      message: "",
+      meta: { connectionId: findConnection._id },
+    });
 
     return res.status(200).json({
       message: "Connection request accepted",
