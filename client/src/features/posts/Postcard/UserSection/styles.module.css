@@ -1,8 +1,14 @@
-.authorContainer {
+.container {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   margin-bottom: 1rem;
+}
+
+.authorContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
 }
 
 .avatar {
@@ -34,4 +40,90 @@
   color: #666;
   cursor: pointer;
   font-weight: bold;
+}
+
+/* ── Three-dot options ── */
+
+.optionsWrapper {
+  position: relative;
+  margin-left: auto;
+}
+
+.dotsButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: #666;
+  padding: 6px 10px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+}
+
+.dotsButton:hover {
+  background: #f3f2ef;
+  color: #333;
+}
+
+.optionsDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  min-width: 160px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+  border: 1px solid #e8e8e8;
+  z-index: 200;
+  overflow: hidden;
+  animation: fadeSlideIn 0.15s ease-out;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.optionItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.optionItem:hover {
+  background: #f3f2ef;
+}
+
+.optionItem i {
+  width: 18px;
+  text-align: center;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.optionDanger {
+  color: #cc3333;
+}
+
+.optionDanger:hover {
+  background: #fdf0f0;
+}
+
+.optionDanger i {
+  color: #cc3333;
 }

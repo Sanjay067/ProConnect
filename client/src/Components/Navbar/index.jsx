@@ -9,7 +9,7 @@ import { logoutUser } from "@/config/redux/action/authAction";
 import { reset as resetAuth } from "@/config/redux/reducer/authReducer";
 import { reset as resetProfile } from "@/config/redux/reducer/profileReducer";
 import { reset as resetConnection } from "@/config/redux/reducer/connectionReducer";
-import { reset as resetPost } from "@/config/redux/reducer/postReducer";
+import { reset as resetPost, toggleMessageSidebar } from "@/config/redux/reducer/postReducer";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -150,6 +150,17 @@ export default function Navbar() {
             <h4>Network</h4>
           </div>
         </Link>
+
+        <div
+          onClick={() => dispatch(toggleMessageSidebar())}
+          className={styles.logoutLink}
+          role="button"
+        >
+          <div className={styles.feature}>
+            <i className="fa-regular fa-comment-dots"></i>
+            <h4>Messages</h4>
+          </div>
+        </div>
 
         <Link href="/profile">
           <div className={styles.feature}>

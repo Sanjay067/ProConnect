@@ -80,3 +80,82 @@
   cursor: pointer;
   font-weight: bold;
 }
+
+/* ── Comment three-dot menu ── */
+
+.commentMenuWrapper {
+  position: relative;
+}
+
+.commentDotsBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #999;
+  padding: 2px 6px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+}
+
+.commentDotsBtn:hover {
+  background: #ddd;
+  color: #333;
+}
+
+.commentDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 2px);
+  min-width: 130px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
+  border: 1px solid #e8e8e8;
+  z-index: 200;
+  overflow: hidden;
+  animation: commentMenuIn 0.12s ease-out;
+}
+
+@keyframes commentMenuIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.commentDropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #333;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.commentDropdownItem:hover {
+  background: #f3f2ef;
+}
+
+.commentDropdownItem i {
+  width: 16px;
+  text-align: center;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.commentDropdownDanger {
+  color: #cc3333;
+}
+
+.commentDropdownDanger:hover {
+  background: #fdf0f0;
+}
+
+.commentDropdownDanger i {
+  color: #cc3333;
+}

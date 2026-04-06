@@ -28,7 +28,7 @@ export default function UserCard({ user }) {
       <p className={styles.username}>@{user.username}</p>
 
       {!isSelf && (
-        <ConnectionButton targetUserId={userId} className={styles.connectButton} />
+        <ConnectionButton targetUserId={userId} />
       )}
     </div>
   );

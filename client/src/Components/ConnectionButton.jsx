@@ -28,7 +28,7 @@ function findConnectionWith(overview, myId, targetUserId) {
   );
 }
 
-export default function ConnectionButton({ targetUserId, className }) {
+export default function ConnectionButton({ targetUserId }) {
   const dispatch = useDispatch();
   const myId = useSelector((state) => state.profile.profile?.userId?._id);
   const overview = useSelector((state) => state.connection.overview);
@@ -42,35 +42,33 @@ export default function ConnectionButton({ targetUserId, className }) {
   const isAccepted = conn?.status === "accepted";
   const isPending = conn?.status === "pending";
   const iAmSender =
-    conn &&
-    String(conn.senderId?._id || conn.senderId) === String(myId);
+    conn && String(conn.senderId?._id || conn.senderId) === String(myId);
   const iAmReceiver =
-    conn &&
-    String(conn.receiverId?._id || conn.receiverId) === String(myId);
+    conn && String(conn.receiverId?._id || conn.receiverId) === String(myId);
 
-  const btnClass = className || styles.connectButton;
-
+  // No connection — show Connect
   if (!conn) {
     return (
-      <button
-        type="button"
-        className={btnClass}
-        onClick={() => dispatch(sendConnections(targetUserId))}
-      >
-        Connect
-      </button>
+      <div className={styles.buttonArea}>
+        <button
+          type="button"
+          className={styles.connectButton}
+          onClick={() => dispatch(sendConnections(targetUserId))}
+        >
+          Connect
+        </button>
+      </div>
     );
   }
 
+  // I sent the request — show Pending + Cancel
   if (isPending && iAmSender) {
     return (
-      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-        <span style={{ color: "#666", fontWeight: 600, fontSize: "0.9rem" }}>
-          Pending
-        </span>
+      <div className={styles.buttonArea}>
+        <span className={styles.pendingLabel}>Pending</span>
         <button
           type="button"
-          className={btnClass}
+          className={styles.cancelButton}
           onClick={() => dispatch(cancelPendingConnection(conn._id))}
         >
           Cancel
@@ -79,19 +77,20 @@ export default function ConnectionButton({ targetUserId, className }) {
     );
   }
 
+  // I received the request — show Accept + Ignore
   if (isPending && iAmReceiver) {
     return (
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+      <div className={styles.buttonArea}>
         <button
           type="button"
-          className={btnClass}
+          className={styles.acceptButton}
           onClick={() => dispatch(acceptConnections(conn._id))}
         >
           Accept
         </button>
         <button
           type="button"
-          className={btnClass}
+          className={styles.ignoreButton}
           onClick={() => dispatch(rejectConnections(conn._id))}
         >
           Ignore
@@ -100,12 +99,13 @@ export default function ConnectionButton({ targetUserId, className }) {
     );
   }
 
+  // Already connected — show Remove
   if (isAccepted) {
     return (
-      <>
+      <div className={styles.buttonArea}>
         <button
           type="button"
-          className={btnClass}
+          className={styles.removeButton}
           onClick={() => setConfirmRemove(true)}
         >
           Remove
@@ -124,17 +124,20 @@ export default function ConnectionButton({ targetUserId, className }) {
             }}
           />
         )}
-      </>
+      </div>
     );
   }
 
+  // Fallback
   return (
-    <button
-      type="button"
-      className={btnClass}
-      onClick={() => dispatch(sendConnections(targetUserId))}
-    >
-      Connect
-    </button>
+    <div className={styles.buttonArea}>
+      <button
+        type="button"
+        className={styles.connectButton}
+        onClick={() => dispatch(sendConnections(targetUserId))}
+      >
+        Connect
+      </button>
+    </div>
   );
 }

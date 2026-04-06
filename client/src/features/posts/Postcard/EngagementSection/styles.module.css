@@ -16,3 +16,7 @@
 .commentIcon {
   font-size: 1.3rem;
 }
+
+.activeComment {
+  color: #0a66c2;
+}

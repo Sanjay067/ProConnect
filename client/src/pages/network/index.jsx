@@ -4,7 +4,11 @@ import {
   getAllProfiles,
   getUserProfile,
 } from "@/config/redux/action/profileAction";
-import { getConnectionsOverview } from "@/config/redux/action/connectionAction";
+import {
+  getConnectionsOverview,
+  acceptConnections,
+  rejectConnections,
+} from "@/config/redux/action/connectionAction";
 import UserLayout from "@/layout/UserLayout";
 import ProtectedRoute from "@/components/Protected";
 import UserCard from "@/features/network/UserCard";
@@ -20,9 +24,10 @@ export default function NetworkPage() {
     profile: currentUser,
     profilesPagination,
   } = useSelector((state) => state.profile);
-  const { connections, isLoading: connectionsLoading } = useSelector(
+  const { connections, overview, initialLoading: connectionsLoading } = useSelector(
     (state) => state.connection,
   );
+  const pendingReceived = overview?.pendingReceived || [];
 
   useEffect(() => {
     dispatch(getUserProfile());
@@ -53,42 +58,99 @@ export default function NetworkPage() {
       <UserLayout>
         <div className={styles.container}>
           <h2 className={styles.sectionHeader}>My Connections</h2>
-          {connectionsLoading && <p>Loading connections...</p>}
+          {connectionsLoading ? (
+            <p>Loading connections...</p>
+          ) : (
+            <div className={`${styles.grid} ${styles.connectionsSection}`}>
+              {connections?.length > 0 ? (
+                connections.map((connection) => {
+                  const isSender =
+                    connection.senderId?._id === currentUser?.userId?._id;
+                  const friend = isSender
+                    ? connection.receiverId
+                    : connection.senderId;
 
-          <div className={`${styles.grid} ${styles.connectionsSection}`}>
-            {connections?.length > 0 ? (
-              connections.map((connection) => {
-                const isSender =
-                  connection.senderId?._id === currentUser?.userId?._id;
-                const friend = isSender
-                  ? connection.receiverId
-                  : connection.senderId;
+                  if (!friend) return null;
 
-                if (!friend) return null;
+                  return (
+                    <div key={connection._id} className={styles.connectionCard}>
+                      <img
+                        src={
+                          friend.profilePicture ||
+                          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                        }
+                        alt=""
+                        className={styles.connectionAvatar}
+                      />
+                      <div>
+                        <p className={styles.connectionName}>{friend.name}</p>
+                        <p className={styles.connectionUsername}>
+                          @{friend.username}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>You don&apos;t have any connections yet.</p>
+              )}
+            </div>
+          )}
 
+          <hr className={styles.divider} />
+
+          {/* ── Connection Requests ── */}
+          <h2 className={styles.sectionHeader}>
+            Connection Requests
+            {pendingReceived.length > 0 && (
+              <span className={styles.requestBadge}>{pendingReceived.length}</span>
+            )}
+          </h2>
+
+          {connectionsLoading ? (
+            <p>Loading requests...</p>
+          ) : pendingReceived.length > 0 ? (
+            <div className={`${styles.grid} ${styles.connectionsSection}`}>
+              {pendingReceived.map((req) => {
+                const sender = req.senderId;
+                if (!sender) return null;
                 return (
-                  <div key={connection._id} className={styles.connectionCard}>
+                  <div key={req._id} className={styles.requestCard}>
                     <img
                       src={
-                        friend.profilePicture ||
+                        sender.profilePicture ||
                         "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                       }
                       alt=""
                       className={styles.connectionAvatar}
                     />
-                    <div>
-                      <p className={styles.connectionName}>{friend.name}</p>
-                      <p className={styles.connectionUsername}>
-                        @{friend.username}
-                      </p>
+                    <div className={styles.requestInfo}>
+                      <p className={styles.connectionName}>{sender.name}</p>
+                      <p className={styles.connectionUsername}>@{sender.username}</p>
+                    </div>
+                    <div className={styles.requestActions}>
+                      <button
+                        type="button"
+                        className={styles.acceptBtn}
+                        onClick={() => dispatch(acceptConnections(req._id))}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.ignoreBtn}
+                        onClick={() => dispatch(rejectConnections(req._id))}
+                      >
+                        Ignore
+                      </button>
                     </div>
                   </div>
                 );
-              })
-            ) : (
-              <p>You don&apos;t have any connections yet.</p>
-            )}
-          </div>
+              })}
+            </div>
+          ) : (
+            <p>No pending requests.</p>
+          )}
 
           <hr className={styles.divider} />
 

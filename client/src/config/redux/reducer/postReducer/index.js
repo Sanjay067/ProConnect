@@ -19,6 +19,9 @@ const initialState = {
     truncated: false,
   },
   activeCommentPostId: null,
+  messageSidebarOpen: false,
+  messageRecipient: null,
+  hiddenPostIds: [],
   isError: false,
   isSuccess: false,
   feedLoading: false,
@@ -51,6 +54,23 @@ const postSlice = createSlice({
       };
       bump(state.posts);
       bump(state.feedPosts);
+    },
+    hidePost: (state, action) => {
+      const postId = String(action.payload);
+      state.hiddenPostIds.push(postId);
+      state.feedPosts = state.feedPosts.filter((p) => String(p._id) !== postId);
+    },
+    toggleMessageSidebar: (state) => {
+      state.messageSidebarOpen = !state.messageSidebarOpen;
+      if (!state.messageSidebarOpen) state.messageRecipient = null;
+    },
+    openMessageSidebar: (state, action) => {
+      state.messageSidebarOpen = true;
+      state.messageRecipient = action.payload || null;
+    },
+    closeMessageSidebar: (state) => {
+      state.messageSidebarOpen = false;
+      state.messageRecipient = null;
     },
   },
   extraReducers: (builder) => {
@@ -174,6 +194,13 @@ const postSlice = createSlice({
   },
 });
 
-export const { reset, toggleCommentSection, updateCommentCount } =
-  postSlice.actions;
+export const {
+  reset,
+  toggleCommentSection,
+  updateCommentCount,
+  hidePost,
+  toggleMessageSidebar,
+  openMessageSidebar,
+  closeMessageSidebar,
+} = postSlice.actions;
 export default postSlice.reducer;

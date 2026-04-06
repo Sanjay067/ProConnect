@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { updateCommentCount } from "@/config/redux/reducer/postReducer";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import clientApi from "@/services/clientApi";
 import styles from "./styles.module.css";
-import CommentInput from "./CommentInput";
+import Like from "../Like";
 
 export default function CommentItem({ initialComment, post, myId, onRemoved }) {
   const [comment, setComment] = useState(initialComment);
   const [isEditing, setIsEditing] = useState(false);
   const [editedBody, setEditedBody] = useState(comment.body || "");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const [isReplying, setIsReplying] = useState(false);
   const [replyBody, setReplyBody] = useState("");
@@ -20,7 +23,17 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
   const [loadingReplies, setLoadingReplies] = useState(false);
   const dispatch = useDispatch();
 
-  // Sync author when the parent hydrates a freshly-posted comment
+  // Close menu on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [menuOpen]);
+
   React.useEffect(() => {
     if (initialComment?.author?.name) {
       setComment((prev) => ({ ...prev, author: initialComment.author }));
@@ -29,11 +42,13 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
 
   const toggleLike = async () => {
     try {
-      const { data } = await clientApi.post(`/posts/${post._id}/comments/${comment._id}/like`);
+      const { data } = await clientApi.post(
+        `/posts/${post._id}/comments/${comment._id}/like`,
+      );
       setComment((prev) => ({
         ...prev,
         isLiked: data.liked,
-        likeCount: data.likeCount
+        likeCount: data.likeCount,
       }));
     } catch (error) {
       console.error("Failed to toggle comment like", error);
@@ -46,7 +61,7 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
     try {
       const { data } = await clientApi.patch(
         `/posts/${post._id}/comments/${comment._id}`,
-        { body }
+        { body },
       );
       setComment((prev) => ({ ...prev, ...data.comment }));
       setIsEditing(false);
@@ -64,7 +79,10 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
       dispatch(updateCommentCount({ postId: post._id, count: -1 }));
       onRemoved?.(comment._id);
     } catch (error) {
-      console.error("Failed to delete comment", error.response?.data || error.message);
+      console.error(
+        "Failed to delete comment",
+        error.response?.data || error.message,
+      );
       setConfirmDelete(false);
     }
   };
@@ -79,7 +97,7 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
     setLoadingReplies(true);
     try {
       const { data } = await clientApi.get(
-        `/posts/${post._id}/comments/${comment._id}/replies`
+        `/posts/${post._id}/comments/${comment._id}/replies`,
       );
       setReplies(data.replies || []);
     } catch (error) {
@@ -96,13 +114,16 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
     try {
       const { data } = await clientApi.post(
         `/posts/${post._id}/comments/${comment._id}/reply`,
-        { body }
+        { body },
       );
       setReplies((prev) => [...prev, data.comment]);
       setIsReplying(false);
       setReplyBody("");
       setShowReplies(true);
-      setComment((prev) => ({ ...prev, replyCount: (prev.replyCount || 0) + 1 }));
+      setComment((prev) => ({
+        ...prev,
+        replyCount: (prev.replyCount || 0) + 1,
+      }));
     } catch (error) {
       console.error("Failed to reply", error);
     }
@@ -134,52 +155,63 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
         />
       )}
       <div className={styles.commentBodyContainer}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "10px",
+          }}
+        >
           {authorId ? (
-            <Link href={`/profile/${authorId}`} className={styles.commentAuthorLink}>
-              <p className={styles.commentAuthorName}>{comment.author?.name || "Unknown"}</p>
+            <Link
+              href={`/profile/${authorId}`}
+              className={styles.commentAuthorLink}
+            >
+              <p className={styles.commentAuthorName}>
+                {comment.author?.name || "Unknown"}
+              </p>
             </Link>
           ) : (
-            <p className={styles.commentAuthorName}>{comment.author?.name || "Unknown"}</p>
+            <p className={styles.commentAuthorName}>
+              {comment.author?.name || "Unknown"}
+            </p>
           )}
 
-          {myId && comment.author?._id && String(comment.author._id) === String(myId) && (
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <button
-                className={styles.actionButton}
-                type="button"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit
-              </button>
-              {confirmDelete ? (
-                <>
-                  <button
-                    className={styles.actionButton}
-                    type="button"
-                    onClick={() => setConfirmDelete(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className={styles.commentSubmit}
-                    type="button"
-                    onClick={deleteCommentRequest}
-                  >
-                    Confirm
-                  </button>
-                </>
-              ) : (
+          {myId &&
+            comment.author?._id &&
+            String(comment.author._id) === String(myId) && (
+              <div className={styles.commentMenuWrapper} ref={menuRef}>
                 <button
-                  className={styles.actionButton}
+                  className={styles.commentDotsBtn}
                   type="button"
-                  onClick={() => setConfirmDelete(true)}
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  aria-label="Comment options"
                 >
-                  Delete
+                  <i className="fa-solid fa-ellipsis-vertical"></i>
                 </button>
-              )}
-            </div>
-          )}
+
+                {menuOpen && (
+                  <div className={styles.commentDropdown}>
+                    <button
+                      className={styles.commentDropdownItem}
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setIsEditing(true); }}
+                    >
+                      <i className="fa-regular fa-pen-to-square"></i>
+                      Edit
+                    </button>
+                    <button
+                      className={`${styles.commentDropdownItem} ${styles.commentDropdownDanger}`}
+                      type="button"
+                      onClick={() => { setMenuOpen(false); setConfirmDelete(true); }}
+                    >
+                      <i className="fa-regular fa-trash-can"></i>
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
         </div>
 
         {isEditing ? (
@@ -189,7 +221,13 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
               onChange={(e) => setEditedBody(e.target.value)}
               className={styles.commentInput}
             />
-            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                justifyContent: "flex-end",
+              }}
+            >
               <button
                 className={styles.actionButton}
                 type="button"
@@ -210,94 +248,26 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
         ) : (
           <p className={styles.commentBodyText}>{comment.body}</p>
         )}
-
-        <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-          <button
-            className={styles.actionButton}
-            type="button"
-            onClick={toggleLike}
-          >
-            <i
-              className={`fa-solid fa-thumbs-up ${comment.isLiked ? styles.blue : ""}`}
-              style={{ marginRight: "4px" }}
-            ></i>
-            {comment.likeCount || 0}
-          </button>
-          <button
-            className={styles.actionButton}
-            type="button"
-            onClick={() => setIsReplying(!isReplying)}
-          >
-            Reply
-          </button>
-          <button
-            className={styles.actionButton}
-            type="button"
-            onClick={toggleReplies}
-          >
-            {loadingReplies
-              ? "Loading..."
-              : showReplies
-                ? "Hide replies"
-                : `View replies (${comment.replyCount || 0})`}
-          </button>
-        </div>
-
-        {isReplying && (
-          <CommentInput
-            value={replyBody}
-            onChange={(val) => setReplyBody(val.target ? val.target.value : val)}
-            onSubmit={submitReply}
-            onCancel={() => setIsReplying(false)}
-            placeholder="Write a reply..."
-            submitLabel="Reply"
-            isReply={true}
-          />
-        )}
-
-        {showReplies && replies.length > 0 && (
-          <div style={{ marginTop: "10px", paddingLeft: "10px", borderLeft: "2px solid #ddd" }}>
-            {replies.map((reply) => {
-              const rid = reply.author?._id;
-              return (
-                <div key={reply._id} style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-                  {rid ? (
-                    <Link href={`/profile/${rid}`}>
-                      <img
-                        src={
-                          reply.author?.profilePicture ||
-                          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                        }
-                        alt=""
-                        className={styles.commentAvatar}
-                      />
-                    </Link>
-                  ) : (
-                    <img
-                      src={
-                        reply.author?.profilePicture ||
-                        "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                      }
-                      alt=""
-                      className={styles.commentAvatar}
-                    />
-                  )}
-                  <div className={styles.commentBodyContainer}>
-                    {rid ? (
-                      <Link href={`/profile/${rid}`} className={styles.commentAuthorLink}>
-                        <p className={styles.commentAuthorName}>{reply.author?.name || "Unknown"}</p>
-                      </Link>
-                    ) : (
-                      <p className={styles.commentAuthorName}>{reply.author?.name || "Unknown"}</p>
-                    )}
-                    <p className={styles.commentBodyText}>{reply.body}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+        <Like
+          isLiked={comment.isLiked}
+          likeCount={comment.likeCount}
+          onToggleLike={toggleLike}
+        />
       </div>
+
+      {/* Delete confirmation dialog */}
+      {confirmDelete && (
+        <ConfirmDialog
+          title="Delete Comment"
+          message="Are you sure you want to delete this comment?"
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          confirmVariant="danger"
+          onConfirm={deleteCommentRequest}
+          onCancel={() => setConfirmDelete(false)}
+        />
+      )}
     </div>
   );
 }
+

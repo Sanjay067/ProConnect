@@ -1,4 +1,5 @@
 import Comment from "../models/comments.model.js";
+import Like from "../models/likes.model.js";
 import Post from "../models/posts.model.js";
 
 export const addComment = async (req, res) => {
@@ -131,6 +132,7 @@ export const deleteComment = async (req, res) => {
 export const getComments = async (req, res) => {
   try {
     const { postId } = req.params;
+    const userId = req.user._id;
 
     // Verify post exists
     const post = await Post.findById(postId);
@@ -145,6 +147,14 @@ export const getComments = async (req, res) => {
       .populate("author", "name username profilePicture")
       .sort({ createdAt: -1 });
 
+    const commentIds = comments.map((c) => c._id);
+    const likes = await Like.find({
+      userId,
+      targetType: "Comment",
+      targetId: { $in: commentIds },
+    }).select("targetId");
+    const likedCommentIds = new Set(likes.map((l) => String(l.targetId)));
+
     // For each top-level comment, get reply count
     const commentsWithReplies = await Promise.all(
       comments.map(async (comment) => {
@@ -155,6 +165,7 @@ export const getComments = async (req, res) => {
         return {
           ...comment.toObject(),
           replyCount,
+          isLiked: likedCommentIds.has(String(comment._id)),
         };
       }),
     );
@@ -171,6 +182,7 @@ export const getComments = async (req, res) => {
 export const getReplies = async (req, res) => {
   try {
     const { commentId } = req.params;
+    const userId = req.user._id;
 
     const replies = await Comment.find({
       parentComment: commentId,
@@ -179,7 +191,20 @@ export const getReplies = async (req, res) => {
       .populate("author", "name username profilePicture")
       .sort({ createdAt: 1 });
 
-    return res.status(200).json({ replies });
+    const replyIds = replies.map((r) => r._id);
+    const likes = await Like.find({
+      userId,
+      targetType: "Comment",
+      targetId: { $in: replyIds },
+    }).select("targetId");
+    const likedReplyIds = new Set(likes.map((l) => String(l.targetId)));
+
+    const repliesWithLikeState = replies.map((reply) => ({
+      ...reply.toObject(),
+      isLiked: likedReplyIds.has(String(reply._id)),
+    }));
+
+    return res.status(200).json({ replies: repliesWithLikeState });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

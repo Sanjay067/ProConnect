@@ -20,8 +20,18 @@
   color: #0a66c2;
 }
 
+.likeCountBtn:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.likeCountBtn:disabled:hover {
+  background: transparent;
+  color: #666;
+}
+
 .likeIcon {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #666;
   border: none;
   background-color: transparent;

@@ -1,4 +1,6 @@
 import Navbar from "@/components/Navbar";
+import MessageSidebar from "@/components/MessageSidebar";
+import CommentSidebar from "@/components/CommentSidebar";
 import React from "react";
 
 export default function UserLayout({ children }) {
@@ -12,6 +14,8 @@ export default function UserLayout({ children }) {
     >
       <Navbar style={{}} />
       {children}
+      <MessageSidebar />
+      <CommentSidebar />
     </div>
   );
 }

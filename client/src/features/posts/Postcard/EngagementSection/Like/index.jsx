@@ -1,17 +1,24 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { toggleLikePost } from "@/config/redux/action/postAction";
 import styles from "./styles.module.css";
 
-export default function Like({ postId, likeCount, isLiked, onOpenLikes }) {
-  const dispatch = useDispatch();
+export default function Like({
+  likeCount,
+  isLiked,
+  onToggleLike,
+  onOpenLikes,
+  ariaLabel,
+  disabled = false,
+}) {
+  const canOpenLikes = typeof onOpenLikes === "function";
+
   return (
     <div className={styles.likeRow}>
       <button
         type="button"
-        onClick={() => dispatch(toggleLikePost(postId))}
+        onClick={onToggleLike}
         className={styles.actionButton}
-        aria-label={isLiked ? "Unlike" : "Like"}
+        aria-label={ariaLabel || (isLiked ? "Unlike" : "Like")}
+        disabled={disabled}
       >
         <i
           className={`fa-solid fa-thumbs-up ${styles.likeIcon} ${isLiked ? styles.blue : ""}`}
@@ -22,6 +29,7 @@ export default function Like({ postId, likeCount, isLiked, onOpenLikes }) {
         className={styles.likeCountBtn}
         onClick={() => onOpenLikes?.()}
         aria-label="View likes"
+        disabled={!canOpenLikes}
       >
         {likeCount ?? 0}
       </button>

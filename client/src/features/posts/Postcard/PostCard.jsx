@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { deletePost } from "@/config/redux/action/postAction";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
-import UserSection from "./UserSection";
+import UserSection from "./UserSection";  
 import PostBody from "./PostBody";
 import EngagementSection from "./EngagementSection";
 import styles from "./styles.module.css";
@@ -20,7 +20,7 @@ export default function PostCard({ post, isOwnProfile = false }) {
   };
 
   const confirmAndExecuteDelete = async () => {
-    await dispatch(deletePost(post._id));
+    dispatch(deletePost(post._id));
     setConfirmDeletePost(false);
   };
 

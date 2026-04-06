@@ -16,7 +16,8 @@ export default function CommentSection({ post }) {
 
   useEffect(() => {
     setIsLoadingComments(true);
-    clientApi.get(`/posts/${post._id}/comments`)
+    clientApi
+      .get(`/posts/${post._id}/comments`)
       .then(({ data }) =>
         setComments((data.comments || []).filter((c) => !c.isDeleted)),
       )
@@ -39,9 +40,7 @@ export default function CommentSection({ post }) {
       });
       const serverAuthor = data.comment?.author;
       const hasServerAuthor =
-        serverAuthor &&
-        typeof serverAuthor === "object" &&
-        serverAuthor.name;
+        serverAuthor && typeof serverAuthor === "object" && serverAuthor.name;
       const hydratedComment = {
         ...data.comment,
         author: hasServerAuthor

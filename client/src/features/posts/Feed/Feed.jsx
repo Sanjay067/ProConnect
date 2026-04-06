@@ -40,8 +40,6 @@ export default function Feed() {
       <PostBox />
 
       <p className={styles.feedHint}>
-        Feed is ordered by recent activity and engagement among your network
-        (not strictly chronological).
       </p>
       {feedPagination.truncated && (
         <p className={styles.truncatedHint}>
