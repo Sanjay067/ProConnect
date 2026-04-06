@@ -11,7 +11,6 @@ import styles from "./styles.module.css";
 export default function PostCard({ post, isOwnProfile = false }) {
   const dispatch = useDispatch();
 
-  // High-level orchestration states
   const [isEditingPost, setIsEditingPost] = useState(false);
   const [confirmDeletePost, setConfirmDeletePost] = useState(false);
 
@@ -38,7 +37,6 @@ export default function PostCard({ post, isOwnProfile = false }) {
         />
       )}
 
-      {/* 1. Author Info */}
       <UserSection 
         post={post} 
         isOwnProfile={isOwnProfile} 
@@ -47,14 +45,12 @@ export default function PostCard({ post, isOwnProfile = false }) {
         onDeleteRequest={handleDeletePost} 
       />
 
-      {/* 2. Post Body & Edit Engine */}
       <PostBody 
          post={post}
          isEditingPost={isEditingPost}
          onCancelEdit={() => setIsEditingPost(false)}
       />
 
-      {/* 3. Engagement + comments (comments visibility via Redux activeCommentPostId) */}
       <EngagementSection post={post} />
     </div>
   );

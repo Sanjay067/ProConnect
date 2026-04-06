@@ -77,7 +77,7 @@
   cursor: not-allowed;
 }
 
-/* ── Connection Requests ── */
+/* Connection Requests */
 
 .requestBadge {
   display: inline-flex;

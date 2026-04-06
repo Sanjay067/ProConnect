@@ -94,12 +94,8 @@ export const updateUser = async (req, res) => {
     if (!user) return res.status(400).json({ message: "User doesn't exist" });
 
     const { email, username, name } = newUserData;
-    console.log("email, username : ", email, username);
-    console.log("newUserData : ", newUserData);
 
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-
-    console.log("existingUser : ", existingUser);
 
     if (existingUser && String(existingUser._id) !== String(user._id)) {
       return res
@@ -137,7 +133,7 @@ export const getMyProfile = async (req, res) => {
   }
 };
 
-/** Public-ish profile for another user (authenticated viewers only). Omits email. */
+
 export const getPublicUserProfile = async (req, res) => {
   try {
     const { userId } = req.params;

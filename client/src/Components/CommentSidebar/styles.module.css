@@ -11,7 +11,7 @@
   to { opacity: 1; }
 }
 
-/* ── Sidebar panel ── */
+/* Sidebar */
 
 .sidebar {
   position: fixed;
@@ -33,7 +33,7 @@
   transform: translateX(0);
 }
 
-/* ── Header ── */
+/* Header */
 
 .header {
   display: flex;
@@ -87,7 +87,7 @@
   color: #333;
 }
 
-/* ── Post Preview ── */
+/* Post preview */
 
 .postPreview {
   padding: 12px 20px;
@@ -103,7 +103,7 @@
   line-height: 1.45;
 }
 
-/* ── Body ── */
+/* Body */
 
 .body {
   flex: 1;

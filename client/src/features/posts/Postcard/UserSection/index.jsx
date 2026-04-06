@@ -39,7 +39,7 @@ export default function UserSection({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [optionsOpen]);
 
-  // Find the connection document linking me ↔ this post's author
+  // find connection between me and post author
   const findConnectionId = () => {
     if (!myId || !authorId || !connections?.length) return null;
     const match = connections.find((c) => {

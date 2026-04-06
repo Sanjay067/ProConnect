@@ -9,14 +9,14 @@ import PopupDialog from "@/features/profile/popupDialog";
 import Loader from "@/components/Loader";
 import { getConnectionsOverview } from "@/config/redux/action/connectionAction";
 
-// Import modular UI sections
+
 import ProfileHeader from "@/features/profile/ProfileHeader";
 import AboutSection from "@/features/profile/AboutSection";
 import ExperienceSection from "@/features/profile/ExperienceSection";
 import EducationSection from "@/features/profile/EducationSection";
 import ActivitySection from "@/features/profile/ActivitySection";
 
-// Import precise forms
+
 import IntroForm from "@/features/profile/forms/IntroForm";
 import AboutForm from "@/features/profile/forms/AboutForm";
 import ExperienceForm from "@/features/profile/forms/ExperienceForm";
@@ -34,7 +34,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     dispatch(getUserProfile());
-    dispatch(getPosts()); // Ensure we pull posts down so we can filter them for Activity
+    dispatch(getPosts());
     dispatch(getConnectionsOverview());
   }, [dispatch]);
 
@@ -87,7 +87,6 @@ export default function ProfilePage() {
                 
                 <EducationSection profile={profile} onEdit={handleOpenModal} />
 
-                {/* Dynamic Modal Manager */}
                 {modalType && (
                   <PopupDialog onClose={handleCloseModal}>
                     {renderModalContent()}

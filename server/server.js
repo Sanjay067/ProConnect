@@ -1,4 +1,4 @@
-// Essential Packages
+
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { apiLimiter } from "./middlewares/rateLimits.js";
 
-// Routes
+
 import userRoutes from "./routes/user.routes.js";
 import postRoutes from "./routes/posts.routes.js";
 import authRoutes from "./routes/auth.routes.js";

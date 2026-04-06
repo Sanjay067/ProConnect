@@ -11,7 +11,7 @@
   to { opacity: 1; }
 }
 
-/* ── Sidebar panel ── */
+/* Sidebar */
 
 .sidebar {
   position: fixed;
@@ -33,7 +33,7 @@
   transform: translateX(0);
 }
 
-/* ── Header ── */
+/* Header */
 
 .header {
   display: flex;
@@ -73,7 +73,7 @@
   color: #333;
 }
 
-/* ── Body ── */
+/* Body */
 
 .body {
   flex: 1;

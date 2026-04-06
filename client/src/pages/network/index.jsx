@@ -99,7 +99,7 @@ export default function NetworkPage() {
 
           <hr className={styles.divider} />
 
-          {/* ── Connection Requests ── */}
+          {/* Connection Requests */}
           <h2 className={styles.sectionHeader}>
             Connection Requests
             {pendingReceived.length > 0 && (

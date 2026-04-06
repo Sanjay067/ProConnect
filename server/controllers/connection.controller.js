@@ -5,7 +5,6 @@ export const sendConnection = async (req, res) => {
   try {
     const senderId = req.user._id;
     const { receiverId } = req.params;
-    console.log(senderId, receiverId);
 
     if (senderId.toString() === receiverId)
       return res

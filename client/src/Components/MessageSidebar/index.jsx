@@ -67,9 +67,8 @@ export default function MessageSidebar() {
             </div>
           )}
 
-          {/* Placeholder for future chat UI */}
           <div className={styles.chatPlaceholder}>
-            <p>Messaging features coming soon.</p>
+            <p>No messages yet.</p>
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ const processQueue = (error) => {
   failedQueue = [];
 };
 
-// RESPONSE INTERCEPTOR
+// auto-refresh on 401
 clientApi.interceptors.response.use(
   (res) => res,
 

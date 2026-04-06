@@ -1,11 +1,11 @@
-/**
- * HttpOnly cookies: use Secure in production (HTTPS only).
- */
+// production: secure + sameSite=none for cross-origin
+const isProd = () => process.env.NODE_ENV === "production";
+
 export function accessCookieOptions() {
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Lax",
+    secure: isProd(),
+    sameSite: isProd() ? "none" : "lax",
     maxAge: 60 * 60 * 1000,
   };
 }
@@ -13,8 +13,8 @@ export function accessCookieOptions() {
 export function refreshCookieOptions() {
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Lax",
+    secure: isProd(),
+    sameSite: isProd() ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };
 }

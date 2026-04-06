@@ -96,12 +96,12 @@ export const editPost = async (req, res) => {
       }
     }
 
-    // Determine mathematically which files were deleted entirely
+    // find removed media
     const deletedMedia = originalMedia.filter(
       (om) => !finalMedia.find((fm) => fm.publicId === om.publicId)
     );
 
-    // Physically obliterate them from the Cloudinary hosting bucket
+    // delete from cloudinary
     for (const file of deletedMedia) {
       try {
         await cloudinary.uploader.destroy(file.publicId);
@@ -110,7 +110,7 @@ export const editPost = async (req, res) => {
       }
     }
 
-    // Map any brand new incoming media buffers to the final array
+    // add new uploads
     if (req.files && req.files.length > 0) {
       const newMedia = req.files.map((file) => ({
         url: file.path,
@@ -128,7 +128,7 @@ export const editPost = async (req, res) => {
     post.media = finalMedia;
     await post.save();
     
-    // Hydrate the author block back down to Redux
+    // populate author for response
     await post.populate("author", "name username profilePicture");
 
     return res.status(200).json({

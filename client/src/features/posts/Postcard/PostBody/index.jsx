@@ -16,7 +16,7 @@ export default function PostBody({ post, isEditingPost, onCancelEdit }) {
   
   const editFileRef = useRef(null);
 
-  // Sync state if 'isEditingPost' toggles on implicitly outside
+  // reset form when edit mode opens
   React.useEffect(() => {
     if (isEditingPost) {
       setEditedPostBody(post?.body || "");
@@ -128,7 +128,7 @@ export default function PostBody({ post, isEditingPost, onCancelEdit }) {
     );
   }
 
-  // --- Displaying the live post block cleanly ---
+
   return (
     <>
       {post?.body && (
