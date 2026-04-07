@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import clientApi from "@/services/clientApi";
-import styles from "./LikesModal.module.css";
 
 export default function LikesModal({ postId, onClose }) {
   const [likes, setLikes] = useState([]);
@@ -27,26 +26,26 @@ export default function LikesModal({ postId, onClose }) {
 
   return (
     <div
-      className={styles.overlay}
+      className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/45 p-4"
       role="presentation"
       onClick={onClose}
     >
       <div
-        className={styles.modal}
+        className="flex max-h-[70vh] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
         role="dialog"
         aria-labelledby="likes-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={styles.header}>
+        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3.5">
           <h3 id="likes-title">People who liked this</h3>
-          <button type="button" className={styles.close} onClick={onClose}>
+          <button type="button" className="cursor-pointer border-none bg-transparent p-1 text-xl text-gray-500" onClick={onClose}>
             <i className="fa-solid fa-times" />
           </button>
         </div>
-        <div className={styles.list}>
-          {loading && <p className={styles.muted}>Loading…</p>}
+        <div className="overflow-y-auto py-2">
+          {loading && <p className="m-0 p-4 text-center text-gray-500">Loading…</p>}
           {!loading && likes.length === 0 && (
-            <p className={styles.muted}>No likes yet.</p>
+            <p className="m-0 p-4 text-center text-gray-500">No likes yet.</p>
           )}
           {!loading &&
             likes.map((like) => {
@@ -56,7 +55,7 @@ export default function LikesModal({ postId, onClose }) {
                 <Link
                   key={like._id}
                   href={`/profile/${u._id}`}
-                  className={styles.row}
+                  className="flex items-center gap-3 px-4 py-2.5 text-inherit no-underline hover:bg-stone-100"
                   onClick={onClose}
                 >
                   <img
@@ -65,11 +64,11 @@ export default function LikesModal({ postId, onClose }) {
                       "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     }
                     alt=""
-                    className={styles.avatar}
+                    className="h-11 w-11 rounded-full object-cover"
                   />
                   <div>
-                    <p className={styles.name}>{u.name}</p>
-                    <p className={styles.username}>@{u.username}</p>
+                    <p className="m-0 font-semibold">{u.name}</p>
+                    <p className="m-0 text-sm text-gray-500">@{u.username}</p>
                   </div>
                 </Link>
               );

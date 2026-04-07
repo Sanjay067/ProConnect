@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getFeed } from "@/config/redux/action/postAction";
 import PostCard from "../PostCard";
-import styles from "./styles.module.css";
 import Loader from "@/components/Loader";
 import PostBox from "../PostBox";
 
@@ -36,25 +35,25 @@ export default function Feed() {
   };
 
   return (
-    <div className={styles.feedWrapper}>
+    <div className="mx-auto min-h-screen w-full max-w-3xl px-3 sm:px-4">
       <PostBox />
 
-      <p className={styles.feedHint}>
+      <p className="mb-2 text-sm leading-snug text-gray-600">
       </p>
       {feedPagination.truncated && (
-        <p className={styles.truncatedHint}>
+        <p className="mb-3 text-xs italic text-gray-500 sm:text-sm">
           Showing the most recent posts from your network for performance.
         </p>
       )}
 
       {feedLoading && (
-        <div className={styles.loader}>
+        <div className="flex justify-center py-6">
           <Loader />
         </div>
       )}
 
       {!feedLoading && feedPosts?.length === 0 && (
-        <p className={styles.emptyMessage}>
+        <p className="text-center text-gray-500">
           No posts yet. Be the first to post!
         </p>
       )}
@@ -64,10 +63,10 @@ export default function Feed() {
       ))}
 
       {!feedLoading && feedPagination.hasMore && (
-        <div className={styles.loadMoreWrap}>
+        <div className="flex justify-center px-0 pt-5 pb-10">
           <button
             type="button"
-            className={styles.loadMoreBtn}
+            className="cursor-pointer rounded-full border border-[#0a66c2] bg-white px-7 py-2.5 font-semibold text-[#0a66c2] transition hover:bg-[#eef3f8] disabled:cursor-not-allowed disabled:opacity-60"
             onClick={loadMore}
             disabled={loadingMore}
           >

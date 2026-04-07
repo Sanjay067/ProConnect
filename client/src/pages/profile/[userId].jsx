@@ -5,7 +5,6 @@ import clientApi from "@/services/clientApi";
 import UserLayout from "@/layout/UserLayout";
 import ProtectedRoute from "@/components/Protected";
 import Loader from "@/components/Loader";
-import styles from "./styles.module.css";
 import ProfileHeader from "@/features/profile/ProfileHeader";
 import AboutSection from "@/features/profile/AboutSection";
 import ExperienceSection from "@/features/profile/ExperienceSection";
@@ -42,8 +41,6 @@ export default function PublicProfilePage() {
     if (myId && String(userId) === String(myId)) return;
 
     let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
     clientApi
       .get(`/users/profile/${userId}`)
       .then(({ data: res }) => {
@@ -74,21 +71,15 @@ export default function PublicProfilePage() {
   return (
     <ProtectedRoute>
       <UserLayout>
-        <div className={styles.layout}>
-          <div className={styles.container}>
+        <div className="min-h-screen bg-stone-100 pb-8">
+          <div className="mx-auto flex max-w-4xl flex-col gap-2.5 px-4 pt-8 sm:px-6">
             {loading && <Loader />}
             {loadError && !loading && (
-              <p className={styles.emptyText}>{loadError}</p>
+              <p className="text-gray-500">{loadError}</p>
             )}
             {!loading && !loadError && displayUser && (
               <>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginBottom: 8,
-                  }}
-                >
+                <div className="mb-2 flex justify-end">
                   <ConnectionButton targetUserId={displayUser._id} />
                 </div>
                 <ProfileHeader

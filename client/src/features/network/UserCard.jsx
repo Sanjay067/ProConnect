@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import ConnectionButton from "@/components/ConnectionButton";
-import styles from "./styles.module.css";
 
 export default function UserCard({ user }) {
   const myId = useSelector((state) => state.profile.profile?.userId?._id);
@@ -10,7 +9,7 @@ export default function UserCard({ user }) {
   const isSelf = myId && userId ? String(myId) === String(userId) : false;
 
   return (
-    <div className={styles.userCard}>
+    <div className="flex min-h-[260px] w-full max-w-[240px] flex-col items-center justify-between rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm transition hover:shadow-md">
       <Link href={userId ? `/profile/${userId}` : "#"}>
         <img
           src={
@@ -18,14 +17,14 @@ export default function UserCard({ user }) {
             "https://cdn-icons-png.flaticon.com/512/149/149071.png"
           }
           alt="Avatar"
-          className={styles.avatar}
+          className="mb-4 h-20 w-20 rounded-full object-cover ring-2 ring-slate-100"
         />
       </Link>
 
-      <Link href={userId ? `/profile/${userId}` : "#"} style={{ textDecoration: "none", color: "inherit" }}>
-        <h3 className={styles.name}>{user.name}</h3>
+      <Link href={userId ? `/profile/${userId}` : "#"} className="text-inherit no-underline">
+        <h3 className="m-0 text-lg font-semibold">{user.name}</h3>
       </Link>
-      <p className={styles.username}>@{user.username}</p>
+      <p className="mt-1 text-sm text-gray-500">@{user.username}</p>
 
       {!isSelf && (
         <ConnectionButton targetUserId={userId} />

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import styles from "./style.module.css";
 import UserLayout from "@/layout/UserLayout";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
@@ -66,20 +65,18 @@ export default function Login() {
 
   return (
     <UserLayout>
-      <div className={styles.container}>
-        <div className={styles.cardContainer}>
-          <div className={styles.cardContainer_left}>
+      <div className="flex min-h-screen w-full items-center justify-center bg-orange-50 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl md:flex-row">
+          <div className="w-full p-6 md:w-[65%] md:p-10">
             <form onSubmit={handleSubmit}>
-              <div className={styles.inputContainer}>
-                <h1>{isLogin ? "Login" : "Sign Up"}</h1>
+              <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-4">
+                <h1 className="text-center text-3xl font-semibold">{isLogin ? "Login" : "Sign Up"}</h1>
                 {authState.isLoading && (
                   <Loader />
                 )}
 
                 <p
-                  style={{
-                    color: authState.isError ? "red" : "green",
-                  }}
+                  className={authState.isError ? "text-red-600" : "text-green-600"}
                 >
                   {authState.message}
                 </p>
@@ -87,13 +84,14 @@ export default function Login() {
                 {/* Signup only fields */}
                 {!isLogin && (
                   <>
-                    <div className={styles.inputRow}>
+                    <div className="flex w-full flex-col gap-2 sm:flex-row">
                       <input
                         name="username"
                         placeholder="Username"
                         value={form.username}
                         onChange={handleChange}
                         required
+                        className="w-full rounded-xl border border-gray-300 px-4 py-3 text-base outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                       />
                       <input
                         name="name"
@@ -101,6 +99,7 @@ export default function Login() {
                         value={form.name}
                         onChange={handleChange}
                         required
+                        className="w-full rounded-xl border border-gray-300 px-4 py-3 text-base outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                       />
                     </div>
                   </>
@@ -113,6 +112,7 @@ export default function Login() {
                   value={form.email}
                   onChange={handleChange}
                   required
+                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-base outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                 />
 
                 <input
@@ -122,6 +122,7 @@ export default function Login() {
                   value={form.password}
                   onChange={handleChange}
                   required
+                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-base outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                 />
 
                 {!isLogin && (
@@ -132,20 +133,21 @@ export default function Login() {
                     value={form.confirmPassword}
                     onChange={handleChange}
                     required
+                    className="w-full rounded-xl border border-gray-300 px-4 py-3 text-base outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                   />
                 )}
 
-                <button className={`btn ${styles.signUpbtn}`} type="submit">
+                <button className="mt-4 w-full rounded-xl bg-black px-6 py-3 text-lg font-semibold text-white transition hover:bg-sky-700" type="submit">
                   {isLogin ? "Login" : "Sign Up"}
                 </button>
               </div>
             </form>
           </div>
 
-          <div className={styles.cardContainer_right}>
+          <div className="flex w-full items-center justify-center bg-neutral-900 p-8 md:w-[35%]">
             <div
               onClick={() => setIsLogin(!isLogin)}
-              className={styles.loginLink}
+              className="cursor-pointer text-center text-base font-semibold text-white transition hover:text-blue-400"
             >
               {isLogin
                 ? "Don't have an account? Sign Up"

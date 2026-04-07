@@ -4,7 +4,6 @@ import { getUserProfile } from "@/config/redux/action/profileAction";
 import { getPosts } from "@/config/redux/action/postAction";
 import UserLayout from "@/layout/UserLayout";
 import ProtectedRoute from "@/components/Protected";
-import styles from "./styles.module.css";
 import PopupDialog from "@/features/profile/popupDialog";
 import Loader from "@/components/Loader";
 import { getConnectionsOverview } from "@/config/redux/action/connectionAction";
@@ -71,8 +70,8 @@ export default function ProfilePage() {
   return (
     <ProtectedRoute>
       <UserLayout>
-        <div className={styles.layout}>
-          <div className={styles.container}>
+        <div className="min-h-screen bg-stone-100 pb-8">
+          <div className="mx-auto flex max-w-4xl flex-col gap-2.5 px-4 pt-8 sm:px-6">
             {isLoading && !profile && <Loader />}
 
             {profile && user && (

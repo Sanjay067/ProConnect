@@ -1,45 +1,42 @@
 import React from "react";
-import styles from "@/pages/profile/styles.module.css";
 
 export default function ExperienceSection({ profile, onEdit, readOnly }) {
   return (
-    <div className={styles.sectionCard}>
-      <h2 className={styles.sectionHeader}>Experience</h2>
+    <div className="relative rounded-xl border border-[#dce6f1] bg-white p-6">
+      <h2 className="mb-4 text-xl">Experience</h2>
 
       {!readOnly && onEdit && (
-        <div className={styles.iconRow}>
+        <div className="absolute top-6 right-6 flex gap-1">
           <button
             onClick={() => onEdit("EXPERIENCE", null)}
-            className={styles.pencilBtn}
-            style={{ position: "relative", top: 0, right: 0 }}
+            className="relative top-0 right-0 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-gray-500 transition hover:bg-stone-100"
           >
             <i className="fa-solid fa-plus"></i>
           </button>
         </div>
       )}
 
-      <div style={{ marginTop: "1rem" }}>
+      <div className="mt-4">
         {profile.pastWork?.length > 0 ? (
           profile.pastWork.map((work, index) => (
-            <div key={index} className={styles.listItem}>
-              <div style={{ display: "flex", gap: "15px" }}>
+            <div key={index} className="mb-4 flex justify-between border-b border-gray-200 pb-4 last:mb-0 last:border-b-0 last:pb-0">
+              <div className="flex gap-4">
                 <i
                   className="fa-brands fa-simplybuilt"
                   style={{ width: "10px", marginTop: "6px" }}
                 ></i>
                 <div>
-                  <h3 className={styles.itemTitle}>
+                  <h3 className="m-0 text-[1.1rem]">
                     <strong>{work.position}</strong>
                   </h3>
-                  <p className={styles.itemSubtitle}>{work.companyName}</p>
-                  <p className={styles.itemDate}>{work.years}</p>
+                  <p className="my-1 text-[0.95rem]">{work.companyName}</p>
+                  <p className="m-0 text-sm text-gray-500">{work.years}</p>
                 </div>
               </div>
               {!readOnly && onEdit && (
                 <button
                   onClick={() => onEdit("EXPERIENCE", index)}
-                  className={styles.pencilBtn}
-                  style={{ position: "relative", top: 0, right: 0 }}
+                  className="relative top-0 right-0 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-gray-500 transition hover:bg-stone-100"
                 >
                   <i className="fa-solid fa-pencil"></i>
                 </button>
@@ -47,7 +44,7 @@ export default function ExperienceSection({ profile, onEdit, readOnly }) {
             </div>
           ))
         ) : (
-          <p className={styles.emptyText}>No experience added yet.</p>
+          <p className="text-gray-500">No experience added yet.</p>
         )}
       </div>
     </div>

@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { updateCommentCount } from "@/config/redux/reducer/postReducer";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import clientApi from "@/services/clientApi";
-import styles from "./styles.module.css";
 import Like from "../Like";
 
 export default function CommentItem({ initialComment, post, myId, onRemoved }) {
@@ -132,7 +131,7 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
   const authorId = comment.author?._id;
 
   return (
-    <div className={styles.commentItem}>
+    <div className="mb-4 flex gap-2.5">
       {authorId ? (
         <Link href={`/profile/${authorId}`}>
           <img
@@ -141,7 +140,7 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
               "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             alt=""
-            className={styles.commentAvatar}
+          className="h-8 w-8 rounded-full object-cover"
           />
         </Link>
       ) : (
@@ -151,28 +150,22 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
             "https://cdn-icons-png.flaticon.com/512/149/149071.png"
           }
           alt=""
-          className={styles.commentAvatar}
+          className="h-8 w-8 rounded-full object-cover"
         />
       )}
-      <div className={styles.commentBodyContainer}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            gap: "10px",
-          }}
-        >
+      <div className="flex-1 rounded-lg bg-neutral-200 px-3 py-2">
+        <div className="flex justify-between gap-2.5">
           {authorId ? (
             <Link
               href={`/profile/${authorId}`}
-              className={styles.commentAuthorLink}
+              className="text-inherit no-underline hover:text-[#0a66c2] hover:underline"
             >
-              <p className={styles.commentAuthorName}>
+              <p className="m-0 text-sm font-bold">
                 {comment.author?.name || "Unknown"}
               </p>
             </Link>
           ) : (
-            <p className={styles.commentAuthorName}>
+            <p className="m-0 text-sm font-bold">
               {comment.author?.name || "Unknown"}
             </p>
           )}
@@ -180,9 +173,9 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
           {myId &&
             comment.author?._id &&
             String(comment.author._id) === String(myId) && (
-              <div className={styles.commentMenuWrapper} ref={menuRef}>
+              <div className="relative" ref={menuRef}>
                 <button
-                  className={styles.commentDotsBtn}
+                  className="cursor-pointer rounded-full border-none bg-transparent px-1.5 py-0.5 text-[0.95rem] text-gray-400 transition hover:bg-neutral-300 hover:text-gray-700"
                   type="button"
                   onClick={() => setMenuOpen(!menuOpen)}
                   aria-label="Comment options"
@@ -191,9 +184,9 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
                 </button>
 
                 {menuOpen && (
-                  <div className={styles.commentDropdown}>
+                  <div className="absolute top-[calc(100%+2px)] right-0 z-[200] min-w-[130px] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
                     <button
-                      className={styles.commentDropdownItem}
+                      className="flex w-full cursor-pointer items-center gap-2 border-none bg-transparent px-3.5 py-2 text-left text-sm text-gray-800 transition hover:bg-stone-100"
                       type="button"
                       onClick={() => { setMenuOpen(false); setIsEditing(true); }}
                     >
@@ -201,7 +194,7 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
                       Edit
                     </button>
                     <button
-                      className={`${styles.commentDropdownItem} ${styles.commentDropdownDanger}`}
+                      className="flex w-full cursor-pointer items-center gap-2 border-none bg-transparent px-3.5 py-2 text-left text-sm text-[#cc3333] transition hover:bg-[#fdf0f0]"
                       type="button"
                       onClick={() => { setMenuOpen(false); setConfirmDelete(true); }}
                     >
@@ -215,28 +208,22 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
         </div>
 
         {isEditing ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div className="flex flex-col gap-2">
             <input
               value={editedBody}
               onChange={(e) => setEditedBody(e.target.value)}
-              className={styles.commentInput}
+              className="m-0 rounded-full border border-gray-300 px-3 py-2"
             />
-            <div
-              style={{
-                display: "flex",
-                gap: "8px",
-                justifyContent: "flex-end",
-              }}
-            >
+            <div className="flex justify-end gap-2">
               <button
-                className={styles.actionButton}
+                className="cursor-pointer border-none bg-transparent font-bold text-gray-600"
                 type="button"
                 onClick={() => setIsEditing(false)}
               >
                 Cancel
               </button>
               <button
-                className={styles.commentSubmit}
+                className="cursor-pointer rounded-full border-none bg-[#0a66c2] px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-60"
                 type="button"
                 onClick={saveEditComment}
                 disabled={!editedBody.trim()}
@@ -246,7 +233,7 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
             </div>
           </div>
         ) : (
-          <p className={styles.commentBodyText}>{comment.body}</p>
+          <p className="m-0 text-[0.95rem]">{comment.body}</p>
         )}
         <Like
           isLiked={comment.isLiked}

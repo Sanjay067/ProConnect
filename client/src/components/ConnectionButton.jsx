@@ -8,7 +8,6 @@ import {
   removeAcceptedConnection,
 } from "@/config/redux/action/connectionAction";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import styles from "@/features/network/styles.module.css";
 
 function findConnectionWith(overview, myId, targetUserId) {
   if (!overview || !myId || !targetUserId) return null;
@@ -49,10 +48,10 @@ export default function ConnectionButton({ targetUserId }) {
   // No connection — show Connect
   if (!conn) {
     return (
-      <div className={styles.buttonArea}>
+      <div className="mt-auto flex min-h-[42px] w-full flex-col items-center gap-1.5 pt-3">
         <button
           type="button"
-          className={styles.connectButton}
+          className="w-full cursor-pointer rounded-full border border-[#0a66c2] bg-white px-2 py-2 text-sm font-bold text-[#0a66c2] transition hover:bg-[#eef3f8]"
           onClick={() => dispatch(sendConnections(targetUserId))}
         >
           Connect
@@ -64,11 +63,11 @@ export default function ConnectionButton({ targetUserId }) {
   // I sent the request — show Pending + Cancel
   if (isPending && iAmSender) {
     return (
-      <div className={styles.buttonArea}>
-        <span className={styles.pendingLabel}>Pending</span>
+      <div className="mt-auto flex min-h-[42px] w-full flex-col items-center gap-1.5 pt-3">
+        <span className="text-xs font-semibold text-gray-400">Pending</span>
         <button
           type="button"
-          className={styles.cancelButton}
+          className="w-full cursor-pointer rounded-full border border-gray-400 bg-transparent px-2 py-2 text-sm font-bold text-gray-600 transition hover:border-gray-700 hover:text-gray-700"
           onClick={() => dispatch(cancelPendingConnection(conn._id))}
         >
           Cancel
@@ -80,17 +79,17 @@ export default function ConnectionButton({ targetUserId }) {
   // I received the request — show Accept + Ignore
   if (isPending && iAmReceiver) {
     return (
-      <div className={styles.buttonArea}>
+      <div className="mt-auto flex min-h-[42px] w-full flex-col items-center gap-1.5 pt-3">
         <button
           type="button"
-          className={styles.acceptButton}
+          className="w-full cursor-pointer rounded-full border-none bg-[#0a66c2] px-2 py-2 text-sm font-bold text-white transition hover:bg-[#084d93]"
           onClick={() => dispatch(acceptConnections(conn._id))}
         >
           Accept
         </button>
         <button
           type="button"
-          className={styles.ignoreButton}
+          className="w-full cursor-pointer rounded-full border border-gray-400 bg-transparent px-2 py-2 text-sm font-bold text-gray-600 transition hover:border-gray-700 hover:text-gray-700"
           onClick={() => dispatch(rejectConnections(conn._id))}
         >
           Ignore
@@ -102,10 +101,10 @@ export default function ConnectionButton({ targetUserId }) {
   // Already connected — show Remove
   if (isAccepted) {
     return (
-      <div className={styles.buttonArea}>
+      <div className="mt-auto flex min-h-[42px] w-full flex-col items-center gap-1.5 pt-3">
         <button
           type="button"
-          className={styles.removeButton}
+          className="w-full cursor-pointer rounded-full border border-[#cc3333] bg-transparent px-2 py-2 text-sm font-bold text-[#cc3333] transition hover:bg-[#fdf0f0]"
           onClick={() => setConfirmRemove(true)}
         >
           Remove
@@ -130,10 +129,10 @@ export default function ConnectionButton({ targetUserId }) {
 
   // Fallback
   return (
-    <div className={styles.buttonArea}>
+    <div className="mt-auto flex min-h-[42px] w-full flex-col items-center gap-1.5 pt-3">
       <button
         type="button"
-        className={styles.connectButton}
+        className="w-full cursor-pointer rounded-full border border-[#0a66c2] bg-white px-2 py-2 text-sm font-bold text-[#0a66c2] transition hover:bg-[#eef3f8]"
         onClick={() => dispatch(sendConnections(targetUserId))}
       >
         Connect

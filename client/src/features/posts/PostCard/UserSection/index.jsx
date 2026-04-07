@@ -4,7 +4,6 @@ import { openMessageSidebar } from "@/config/redux/reducer/postReducer";
 import { removeAcceptedConnection } from "@/config/redux/action/connectionAction";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "next/link";
-import styles from "./styles.module.css";
 
 export default function UserSection({
   post,
@@ -79,8 +78,8 @@ export default function UserSection({
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.authorContainer}>
+    <div className="mb-4 flex items-center justify-between">
+      <div className="flex flex-row gap-4">
         <Link href={authorId ? `/profile/${authorId}` : "#"}>
           <img
             src={
@@ -88,25 +87,25 @@ export default function UserSection({
               "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             alt="Avatar"
-            className={styles.avatar}
+            className="h-10 w-10 rounded-full object-cover"
           />
         </Link>
-        <div className={styles.authorDetails}>
+        <div className="flex flex-col">
           <Link
             href={authorId ? `/profile/${authorId}` : "#"}
-            style={{ textDecoration: "none", color: "inherit" }}
+            className="text-inherit no-underline"
           >
-            <p className={styles.authorName}>{post.author?.name}</p>
+            <p className="m-0 font-bold">{post.author?.name}</p>
           </Link>
-          <p className={styles.authorUsername}>@{post.author?.username}</p>
+          <p className="m-0 text-sm text-gray-500">@{post.author?.username}</p>
         </div>
       </div>
 
       {/* Three-dot menu — only for OTHER users' posts */}
       {authorId && !isPostAuthor && (
-        <div className={styles.optionsWrapper} ref={optionsRef}>
+        <div className="relative ml-auto" ref={optionsRef}>
           <button
-            className={styles.dotsButton}
+            className="cursor-pointer rounded-full border-none bg-transparent px-2.5 py-1.5 text-xl text-gray-500 transition hover:bg-stone-100 hover:text-gray-700"
             onClick={() => setOptionsOpen(!optionsOpen)}
             aria-label="Post options"
             type="button"
@@ -115,9 +114,9 @@ export default function UserSection({
           </button>
 
           {optionsOpen && (
-            <div className={styles.optionsDropdown}>
+            <div className="absolute top-[calc(100%+4px)] right-0 z-[200] min-w-[160px] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
               <button
-                className={styles.optionItem}
+                className="flex w-full cursor-pointer items-center gap-2.5 border-none bg-transparent px-4 py-2.5 text-left text-sm text-gray-800 transition hover:bg-stone-100"
                 onClick={handleMessage}
                 type="button"
               >
@@ -125,7 +124,7 @@ export default function UserSection({
                 Message
               </button>
               <button
-                className={styles.optionItem}
+                className="flex w-full cursor-pointer items-center gap-2.5 border-none bg-transparent px-4 py-2.5 text-left text-sm text-gray-800 transition hover:bg-stone-100"
                 onClick={handleRemoveClick}
                 type="button"
               >
@@ -139,9 +138,9 @@ export default function UserSection({
 
       {/* Three-dot menu — for OWN posts on profile page */}
       {isPostAuthor && isOwnProfile && !isEditingPost && (
-        <div className={styles.optionsWrapper} ref={!isPostAuthor ? undefined : optionsRef}>
+        <div className="relative ml-auto" ref={!isPostAuthor ? undefined : optionsRef}>
           <button
-            className={styles.dotsButton}
+            className="cursor-pointer rounded-full border-none bg-transparent px-2.5 py-1.5 text-xl text-gray-500 transition hover:bg-stone-100 hover:text-gray-700"
             onClick={() => setOptionsOpen(!optionsOpen)}
             aria-label="Post options"
             type="button"
@@ -150,9 +149,9 @@ export default function UserSection({
           </button>
 
           {optionsOpen && (
-            <div className={styles.optionsDropdown}>
+            <div className="absolute top-[calc(100%+4px)] right-0 z-[200] min-w-[160px] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
               <button
-                className={styles.optionItem}
+                className="flex w-full cursor-pointer items-center gap-2.5 border-none bg-transparent px-4 py-2.5 text-left text-sm text-gray-800 transition hover:bg-stone-100"
                 onClick={() => { setOptionsOpen(false); onStartEdit(); }}
                 type="button"
               >
@@ -160,7 +159,7 @@ export default function UserSection({
                 Edit Post
               </button>
               <button
-                className={`${styles.optionItem} ${styles.optionDanger}`}
+                className="flex w-full cursor-pointer items-center gap-2.5 border-none bg-transparent px-4 py-2.5 text-left text-sm text-[#cc3333] transition hover:bg-[#fdf0f0]"
                 onClick={() => { setOptionsOpen(false); onDeleteRequest(); }}
                 type="button"
               >

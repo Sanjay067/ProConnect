@@ -41,10 +41,10 @@ export default function ExperienceForm({ profile, onClose, editIndex }) {
   return (
     <form
       onSubmit={handleSubmit}
-      style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+      className="flex flex-col gap-4"
     >
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <label style={{ fontWeight: "bold", marginBottom: "5px" }}>
+      <div className="flex flex-col">
+        <label className="mb-1.5 font-bold">
           Company Name
         </label>
         <input
@@ -52,16 +52,12 @@ export default function ExperienceForm({ profile, onClose, editIndex }) {
           value={company}
           onChange={(e) => setCompany(e.target.value)}
           required
-          style={{
-            padding: "8px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-          }}
+          className="rounded-md border border-gray-300 px-3 py-2 text-[0.95rem] outline-none focus:border-[#0a66c2]"
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <label style={{ fontWeight: "bold", marginBottom: "5px" }}>
+      <div className="flex flex-col">
+        <label className="mb-1.5 font-bold">
           Title / Position
         </label>
         <input
@@ -69,16 +65,12 @@ export default function ExperienceForm({ profile, onClose, editIndex }) {
           value={position}
           onChange={(e) => setPosition(e.target.value)}
           required
-          style={{
-            padding: "8px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-          }}
+          className="rounded-md border border-gray-300 px-3 py-2 text-[0.95rem] outline-none focus:border-[#0a66c2]"
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <label style={{ fontWeight: "bold", marginBottom: "5px" }}>
+      <div className="flex flex-col">
+        <label className="mb-1.5 font-bold">
           Years Active (e.g. 2021 - Present)
         </label>
         <input
@@ -86,45 +78,23 @@ export default function ExperienceForm({ profile, onClose, editIndex }) {
           value={years}
           onChange={(e) => setYears(e.target.value)}
           required
-          style={{
-            padding: "8px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-          }}
+          className="rounded-md border border-gray-300 px-3 py-2 text-[0.95rem] outline-none focus:border-[#0a66c2]"
         />
       </div>
 
-      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+      <div className="mt-2 flex gap-2.5">
         {isEditing && (
           <button
             type="button"
             onClick={handleDelete}
-            style={{
-              flex: 1,
-              padding: "10px",
-              background: "#f8d7da",
-              color: "#721c24",
-              borderRadius: "20px",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
+            className="flex-1 cursor-pointer rounded-full border-none bg-rose-100 px-3 py-2.5 font-bold text-rose-900 transition hover:bg-rose-200"
           >
             Delete
           </button>
         )}
         <button
           type="submit"
-          style={{
-            flex: 2,
-            padding: "10px",
-            background: "#0a66c2",
-            color: "white",
-            borderRadius: "20px",
-            border: "none",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          className="flex-[2] cursor-pointer rounded-full border-none bg-[#0a66c2] px-3 py-2.5 font-bold text-white transition hover:bg-[#004182]"
         >
           Save
         </button>

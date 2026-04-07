@@ -13,7 +13,9 @@ export default function UserLayout({ children }) {
       }}
     >
       <Navbar style={{}} />
-      {children}
+      
+        {children}
+
       <MessageSidebar />
       <CommentSidebar />
     </div>

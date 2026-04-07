@@ -2,20 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateCommentCount } from "@/config/redux/reducer/postReducer";
 import clientApi from "@/services/clientApi";
-import styles from "./styles.module.css";
 import CommentItem from "./CommentItem";
 import CommentInput from "./CommentInput";
 
 export default function CommentSection({ post }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(true);
   const myId = useSelector((state) => state.profile.profile?.userId?._id);
   const myUser = useSelector((state) => state.profile.profile?.userId);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setIsLoadingComments(true);
     clientApi
       .get(`/posts/${post._id}/comments`)
       .then(({ data }) =>
@@ -61,7 +59,7 @@ export default function CommentSection({ post }) {
   };
 
   return (
-    <div className={styles.commentSection}>
+    <div className="mt-4 rounded-lg bg-neutral-50 p-4">
       <CommentInput
         value={newComment}
         onChange={(e) => setNewComment(e.target ? e.target.value : e)}
@@ -71,7 +69,7 @@ export default function CommentSection({ post }) {
       />
 
       {isLoadingComments ? (
-        <p className={styles.loadingText}>Loading comments...</p>
+        <p className="text-sm text-gray-500">Loading comments...</p>
       ) : comments.length > 0 ? (
         comments.map((comment) => (
           <CommentItem
@@ -83,7 +81,7 @@ export default function CommentSection({ post }) {
           />
         ))
       ) : (
-        <p className={styles.emptyCommentText}>No comments yet.</p>
+        <p className="text-sm text-gray-500">No comments yet.</p>
       )}
     </div>
   );

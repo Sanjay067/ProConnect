@@ -4,7 +4,6 @@ import { toggleCommentSection } from "@/config/redux/reducer/postReducer";
 import { toggleLikePost } from "@/config/redux/action/postAction";
 import Like from "./Like";
 import LikesModal from "./LikesModal";
-import styles from "./styles.module.css";
 
 export default function EngagementSection({ post }) {
   const dispatch = useDispatch();
@@ -16,7 +15,7 @@ export default function EngagementSection({ post }) {
 
   return (
     <>
-      <div className={styles.engagementBar}>
+      <div className="flex gap-4 border-t border-gray-200 pt-2">
         <Like
           likeCount={post.likeCount}
           isLiked={post.isLiked}
@@ -26,9 +25,9 @@ export default function EngagementSection({ post }) {
         <button
           type="button"
           onClick={() => dispatch(toggleCommentSection(post._id))}
-          className={`${styles.actionButton} ${isActive ? styles.activeComment : ""}`}
+          className={`cursor-pointer border-none bg-transparent font-bold text-gray-500 ${isActive ? "text-[#0a66c2]" : ""}`}
         >
-          <i className={`fa-regular fa-comment ${styles.commentIcon}`}></i>
+          <i className="fa-regular fa-comment text-xl"></i>
           &nbsp;
           {post.commentCount || 0}
         </button>

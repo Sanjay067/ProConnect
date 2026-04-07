@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import styles from "./styles.module.css";
 
 const PopupDialog = ({ children, onClose }) => {
   // ESC key close
@@ -20,17 +19,17 @@ const PopupDialog = ({ children, onClose }) => {
   };
 
   return (
-    <div className={styles.container} onClick={handleOverlayClick}>
-      <div className={styles.popup}>
-        <div className={styles.head}>
+    <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/50 px-4" onClick={handleOverlayClick}>
+      <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl">
+        <div className="flex items-center justify-between">
           <h1>Edit Profile</h1>
 
-          <div className={styles.crossBtn} onClick={onClose}>
+          <div className="cursor-pointer" onClick={onClose}>
             <i className="fa-solid fa-x"></i>
           </div>
         </div>
 
-        <div className={styles.body}>{children}</div>
+        <div>{children}</div>
       </div>
     </div>
   );

@@ -6,7 +6,6 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import UserSection from "./UserSection";  
 import PostBody from "./PostBody";
 import EngagementSection from "./EngagementSection";
-import styles from "./styles.module.css";
 
 export default function PostCard({ post, isOwnProfile = false }) {
   const dispatch = useDispatch();
@@ -24,7 +23,7 @@ export default function PostCard({ post, isOwnProfile = false }) {
   };
 
   return (
-    <div className={styles.postCard}>
+    <div className="mb-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
       {confirmDeletePost && (
         <ConfirmDialog
           title="Delete post"

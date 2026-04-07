@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import styles from "@/pages/profile/styles.module.css";
 import PostCard from "@/features/posts/PostCard";
 
 export default function ActivitySection({ posts }) {
@@ -12,60 +11,28 @@ export default function ActivitySection({ posts }) {
   const displayedPosts = showAll ? safePosts : previewPosts;
 
   return (
-    <div className={styles.sectionCard}>
-      <h2 className={styles.sectionHeader}>Activity</h2>
-      <p
-        style={{
-          color: "#0a66c2",
-          fontWeight: "bold",
-          margin: "-10px 0 1rem 0",
-        }}
-      >
+    <div className="rounded-xl border border-[#dce6f1] bg-white p-6">
+      <h2 className="mb-4 text-xl">Activity</h2>
+      <p className="-mt-2 mb-4 font-bold text-[#0a66c2]">
         {connections?.length || 0} connections
       </p>
 
-      <div style={{ marginTop: "1rem" }}>
+      <div className="mt-4">
         {displayedPosts.length > 0 ? (
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              flexWrap: "wrap",
-              justifyContent: "space-between",
-            }}
-          >
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {displayedPosts.map((post) => (
-              <div
-                key={post._id}
-                style={{
-                  borderBottom: "1px solid #eee",
-                  paddingBottom: "10px",
-                  width: "48%",
-                }}
-              >
-                <p
-                  style={{
-                    color: "#666",
-                    fontSize: "0.8rem",
-                    margin: "0 0 5px 0",
-                  }}
-                >
+              <div key={post._id} className="w-full border-b border-gray-200 pb-2.5">
+                <p className="mb-1 text-xs text-gray-500">
                   You posted this
                 </p>
-                <div
-                  style={{
-                    border: "1px solid #ddd",
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                  }}
-                >
+                <div className="overflow-hidden rounded-lg border border-gray-300">
                   <PostCard post={post} isOwnProfile={true} />
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className={styles.emptyText}>You haven't posted anything yet.</p>
+          <p className="text-gray-500">You haven&apos;t posted anything yet.</p>
         )}
       </div>
 
@@ -76,16 +43,7 @@ export default function ActivitySection({ posts }) {
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") setShowAll((prev) => !prev);
         }}
-        style={{
-          borderTop: "1px solid #eee",
-          margin: "1rem -1.5rem -1.5rem -1.5rem",
-          padding: "1rem",
-          textAlign: "center",
-          cursor: "pointer",
-          color: "#666",
-          fontWeight: "bold",
-          userSelect: "none",
-        }}
+        className="mx-[-1.5rem] mt-4 mb-[-1.5rem] border-t border-gray-200 p-4 text-center font-bold text-gray-500 select-none"
       >
         {showAll ? "Show less activity" : "Show all activity"}{" "}
         <i className="fa-solid fa-arrow-right"></i>

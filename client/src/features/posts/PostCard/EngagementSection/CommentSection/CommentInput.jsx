@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./styles.module.css";
 
 export default function CommentInput({
   value,
@@ -13,20 +12,19 @@ export default function CommentInput({
   return (
     <form
       onSubmit={onSubmit}
-      className={styles.commentForm}
-      style={isReply ? { marginTop: "10px" } : {}}
+      className={`mb-4 flex gap-2.5 ${isReply ? "mt-2.5" : ""}`}
     >
       <input
         type="text"
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className={styles.commentInput}
+        className="m-0 flex-1 rounded-full border border-gray-300 px-3 py-2"
       />
       {onCancel && (
         <button
           type="button"
-          className={styles.actionButton}
+          className="cursor-pointer border-none bg-transparent font-bold text-gray-600"
           onClick={onCancel}
         >
           Cancel
@@ -34,7 +32,7 @@ export default function CommentInput({
       )}
       <button
         type="submit"
-        className={styles.commentSubmit}
+        className="cursor-pointer rounded-full border-none bg-[#0a66c2] px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-60"
         disabled={!value?.trim()}
       >
         {submitLabel}
