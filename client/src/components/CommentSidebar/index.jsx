@@ -29,22 +29,26 @@ export default function CommentSidebar() {
       )}
 
       {/* Sidebar panel */}
-      <div className={`fixed top-0 right-0 z-[950] flex h-screen w-[420px] max-w-[92vw] flex-col bg-white shadow-[-4px_0_24px_rgba(0,0,0,0.12)] transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
+      <div
+        className={`fixed top-0 right-0 z-[950] flex h-screen w-[420px] max-w-[92vw] flex-col border-l shadow-[-4px_0_24px_rgba(0,0,0,0.12)] transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        style={{ background: "var(--surface)", borderColor: "var(--border)" }}
+      >
         {/* Header */}
-        <div className="flex shrink-0 items-center justify-between border-b border-gray-200 px-5 py-4">
+        <div className="flex shrink-0 items-center justify-between border-b px-5 py-4" style={{ borderColor: "var(--border)" }}>
           <div className="flex flex-col gap-0.5">
-            <h3 className="m-0 flex items-center gap-2 text-[1.1rem] font-semibold text-gray-700">
+            <h3 className="m-0 flex items-center gap-2 text-[1.1rem] font-semibold">
               <i className="fa-regular fa-comments"></i>
               Comments
             </h3>
             {activePost && (
-              <span className="text-xs text-gray-400">
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                 on {activePost.author?.name}&apos;s post
               </span>
             )}
           </div>
           <button
-            className="shrink-0 cursor-pointer rounded-full border-none bg-transparent px-2 py-1.5 text-xl text-gray-500 transition hover:bg-stone-100 hover:text-gray-700"
+            className="shrink-0 cursor-pointer rounded-full border-none bg-transparent px-2 py-1.5 text-xl transition hover:opacity-90"
+            style={{ color: "var(--text-muted)" }}
             onClick={() =>
               dispatch(toggleCommentSection(activeCommentPostId))
             }
@@ -57,8 +61,8 @@ export default function CommentSidebar() {
 
         {/* Post preview snippet */}
         {activePost && (
-          <div className="shrink-0 border-b border-gray-200 bg-gray-50 px-5 py-3">
-            <p className="m-0 text-sm leading-snug text-gray-600">
+          <div className="shrink-0 border-b px-5 py-3" style={{ borderColor: "var(--border)", background: "var(--surface-soft)" }}>
+            <p className="m-0 text-sm leading-snug" style={{ color: "var(--text-muted)" }}>
               {activePost.body?.length > 120
                 ? `${activePost.body.slice(0, 120)}...`
                 : activePost.body}

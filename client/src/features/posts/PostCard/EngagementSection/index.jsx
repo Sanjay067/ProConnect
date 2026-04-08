@@ -15,7 +15,7 @@ export default function EngagementSection({ post }) {
 
   return (
     <>
-      <div className="flex gap-4 border-t border-gray-200 pt-2">
+      <div className="flex gap-6 border-t border-gray-200 pt-4">
         <Like
           likeCount={post.likeCount}
           isLiked={post.isLiked}

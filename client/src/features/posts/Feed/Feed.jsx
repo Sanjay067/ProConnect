@@ -35,13 +35,15 @@ export default function Feed() {
   };
 
   return (
-    <div className="mx-auto min-h-screen w-full max-w-3xl px-3 sm:px-4">
+    <div className="mx-auto min-h-screen w-full max-w-[760px] px-2 sm:px-3">
       <PostBox />
 
-      <p className="mb-2 text-sm leading-snug text-gray-600">
-      </p>
+      <p className="mb-2 text-sm leading-snug text-gray-600"></p>
       {feedPagination.truncated && (
-        <p className="mb-3 text-xs italic text-gray-500 sm:text-sm">
+        <p
+          className="mb-3 text-xs italic sm:text-sm"
+          style={{ color: "var(--text-muted)" }}
+        >
           Showing the most recent posts from your network for performance.
         </p>
       )}
@@ -53,20 +55,27 @@ export default function Feed() {
       )}
 
       {!feedLoading && feedPosts?.length === 0 && (
-        <p className="text-center text-gray-500">
+        <p className="text-center" style={{ color: "var(--text-muted)" }}>
           No posts yet. Be the first to post!
         </p>
       )}
 
-      {feedPosts?.map((post) => (
-        <PostCard key={post._id} post={post} />
-      ))}
+      <div className="space-y-4">
+        {feedPosts?.map((post) => (
+          <PostCard key={post._id} post={post} />
+        ))}
+      </div>
 
       {!feedLoading && feedPagination.hasMore && (
         <div className="flex justify-center px-0 pt-5 pb-10">
           <button
             type="button"
-            className="cursor-pointer rounded-full border border-[#0a66c2] bg-white px-7 py-2.5 font-semibold text-[#0a66c2] transition hover:bg-[#eef3f8] disabled:cursor-not-allowed disabled:opacity-60"
+            className="cursor-pointer rounded-full border px-7 py-2.5 font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            style={{
+              borderColor: "var(--accent)",
+              color: "var(--accent)",
+              background: "var(--surface)",
+            }}
             onClick={loadMore}
             disabled={loadingMore}
           >

@@ -1,11 +1,39 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
 
+:root {
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f2f4f8;
+  --text: #101828;
+  --text-muted: #667085;
+  --border: #e4e7ec;
+  --accent: #6d5efc;
+  --accent-2: #0ea5e9;
+}
+
+.dark {
+  --bg: #0f172a;
+  --surface: #111827;
+  --surface-soft: #1f2937;
+  --text: #e5e7eb;
+  --text-muted: #9ca3af;
+  --border: #374151;
+  --accent: #8b7cff;
+  --accent-2: #38bdf8;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
 }
 
 .btn {
@@ -14,7 +42,9 @@
 
 input {
   padding: 0.9rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
   margin: 4px;
+  background: var(--surface);
+  color: var(--text);
 }

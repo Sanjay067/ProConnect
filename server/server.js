@@ -13,6 +13,7 @@ import postRoutes from "./routes/posts.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import connectionRoutes from "./routes/connection.routes.js";
 import feedRoutes from "./routes/feed.routes.js";
+import messageRoutes from "./routes/message.routes.js";
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/connections", connectionRoutes);
 app.use("/api/feed", feedRoutes);
+app.use("/api/messages", messageRoutes);
 
 const start = async () => {
   try {

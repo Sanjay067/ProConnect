@@ -23,7 +23,10 @@ export default function PostCard({ post, isOwnProfile = false }) {
   };
 
   return (
-    <div className="mb-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <div
+      className="mb-2 rounded-3xl border p-6 shadow-sm"
+      style={{ borderColor: "var(--border)", background: "var(--surface)" }}
+    >
       {confirmDeletePost && (
         <ConfirmDialog
           title="Delete post"

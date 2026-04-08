@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ExperienceSection({ profile, onEdit, readOnly }) {
   return (
-    <div className="relative rounded-xl border border-[#dce6f1] bg-white p-6">
+    <div className="relative rounded-2xl border p-6" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
       <h2 className="mb-4 text-xl">Experience</h2>
 
       {!readOnly && onEdit && (
@@ -19,7 +19,7 @@ export default function ExperienceSection({ profile, onEdit, readOnly }) {
       <div className="mt-4">
         {profile.pastWork?.length > 0 ? (
           profile.pastWork.map((work, index) => (
-            <div key={index} className="mb-4 flex justify-between border-b border-gray-200 pb-4 last:mb-0 last:border-b-0 last:pb-0">
+            <div key={index} className="mb-4 flex justify-between border-b pb-4 last:mb-0 last:border-b-0 last:pb-0" style={{ borderColor: "var(--border)" }}>
               <div className="flex gap-4">
                 <i
                   className="fa-brands fa-simplybuilt"
@@ -30,7 +30,7 @@ export default function ExperienceSection({ profile, onEdit, readOnly }) {
                     <strong>{work.position}</strong>
                   </h3>
                   <p className="my-1 text-[0.95rem]">{work.companyName}</p>
-                  <p className="m-0 text-sm text-gray-500">{work.years}</p>
+                  <p className="m-0 text-sm" style={{ color: "var(--text-muted)" }}>{work.years}</p>
                 </div>
               </div>
               {!readOnly && onEdit && (
@@ -44,7 +44,7 @@ export default function ExperienceSection({ profile, onEdit, readOnly }) {
             </div>
           ))
         ) : (
-          <p className="text-gray-500">No experience added yet.</p>
+          <p style={{ color: "var(--text-muted)" }}>No experience added yet.</p>
         )}
       </div>
     </div>

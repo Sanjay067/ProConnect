@@ -9,7 +9,10 @@ export default function UserCard({ user }) {
   const isSelf = myId && userId ? String(myId) === String(userId) : false;
 
   return (
-    <div className="flex min-h-[260px] w-full max-w-[240px] flex-col items-center justify-between rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm transition hover:shadow-md">
+    <div
+      className="flex min-h-[260px] w-full max-w-[240px] flex-col items-center justify-between rounded-2xl border p-6 text-center shadow-sm transition hover:shadow-md"
+      style={{ borderColor: "var(--border)", background: "var(--surface)" }}
+    >
       <Link href={userId ? `/profile/${userId}` : "#"}>
         <img
           src={
@@ -24,7 +27,7 @@ export default function UserCard({ user }) {
       <Link href={userId ? `/profile/${userId}` : "#"} className="text-inherit no-underline">
         <h3 className="m-0 text-lg font-semibold">{user.name}</h3>
       </Link>
-      <p className="mt-1 text-sm text-gray-500">@{user.username}</p>
+      <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>@{user.username}</p>
 
       {!isSelf && (
         <ConnectionButton targetUserId={userId} />

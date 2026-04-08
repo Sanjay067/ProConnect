@@ -71,11 +71,11 @@ export default function PublicProfilePage() {
   return (
     <ProtectedRoute>
       <UserLayout>
-        <div className="min-h-screen bg-stone-100 pb-8">
-          <div className="mx-auto flex max-w-4xl flex-col gap-2.5 px-4 pt-8 sm:px-6">
+        <div className="min-h-screen pb-10">
+          <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 pt-6 sm:px-6 sm:pt-8">
             {loading && <Loader />}
             {loadError && !loading && (
-              <p className="text-gray-500">{loadError}</p>
+              <p style={{ color: "var(--text-muted)" }}>{loadError}</p>
             )}
             {!loading && !loadError && displayUser && (
               <>

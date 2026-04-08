@@ -59,7 +59,7 @@ export default function CommentSection({ post }) {
   };
 
   return (
-    <div className="mt-4 rounded-lg bg-neutral-50 p-4">
+    <div className="mt-4 flex flex-col gap-3 rounded-xl bg-neutral-50 p-5">
       <CommentInput
         value={newComment}
         onChange={(e) => setNewComment(e.target ? e.target.value : e)}

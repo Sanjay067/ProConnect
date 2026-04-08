@@ -131,7 +131,7 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
   const authorId = comment.author?._id;
 
   return (
-    <div className="mb-4 flex gap-2.5">
+    <div className="flex gap-3">
       {authorId ? (
         <Link href={`/profile/${authorId}`}>
           <img
@@ -140,7 +140,7 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
               "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             alt=""
-          className="h-8 w-8 rounded-full object-cover"
+          className="h-9 w-9 rounded-full object-cover"
           />
         </Link>
       ) : (
@@ -153,7 +153,7 @@ export default function CommentItem({ initialComment, post, myId, onRemoved }) {
           className="h-8 w-8 rounded-full object-cover"
         />
       )}
-      <div className="flex-1 rounded-lg bg-neutral-200 px-3 py-2">
+      <div className="flex-1 rounded-xl bg-neutral-200 px-4 py-3">
         <div className="flex justify-between gap-2.5">
           {authorId ? (
             <Link

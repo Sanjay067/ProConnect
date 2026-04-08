@@ -72,7 +72,7 @@ export default function NetworkPage() {
                   if (!friend) return null;
 
                   return (
-                    <div key={connection._id} className="flex w-full items-center gap-2.5 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+                    <div key={connection._id} className="flex w-full items-center gap-2.5 rounded-2xl border p-4 shadow-sm" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
                       <img
                         src={
                           friend.profilePicture ||
@@ -83,7 +83,7 @@ export default function NetworkPage() {
                       />
                       <div>
                         <p className="m-0 font-bold">{friend.name}</p>
-                        <p className="m-0 text-sm text-gray-500">
+                        <p className="m-0 text-sm" style={{ color: "var(--text-muted)" }}>
                           @{friend.username}
                         </p>
                       </div>
@@ -96,7 +96,7 @@ export default function NetworkPage() {
             </div>
           )}
 
-          <hr className="mb-10 border border-gray-100" />
+          <hr className="mb-10 border" style={{ borderColor: "var(--border)" }} />
 
           {/* Connection Requests */}
           <h2 className="mb-4 text-2xl font-semibold">
@@ -114,7 +114,7 @@ export default function NetworkPage() {
                 const sender = req.senderId;
                 if (!sender) return null;
                 return (
-                  <div key={req._id} className="flex w-full max-w-full flex-wrap items-center gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:flex-nowrap">
+                  <div key={req._id} className="flex w-full max-w-full flex-wrap items-center gap-3 rounded-2xl border p-4 shadow-sm sm:flex-nowrap" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
                     <img
                       src={
                         sender.profilePicture ||
@@ -125,7 +125,7 @@ export default function NetworkPage() {
                     />
                     <div className="min-w-0 flex-1">
                       <p className="m-0 font-bold">{sender.name}</p>
-                      <p className="m-0 text-sm text-gray-500">@{sender.username}</p>
+                      <p className="m-0 text-sm" style={{ color: "var(--text-muted)" }}>@{sender.username}</p>
                     </div>
                     <div className="flex shrink-0 gap-2">
                       <button
@@ -137,7 +137,8 @@ export default function NetworkPage() {
                       </button>
                       <button
                         type="button"
-                        className="cursor-pointer rounded-full border border-gray-400 bg-transparent px-4 py-1.5 text-sm font-semibold text-gray-600 transition hover:border-gray-700 hover:text-gray-700"
+                        className="cursor-pointer rounded-full border bg-transparent px-4 py-1.5 text-sm font-semibold transition hover:opacity-90"
+                        style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
                         onClick={() => dispatch(rejectConnections(req._id))}
                       >
                         Ignore
@@ -151,7 +152,7 @@ export default function NetworkPage() {
             <p>No pending requests.</p>
           )}
 
-          <hr className="mb-10 border border-gray-100" />
+          <hr className="mb-10 border" style={{ borderColor: "var(--border)" }} />
 
           <h2 className="mb-4 text-2xl font-semibold">People you may know</h2>
           {profilesLoading && <p>Loading network...</p>}
@@ -168,7 +169,8 @@ export default function NetworkPage() {
             <div className="flex justify-center px-0 pt-6 pb-10">
               <button
                 type="button"
-                className="cursor-pointer rounded-full border border-[#0a66c2] bg-white px-7 py-2.5 font-semibold text-[#0a66c2] transition hover:bg-[#eef3f8] disabled:cursor-not-allowed disabled:opacity-60"
+                className="cursor-pointer rounded-full border px-7 py-2.5 font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                style={{ borderColor: "var(--accent)", color: "var(--accent)", background: "var(--surface)" }}
                 onClick={loadMorePeople}
                 disabled={loadingMore}
               >

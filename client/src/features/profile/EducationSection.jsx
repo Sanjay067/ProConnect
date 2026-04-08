@@ -2,7 +2,7 @@ import React from "react";
 
 export default function EducationSection({ profile, onEdit, readOnly }) {
   return (
-    <div className="relative rounded-xl border border-[#dce6f1] bg-white p-6">
+    <div className="relative rounded-2xl border p-6" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
       <h2 className="mb-4 text-xl">Education</h2>
 
       {!readOnly && onEdit && (
@@ -19,7 +19,7 @@ export default function EducationSection({ profile, onEdit, readOnly }) {
       <div className="mt-4">
         {profile.education?.length > 0 ? (
           profile.education.map((edu, index) => (
-            <div key={index} className="mb-4 flex justify-between border-b border-gray-200 pb-4 last:mb-0 last:border-b-0 last:pb-0">
+            <div key={index} className="mb-4 flex justify-between border-b pb-4 last:mb-0 last:border-b-0 last:pb-0" style={{ borderColor: "var(--border)" }}>
               <div className="flex gap-4">
                 <i
                   className="fa-solid fa-building"
@@ -30,7 +30,7 @@ export default function EducationSection({ profile, onEdit, readOnly }) {
                     <strong>{edu.school}</strong>
                   </h3>
                   <p className="my-1 text-[0.95rem]">{edu.degree}</p>
-                  <p className="m-0 text-sm text-gray-500">{edu.year}</p>
+                  <p className="m-0 text-sm" style={{ color: "var(--text-muted)" }}>{edu.year}</p>
                 </div>
               </div>
               {!readOnly && onEdit && (
@@ -44,7 +44,7 @@ export default function EducationSection({ profile, onEdit, readOnly }) {
             </div>
           ))
         ) : (
-          <p className="text-gray-500">No education added yet.</p>
+          <p style={{ color: "var(--text-muted)" }}>No education added yet.</p>
         )}
       </div>
     </div>

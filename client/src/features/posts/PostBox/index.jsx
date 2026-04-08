@@ -73,20 +73,20 @@ export default function PostBox() {
   };
 
   return (
-    <div className="mb-8 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="mb-8 rounded-2xl border p-4 shadow-sm" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
       {/* --- Trigger Area --- */}
       <div className="mb-2.5 flex items-center gap-2.5">
         <img src={myAvatar} alt="My Avatar" className="h-12 w-12 rounded-full object-cover" />
-        <button className="flex-1 cursor-pointer rounded-full border border-gray-300 bg-white px-5 py-3 text-left text-base text-gray-500 transition hover:bg-neutral-200" onClick={openTextModal}>
+        <button className="flex-1 cursor-pointer rounded-full border px-5 py-3 text-left text-base transition hover:opacity-90" style={{ borderColor: "var(--border)", background: "var(--surface-soft)", color: "var(--text-muted)" }} onClick={openTextModal}>
           Start a post...
         </button>
       </div>
       <div className="mt-1 flex justify-around">
-        <button className="flex cursor-pointer items-center gap-2 rounded-md border-none bg-transparent px-3 py-2 text-sm font-bold text-gray-500 transition hover:bg-neutral-200" onClick={openMediaModal}>
+        <button className="flex cursor-pointer items-center gap-2 rounded-md border-none bg-transparent px-3 py-2 text-sm font-bold transition hover:opacity-90" style={{ color: "var(--text-muted)" }} onClick={openMediaModal}>
           <i className="fa-solid fa-image text-[#378fe9]"></i>{" "}
           Photo
         </button>
-        <button className="flex cursor-pointer items-center gap-2 rounded-md border-none bg-transparent px-3 py-2 text-sm font-bold text-gray-500 transition hover:bg-neutral-200" onClick={openMediaModal}>
+        <button className="flex cursor-pointer items-center gap-2 rounded-md border-none bg-transparent px-3 py-2 text-sm font-bold transition hover:opacity-90" style={{ color: "var(--text-muted)" }} onClick={openMediaModal}>
           <i className="fa-solid fa-video text-[#5f9b41]"></i>{" "}
           Video
         </button>
@@ -95,7 +95,7 @@ export default function PostBox() {
       {/* --- Modal Overlay --- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 px-3">
-          <div className="flex w-full max-w-[552px] flex-col overflow-hidden rounded-xl bg-white shadow-xl">
+          <div className="flex w-full max-w-[552px] flex-col overflow-hidden rounded-2xl border shadow-xl" style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
             {modalView === "text" ? (
               <>
                 <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">

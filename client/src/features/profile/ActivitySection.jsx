@@ -11,7 +11,7 @@ export default function ActivitySection({ posts }) {
   const displayedPosts = showAll ? safePosts : previewPosts;
 
   return (
-    <div className="rounded-xl border border-[#dce6f1] bg-white p-6">
+    <div className="rounded-2xl border p-6" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
       <h2 className="mb-4 text-xl">Activity</h2>
       <p className="-mt-2 mb-4 font-bold text-[#0a66c2]">
         {connections?.length || 0} connections
@@ -22,17 +22,17 @@ export default function ActivitySection({ posts }) {
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {displayedPosts.map((post) => (
               <div key={post._id} className="w-full border-b border-gray-200 pb-2.5">
-                <p className="mb-1 text-xs text-gray-500">
+                <p className="mb-1 text-xs" style={{ color: "var(--text-muted)" }}>
                   You posted this
                 </p>
-                <div className="overflow-hidden rounded-lg border border-gray-300">
+                <div className="overflow-hidden rounded-lg border" style={{ borderColor: "var(--border)" }}>
                   <PostCard post={post} isOwnProfile={true} />
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-gray-500">You haven&apos;t posted anything yet.</p>
+          <p style={{ color: "var(--text-muted)" }}>You haven&apos;t posted anything yet.</p>
         )}
       </div>
 
@@ -43,7 +43,8 @@ export default function ActivitySection({ posts }) {
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") setShowAll((prev) => !prev);
         }}
-        className="mx-[-1.5rem] mt-4 mb-[-1.5rem] border-t border-gray-200 p-4 text-center font-bold text-gray-500 select-none"
+        className="mx-[-1.5rem] mt-4 mb-[-1.5rem] border-t p-4 text-center font-bold select-none"
+        style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
       >
         {showAll ? "Show less activity" : "Show all activity"}{" "}
         <i className="fa-solid fa-arrow-right"></i>

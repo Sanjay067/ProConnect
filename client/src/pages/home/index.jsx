@@ -10,7 +10,7 @@ export default function Home() {
 
   useEffect(() => {
     dispatch(getUserProfile());
-  }, []);
+  }, [dispatch]);
 
   return (
     <ProtectedRoute>

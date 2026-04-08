@@ -2,7 +2,7 @@ import React from "react";
 
 export default function AboutSection({ profile, onEdit, readOnly }) {
   return (
-    <div className="relative rounded-xl border border-[#dce6f1] bg-white p-6">
+    <div className="relative rounded-2xl border p-6" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
       <h2 className="mb-4 text-xl">About</h2>
 
       {!readOnly && onEdit && (
@@ -11,7 +11,7 @@ export default function AboutSection({ profile, onEdit, readOnly }) {
         </button>
       )}
 
-      <div className="text-[0.95rem] leading-relaxed whitespace-pre-wrap text-gray-700">{profile.bio || "No bio added yet."}</div>
+      <div className="text-[0.95rem] leading-relaxed whitespace-pre-wrap" style={{ color: "var(--text-muted)" }}>{profile.bio || "No bio added yet."}</div>
     </div>
   );
 }
