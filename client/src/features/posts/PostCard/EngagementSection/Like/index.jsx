@@ -20,7 +20,7 @@ export default function Like({
         disabled={disabled}
       >
         <i
-          className={`fa-solid fa-thumbs-up rounded-full p-1 text-[1.2rem] ${isLiked ? "text-sky-500" : "text-gray-500"}`}
+          className={`fa-solid fa-star rounded-full p-1 text-[1.2rem] ${isLiked ? "text-yellow-500" : "text-gray-500"}`}
         />
       </button>
       <button

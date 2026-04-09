@@ -6,7 +6,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 rounded-2xl bg-white p-6 shadow-sm md:flex-row md:gap-10 md:p-10">
+      <div className="flex w-full max-w-6xl flex-col items-center gap-8 rounded-2xl bg-white p-6 shadow-sm md:flex-row md:gap-10 md:p-10">
         <div className="flex w-full justify-center md:w-1/2 md:justify-end">
           <img
             src="/login-hero.svg"
@@ -14,8 +14,8 @@ export default function Home() {
             className="h-56 w-auto max-w-full sm:h-72 md:h-[28rem]"
           />
         </div>
-        <div className="flex w-full flex-col items-start justify-center gap-4 text-left md:w-1/2">
-          <div className="space-y-4">
+        <div className="flex w-full flex-col items-center justify-center gap-4 md:w-1/2">
+          <div>
             <p className="text-3xl font-semibold leading-tight sm:text-4xl">
               Connect with the world.
               <br />
@@ -27,7 +27,7 @@ export default function Home() {
               opportunities.
             </p>
             <button
-              className="rounded-xl bg-fuchsia-600 px-8 py-5 text-lg font-semibold text-white transition hover:bg-fuchsia-700 sm:px-10 h-13 w-40 mt-6"
+              className="rounded-xl bg-fuchsia-600 text-lg font-semibold text-white transition hover:bg-fuchsia-700 sm:px-10 h-13 w-40 mt-6"
               onClick={() => {
                 router.push("/home");
               }}

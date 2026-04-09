@@ -51,9 +51,7 @@ export default function MessageSidebar() {
 
   /* ── Derived ── */
   const activePeerId = activePeer?._id ? String(activePeer._id) : null;
-  const activeMessages = activePeerId
-    ? messagesByPeer[activePeerId] || []
-    : [];
+  const activeMessages = activePeerId ? messagesByPeer[activePeerId] || [] : [];
 
   const formatTime = (value) => {
     const d = new Date(value);
@@ -91,7 +89,7 @@ export default function MessageSidebar() {
           transition-all duration-300
           inset-0
           md:inset-auto md:right-6 md:bottom-0
-          md:h-[560px] md:w-[680px] md:rounded-t-2xl
+          md:h-[850px] md:w-[680px] md:rounded-t-2xl
           ${messageSidebarOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0 pointer-events-none"}
         `}
         style={{ background: "var(--surface)", borderColor: "var(--border)" }}
@@ -143,7 +141,6 @@ export default function MessageSidebar() {
 
         {/* ── Body (two-pane) ── */}
         <div className="flex min-h-0 flex-1 overflow-hidden">
-
           {/* ── Left: Conversations list ── */}
           {/*
             Mobile  : visible only when NO peer selected
@@ -185,8 +182,7 @@ export default function MessageSidebar() {
               {conversations.map((c) => {
                 const peer = c.peer;
                 if (!peer?._id) return null;
-                const selected =
-                  String(activePeer?._id) === String(peer._id);
+                const selected = String(activePeer?._id) === String(peer._id);
                 return (
                   <button
                     key={peer._id}
@@ -263,10 +259,7 @@ export default function MessageSidebar() {
                   >
                     {activePeer.name}
                   </p>
-                  <p
-                    className="text-xs"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                     @{activePeer.username}
                   </p>
                 </div>
@@ -286,10 +279,7 @@ export default function MessageSidebar() {
             {/* Messages scroller */}
             <div className="flex-1 overflow-y-auto px-4 py-4">
               {messagesLoading && activePeer && (
-                <p
-                  className="text-sm"
-                  style={{ color: "var(--text-muted)" }}
-                >
+                <p className="text-sm" style={{ color: "var(--text-muted)" }}>
                   Loading messages…
                 </p>
               )}

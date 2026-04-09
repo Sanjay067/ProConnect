@@ -24,14 +24,17 @@ export default function UserCard({ user }) {
         />
       </Link>
 
-      <Link href={userId ? `/profile/${userId}` : "#"} className="text-inherit no-underline">
+      <Link
+        href={userId ? `/profile/${userId}` : "#"}
+        className="text-inherit no-underline"
+      >
         <h3 className="m-0 text-lg font-semibold">{user.name}</h3>
       </Link>
-      <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>@{user.username}</p>
+      <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
+        @{user.username}
+      </p>
 
-      {!isSelf && (
-        <ConnectionButton targetUserId={userId} />
-      )}
+      {!isSelf && <ConnectionButton targetUserId={userId} />}
     </div>
   );
 }

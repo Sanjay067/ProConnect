@@ -71,26 +71,26 @@ export default function PublicProfilePage() {
   return (
     <ProtectedRoute>
       <UserLayout>
-        <div className="min-h-screen pb-10">
-          <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 pt-6 sm:px-6 sm:pt-8">
+        <div className="w-full min-h-screen pb-10">
+          <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 pt-6 pb-10 sm:px-6 sm:pt-8">
             {loading && <Loader />}
             {loadError && !loading && (
               <p style={{ color: "var(--text-muted)" }}>{loadError}</p>
             )}
             {!loading && !loadError && displayUser && (
-              <>
-                <div className="mb-2 flex justify-end">
-                  <ConnectionButton targetUserId={displayUser._id} />
-                </div>
+              <div className="max">
                 <ProfileHeader
                   profile={displayProfile || { userId: displayUser }}
                   user={displayUser}
                   readOnly
                 />
+                <div className="mb-2 flex justify-start">
+                  <ConnectionButton targetUserId={displayUser._id} />
+                </div>
                 <AboutSection profile={displayProfile || {}} readOnly />
                 <ExperienceSection profile={displayProfile || {}} readOnly />
                 <EducationSection profile={displayProfile || {}} readOnly />
-              </>
+              </div>
             )}
           </div>
         </div>

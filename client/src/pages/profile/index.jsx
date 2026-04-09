@@ -70,7 +70,7 @@ export default function ProfilePage() {
   return (
     <ProtectedRoute>
       <UserLayout>
-        <div className="min-h-screen pb-10">
+        <div className="w-full min-h-screen pb-10">
           <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 pt-6 sm:px-6 sm:pt-8">
             {isLoading && !profile && <Loader />}
 
