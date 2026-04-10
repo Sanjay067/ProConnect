@@ -59,7 +59,7 @@ export default function Navbar() {
     >
       <div className="ms-10 flex w-full items-center justify-between gap-3 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6">
         {/* Left Section: Logo + Search */}
-        <div className="ms-4 flex items-center gap-4">
+        <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <i
               className="fa-regular fa-compass"

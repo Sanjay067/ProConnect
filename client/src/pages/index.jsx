@@ -1,4 +1,3 @@
-import UserLayout from "@/layout/UserLayout";
 import { useRouter } from "next/router";
 
 export default function Home() {
@@ -27,7 +26,7 @@ export default function Home() {
               opportunities.
             </p>
             <button
-              className="rounded-xl bg-fuchsia-600 text-lg font-semibold text-white transition hover:bg-fuchsia-700 sm:px-10 h-13 w-40 mt-6"
+              className="rounded-xl bg-fuchsia-600   text-lg font-semibold text-white transition hover:bg-fuchsia-700 sm:px-10 h-13 w-40 mt-6"
               onClick={() => {
                 router.push("/home");
               }}

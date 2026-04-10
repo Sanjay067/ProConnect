@@ -24,27 +24,11 @@
 }
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
+  margin: 0;
 }
 
-html,
-body {
-  background: var(--bg);
-  color: var(--text);
-}
-
-.btn {
+/* .btn {
   @apply cursor-pointer rounded-xl border-none px-8 py-4 text-2xl font-semibold text-white;
-}
-
-input {
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  margin: 4px;
-  background: var(--surface);
-  color: var(--text);
-}
+} */

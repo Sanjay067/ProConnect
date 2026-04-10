@@ -314,7 +314,7 @@ export default function MessageSidebar() {
                         style={{
                           background: mine
                             ? "var(--accent)"
-                            : "var(--surface-alt, #ebebeb)",
+                            : "var(--surface-alt, #8eda72ff)",
                           color: mine ? "#fff" : "var(--text)",
                         }}
                       >
