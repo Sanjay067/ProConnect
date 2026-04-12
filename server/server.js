@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -6,7 +5,6 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { apiLimiter } from "./middlewares/rateLimits.js";
-
 
 import userRoutes from "./routes/user.routes.js";
 import postRoutes from "./routes/posts.routes.js";
@@ -18,6 +16,7 @@ import messageRoutes from "./routes/message.routes.js";
 dotenv.config();
 
 const app = express();
+app.set("trust proxy", 1);
 
 const clientOrigins = (process.env.CLIENT_ORIGIN || "http://localhost:3000")
   .split(",")

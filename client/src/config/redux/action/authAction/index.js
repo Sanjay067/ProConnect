@@ -10,10 +10,8 @@ export const loginUser = createAsyncThunk(
         email: user.email,
         password: user.password,
       });
-      console.log("Login response:", data);
       return data;
     } catch (error) {
-      console.log("Login error:", error.response?.data);
       return thunkAPI.rejectWithValue(
         error.response?.data || { message: error.message },
       );
@@ -33,10 +31,8 @@ export const registerUser = createAsyncThunk(
         username: user.username,
         confirmPassword: user.confirmPassword,
       });
-      console.log("Signup response:", data);
       return data;
     } catch (error) {
-      console.log("Signup error:", error.response?.data);
       return thunkAPI.rejectWithValue(
         error.response?.data || { message: error.message },
       );
