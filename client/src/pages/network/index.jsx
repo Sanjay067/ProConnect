@@ -23,9 +23,11 @@ export default function NetworkPage() {
     profile: currentUser,
     profilesPagination,
   } = useSelector((state) => state.profile);
-  const { connections, overview, initialLoading: connectionsLoading } = useSelector(
-    (state) => state.connection,
-  );
+  const {
+    connections,
+    overview,
+    initialLoading: connectionsLoading,
+  } = useSelector((state) => state.connection);
   const pendingReceived = overview?.pendingReceived || [];
 
   useEffect(() => {
@@ -56,104 +58,139 @@ export default function NetworkPage() {
     <ProtectedRoute>
       <UserLayout>
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-          <h2 className="mb-4 text-2xl font-semibold">My Connections</h2>
-          {connectionsLoading ? (
-            <p>Loading connections...</p>
-          ) : (
-            <div className="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-              {connections?.length > 0 ? (
-                connections.map((connection) => {
-                  const isSender =
-                    connection.senderId?._id === currentUser?.userId?._id;
-                  const friend = isSender
-                    ? connection.receiverId
-                    : connection.senderId;
+          <div className="mb-5">
+            <h2 className="mb-4 text-2xl font-semibold">My Connections</h2>
+            {connectionsLoading ? (
+              <p>Loading connections...</p>
+            ) : (
+              <div className="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2">
+                {connections?.length > 0 ? (
+                  connections.map((connection) => {
+                    const isSender =
+                      connection.senderId?._id === currentUser?.userId?._id;
+                    const friend = isSender
+                      ? connection.receiverId
+                      : connection.senderId;
 
-                  if (!friend) return null;
+                    if (!friend) return null;
 
+                    return (
+                      <div
+                        key={connection._id}
+                        className="flex w-full items-center gap-2.5 rounded-2xl border p-4 shadow-sm"
+                        style={{
+                          borderColor: "var(--border)",
+                          background: "var(--surface)",
+                        }}
+                      >
+                        <img
+                          src={
+                            friend.profilePicture ||
+                            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                          }
+                          alt=""
+                          className="h-12 w-12 rounded-full object-cover"
+                        />
+                        <div>
+                          <p className="m-0 font-bold">{friend.name}</p>
+                          <p
+                            className="m-0 text-sm"
+                            style={{ color: "var(--text-muted)" }}
+                          >
+                            @{friend.username}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p>You don&apos;t have any connections yet.</p>
+                )}
+              </div>
+            )}
+          </div>
+          <hr
+            className="mb-10 border"
+            style={{ borderColor: "var(--border)" }}
+          />
+
+          {/* Connection Requests */}
+          <div className="mb-5">
+            <h2 className="mb-4 text-2xl font-semibold">
+              Connection Requests
+              {pendingReceived.length > 0 && (
+                <span className="ml-2 inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-xl bg-[#0a66c2] px-1.5 text-xs font-bold text-white align-middle">
+                  {pendingReceived.length}
+                </span>
+              )}
+            </h2>
+
+            {connectionsLoading ? (
+              <p>Loading requests...</p>
+            ) : pendingReceived.length > 0 ? (
+              <div className="mb-10 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {pendingReceived.map((req) => {
+                  const sender = req.senderId;
+                  if (!sender) return null;
                   return (
-                    <div key={connection._id} className="flex w-full items-center gap-2.5 rounded-2xl border p-4 shadow-sm" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
+                    <div
+                      key={req._id}
+                      className="flex w-full max-w-full flex-wrap items-center gap-3 rounded-2xl border p-4 shadow-sm sm:flex-nowrap"
+                      style={{
+                        borderColor: "var(--border)",
+                        background: "var(--surface)",
+                      }}
+                    >
                       <img
                         src={
-                          friend.profilePicture ||
+                          sender.profilePicture ||
                           "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                         }
                         alt=""
                         className="h-12 w-12 rounded-full object-cover"
                       />
-                      <div>
-                        <p className="m-0 font-bold">{friend.name}</p>
-                        <p className="m-0 text-sm" style={{ color: "var(--text-muted)" }}>
-                          @{friend.username}
+                      <div className="min-w-0 flex-1">
+                        <p className="m-0 font-bold">{sender.name}</p>
+                        <p
+                          className="m-0 text-sm"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          @{sender.username}
                         </p>
+                      </div>
+                      <div className="flex shrink-0 gap-2">
+                        <button
+                          type="button"
+                          className="cursor-pointer rounded-full border-none bg-[#0a66c2] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#084d93]"
+                          onClick={() => dispatch(acceptConnections(req._id))}
+                        >
+                          Accept
+                        </button>
+                        <button
+                          type="button"
+                          className="cursor-pointer rounded-full border bg-transparent px-4 py-1.5 text-sm font-semibold transition hover:opacity-90"
+                          style={{
+                            borderColor: "var(--border)",
+                            color: "var(--text-muted)",
+                          }}
+                          onClick={() => dispatch(rejectConnections(req._id))}
+                        >
+                          Ignore
+                        </button>
                       </div>
                     </div>
                   );
-                })
-              ) : (
-                <p>You don&apos;t have any connections yet.</p>
-              )}
-            </div>
-          )}
-
-          <hr className="mb-10 border" style={{ borderColor: "var(--border)" }} />
-
-          {/* Connection Requests */}
-          <h2 className="mb-4 text-2xl font-semibold">
-            Connection Requests
-            {pendingReceived.length > 0 && (
-              <span className="ml-2 inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-xl bg-[#0a66c2] px-1.5 text-xs font-bold text-white align-middle">{pendingReceived.length}</span>
+                })}
+              </div>
+            ) : (
+              <p>No pending requests.</p>
             )}
-          </h2>
 
-          {connectionsLoading ? (
-            <p>Loading requests...</p>
-          ) : pendingReceived.length > 0 ? (
-            <div className="mb-10 grid grid-cols-1 gap-4 lg:grid-cols-2">
-              {pendingReceived.map((req) => {
-                const sender = req.senderId;
-                if (!sender) return null;
-                return (
-                  <div key={req._id} className="flex w-full max-w-full flex-wrap items-center gap-3 rounded-2xl border p-4 shadow-sm sm:flex-nowrap" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
-                    <img
-                      src={
-                        sender.profilePicture ||
-                        "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                      }
-                      alt=""
-                      className="h-12 w-12 rounded-full object-cover"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="m-0 font-bold">{sender.name}</p>
-                      <p className="m-0 text-sm" style={{ color: "var(--text-muted)" }}>@{sender.username}</p>
-                    </div>
-                    <div className="flex shrink-0 gap-2">
-                      <button
-                        type="button"
-                        className="cursor-pointer rounded-full border-none bg-[#0a66c2] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#084d93]"
-                        onClick={() => dispatch(acceptConnections(req._id))}
-                      >
-                        Accept
-                      </button>
-                      <button
-                        type="button"
-                        className="cursor-pointer rounded-full border bg-transparent px-4 py-1.5 text-sm font-semibold transition hover:opacity-90"
-                        style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
-                        onClick={() => dispatch(rejectConnections(req._id))}
-                      >
-                        Ignore
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <p>No pending requests.</p>
-          )}
-
-          <hr className="mb-10 border" style={{ borderColor: "var(--border)" }} />
-
+            <hr
+              className="my-10 border"
+              style={{ borderColor: "var(--border)" }}
+            />
+          </div>
           <h2 className="mb-4 text-2xl font-semibold">People you may know</h2>
           {profilesLoading && <p>Loading network...</p>}
 
@@ -170,7 +207,11 @@ export default function NetworkPage() {
               <button
                 type="button"
                 className="cursor-pointer rounded-full border px-7 py-2.5 font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                style={{ borderColor: "var(--accent)", color: "var(--accent)", background: "var(--surface)" }}
+                style={{
+                  borderColor: "var(--accent)",
+                  color: "var(--accent)",
+                  background: "var(--surface)",
+                }}
                 onClick={loadMorePeople}
                 disabled={loadingMore}
               >

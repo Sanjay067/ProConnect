@@ -23,10 +23,15 @@
   --accent-2: #38bdf8;
 }
 
-* {
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+/* html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+} */
+
+* {
+  font-family: "Poppins", sans-serif;
 }
 
 /* .btn {

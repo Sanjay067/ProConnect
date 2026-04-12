@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
-import { toggleMessageSidebar } from "@/config/redux/reducer/postReducer";
+import { toggleMessageSidebar, closeMessageSidebar } from "@/config/redux/reducer/postReducer";
 import { useTheme } from "@/context/ThemeContext";
 
 export default function UserLayout({ children }) {
@@ -14,6 +14,13 @@ export default function UserLayout({ children }) {
   const { isDark, toggleTheme } = useTheme();
   const [showBottomNav, setShowBottomNav] = useState(true);
   const scrollTimeoutRef = useRef(null);
+
+  // Close the message sidebar whenever the user navigates to a different page
+  useEffect(() => {
+    const handleRouteChange = () => dispatch(closeMessageSidebar());
+    router.events.on("routeChangeStart", handleRouteChange);
+    return () => router.events.off("routeChangeStart", handleRouteChange);
+  }, [router, dispatch]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -37,12 +44,11 @@ export default function UserLayout({ children }) {
 
   return (
     <div
-      className="min-h-screen w-screen pb-16 md:pb-0"
+      className="min-h-screen w-screen overflow-x-hidden pb-16 md:pb-0"
       style={{ background: "var(--bg)", color: "var(--text)" }}
     >
       <Navbar />
-
-      <main className="flex w-full justify-center px-3 sm:px-4">
+      <main className="flex w-full justify-center px-0 sm:px-4">
         {children}
       </main>
 

@@ -1,6 +1,9 @@
 import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
-import { updateProfilePicture, updateBannerPicture } from "@/config/redux/action/profileAction";
+import {
+  updateProfilePicture,
+  updateBannerPicture,
+} from "@/config/redux/action/profileAction";
 
 export default function ProfileHeader({ profile, user, onEdit, readOnly }) {
   const dispatch = useDispatch();
@@ -76,17 +79,19 @@ export default function ProfileHeader({ profile, user, onEdit, readOnly }) {
   return (
     <div className="relative overflow-hidden rounded-xl border border-[#dce6f1] bg-white p-0">
       {/* Banner */}
-      <div 
+      <div
         className="relative h-[200px] w-full cursor-pointer bg-[#a0b4b7]"
-        style={{ 
-          backgroundImage: profile?.bannerPicture ? `url(${profile.bannerPicture})` : "none",
+        style={{
+          backgroundImage: profile?.bannerPicture
+            ? `url(${profile.bannerPicture})`
+            : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
         onClick={() => bannerInputRef.current?.click()}
       >
         <div className="absolute top-4 right-5 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow">
-           <i className="fa-solid fa-camera text-base text-[#0a66c2]"></i>
+          <i className="fa-solid fa-camera text-base text-[#0a66c2]"></i>
         </div>
         <input
           type="file"
@@ -98,7 +103,10 @@ export default function ProfileHeader({ profile, user, onEdit, readOnly }) {
       </div>
 
       {/* Main Content */}
-      <div className="relative px-6 pb-6">
+      <div
+        className="relative px-6 pb-6"
+        style={{ background: "var(--surface)" }}
+      >
         <div
           className="-mt-[110px] mb-4 inline-block cursor-pointer"
           onClick={() => fileInputRef.current?.click()}
@@ -123,14 +131,22 @@ export default function ProfileHeader({ profile, user, onEdit, readOnly }) {
           />
         </div>
 
-        <button onClick={() => onEdit("INTRO")} className="absolute top-6 right-6 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-gray-500 transition hover:bg-stone-100">
+        <button
+          onClick={() => onEdit("INTRO")}
+          className="absolute top-6 right-6 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-lg text-gray-500 transition hover:bg-stone-100"
+        >
           <i className="fa-solid fa-pencil"></i>
         </button>
 
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
           <div className="flex-1">
-            <h1 className="mb-1 text-[1.6rem]">{user.name}</h1>
-            <p className="mb-2 text-[1.1rem] text-black">
+            <h1
+              className="mb-1 text-[1.6rem] "
+              style={{ color: "var(--text)" }}
+            >
+              {user.name}
+            </h1>
+            <p className="mb-2 text-[1.1rem] " style={{ color: "var(--text)" }}>
               {profile.headline ||
                 profile.currentPosition ||
                 "Update your headline"}
@@ -142,9 +158,11 @@ export default function ProfileHeader({ profile, user, onEdit, readOnly }) {
               <>
                 <i
                   className="fa-solid fa-building"
-                  style={{ width: "10px" }}
+                  style={{ width: "10px", color: "var(--text)" }}
                 ></i>
-                <span>{profile.education[0].school}</span>
+                <span style={{ color: "var(--text)" }}>
+                  {profile.education[0].school}
+                </span>
               </>
             )}
           </div>

@@ -55,7 +55,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex sm:min-h-100 w-full items-center justify-center bg-orange-50 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen w-full items-center justify-center bg-orange-50 px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex w-full h-max max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl md:flex-row">
         {/* Form panel */}
         <div className="w-full p-10 md:w-[65%] md:p-16">

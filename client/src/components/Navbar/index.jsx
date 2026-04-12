@@ -18,12 +18,14 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const [loggingOut, setLoggingOut] = useState(false);
   const { isDark, toggleTheme } = useTheme();
   const { searchResults, isLoading } = useSelector((state) => state.search);
   const { profile } = useSelector((state) => state.profile);
   const user = profile?.userId;
 
   const handleLogout = async () => {
+    setLoggingOut(true);
     try {
       await dispatch(logoutUser()).unwrap();
     } catch (e) {
@@ -35,6 +37,8 @@ export default function Navbar() {
       dispatch(resetConnection());
       dispatch(resetPost());
       dispatch(clearSearch());
+      // Brief delay so the user sees the logout animation
+      await new Promise((r) => setTimeout(r, 600));
       router.replace("/login");
     }
   };
@@ -53,11 +57,22 @@ export default function Navbar() {
   }, [query, dispatch]);
 
   return (
+    <>
+      {/* ── Logout overlay ── */}
+      {loggingOut && (
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-4 backdrop-blur-sm"
+          style={{ background: "rgba(0,0,0,0.55)" }}
+        >
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/30" style={{ borderTopColor: "var(--accent)" }} />
+          <p className="text-base font-medium text-white tracking-wide">Logging out…</p>
+        </div>
+      )}
+
     <div
-      className="sticky top-0 z-50 mb-5 rounded-2xl border px-3 py-2 shadow-sm sm:px-4 md:px-6"
+      className="sticky top-0 z-50 mb-5 rounded-2xl border px-3 py-2 shadow-sm sm:px-4 md:px-6 "
       style={{ background: "var(--surface)", borderColor: "var(--border)" }}
     >
-      <div className="ms-10 flex w-full items-center justify-between gap-3 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6">
+      <div className="flex w-full items-center justify-between gap-3 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6">
         {/* Left Section: Logo + Search */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -147,6 +162,21 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* Mobile-only logout button */}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center justify-center rounded-full border  text-base transition hover:opacity-80 md:hidden"
+          style={{
+            borderColor: "var(--border)",
+            background: "var(--surface-soft)",
+            color: "var(--text-muted)",
+          }}
+          aria-label="Logout"
+        >
+          <i className="fa-solid fa-arrow-right-from-bracket" />
+        </button>
+
         {/* Center Section: desktop primary navigation */}
         <div className="hidden items-center justify-center gap-1 md:flex md:gap-3">
           <Link href="/home" className="no-underline">
@@ -197,7 +227,7 @@ export default function Navbar() {
         </div>
 
         {/* Right Section: desktop utility actions */}
-        <div className="hidden items-center justify-end gap-2 md:flex">
+        <div className="me-10 hidden items-center justify-end gap-2 md:flex">
           <button
             type="button"
             onClick={toggleTheme}
@@ -227,5 +257,6 @@ export default function Navbar() {
         </div>
       </div>
     </div>
+    </>
   );
 }
