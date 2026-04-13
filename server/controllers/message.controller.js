@@ -23,10 +23,14 @@ async function areConnected(userA, userB) {
 export const getConversations = async (req, res) => {
   try {
     const myId = String(req.user._id);
+    const page = Math.max(1, Number(req.query.page || 1));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit || 20)));
+    const scanLimit = Math.min(1000, Math.max(200, page * limit * 20));
     const messages = await Message.find({
       $or: [{ senderId: myId }, { receiverId: myId }],
     })
       .sort({ createdAt: -1 })
+      .limit(scanLimit)
       .populate("senderId", "name username profilePicture")
       .populate("receiverId", "name username profilePicture")
       .lean();
@@ -53,7 +57,15 @@ export const getConversations = async (req, res) => {
       });
     }
 
-    return res.status(200).json({ conversations });
+    const start = (page - 1) * limit;
+    const paged = conversations.slice(start, start + limit);
+    return res.status(200).json({
+      conversations: paged,
+      page,
+      limit,
+      total: conversations.length,
+      hasMore: start + paged.length < conversations.length,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -63,6 +75,8 @@ export const getConversationMessages = async (req, res) => {
   try {
     const myId = String(req.user._id);
     const peerId = String(req.params.peerId);
+    const page = Math.max(1, Number(req.query.page || 1));
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit || 40)));
     if (!mongoose.Types.ObjectId.isValid(peerId)) {
       return res.status(400).json({ message: "Invalid user id" });
     }
@@ -82,7 +96,9 @@ export const getConversationMessages = async (req, res) => {
         { senderId: peerId, receiverId: myId },
       ],
     })
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
       .lean();
 
     await Message.updateMany(
@@ -90,7 +106,7 @@ export const getConversationMessages = async (req, res) => {
       { $set: { readAt: new Date() } },
     );
 
-    return res.status(200).json({ messages });
+    return res.status(200).json({ messages: messages.reverse(), page, limit });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

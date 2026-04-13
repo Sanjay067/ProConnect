@@ -38,10 +38,11 @@ export const getFeed = async (req, res) => {
     const totalInDb = await Post.countDocuments(match);
 
     const maxFetch = Math.min(
-      2000,
-      Math.max(100, Number(process.env.FEED_MAX_CANDIDATES || 500)),
+      1200,
+      Math.max(100, Number(process.env.FEED_MAX_CANDIDATES || 400)),
     );
-    const fetchLimit = Math.min(maxFetch, totalInDb);
+    const dynamicWindow = Math.max(100, page * limit * 6);
+    const fetchLimit = Math.min(maxFetch, totalInDb, dynamicWindow);
 
     const recentPosts = await Post.find(match)
       .populate("author", "name username profilePicture")

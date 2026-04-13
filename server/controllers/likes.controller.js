@@ -7,6 +7,9 @@ export const toggleLikePost = async (req, res) => {
   const userId = req.user._id;
 
   try {
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
     const existing = await Like.findOne({
       userId,
       targetId: postId,
@@ -20,6 +23,7 @@ export const toggleLikePost = async (req, res) => {
         { $inc: { likeCount: -1 } },
         { returnDocument: "after" },
       );
+      if (!updatedPost) return res.status(404).json({ message: "Post not found" });
       return res.json({
         liked: false,
         likeCount: updatedPost.likeCount,
@@ -36,6 +40,7 @@ export const toggleLikePost = async (req, res) => {
       { $inc: { likeCount: 1 } },
       { returnDocument: "after" },
     );
+    if (!updatedPost) return res.status(404).json({ message: "Post not found" });
     return res.json({
       liked: true,
       likeCount: updatedPost.likeCount,

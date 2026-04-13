@@ -1,48 +1,33 @@
 import User from "../models/users.model.js";
-import crypto from "crypto";
 import Profile from "../models/profile.model.js";
 import PDFDocument from "pdfkit";
-import fs from "fs";
 
-const convertToPdf = (userData) => {
-  return new Promise((resolve, reject) => {
+const convertToPdfBuffer = (userData) =>
+  new Promise((resolve, reject) => {
     const doc = new PDFDocument();
-
-    const fileName = crypto.randomBytes(32).toString("hex") + ".pdf";
-    const filePath = `uploads/${fileName}`;
-
-    const stream = fs.createWriteStream(filePath);
-
-    doc.pipe(stream);
-
-    if (userData.userId.profilePicture) {
-      doc.image(`uploads/${userData.userId.profilePicture}`, {
-        align: "center",
-        width: 100,
-      });
-    }
+    const chunks = [];
+    doc.on("data", (c) => chunks.push(c));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
 
     doc.fontSize(14).text(`Name: ${userData.userId.name}`);
     doc.fontSize(14).text(`Email: ${userData.userId.email}`);
     doc.fontSize(14).text(`Username: ${userData.userId.username}`);
-    doc.fontSize(14).text(`Bio: ${userData.bio}`);
-    doc.fontSize(14).text(`Current Position: ${userData.currentPosition}`);
+    doc.fontSize(14).text(`Bio: ${userData.bio || ""}`);
+    doc.fontSize(14).text(`Current Position: ${userData.currentPosition || ""}`);
 
     doc.moveDown().fontSize(16).text("Past Work:");
-
-    userData.pastWork.forEach((work) => {
-      doc.fontSize(14).text(`Company: ${work.companyName}`);
-      doc.text(`Position: ${work.position}`);
-      doc.text(`Years: ${work.years}`);
+    (userData.pastWork || []).forEach((work) => {
+      doc.fontSize(14).text(`Company: ${work.companyName || work.company || ""}`);
+      doc.text(`Position: ${work.position || ""}`);
+      doc.text(`Years: ${work.years || ""}`);
       doc.moveDown();
     });
-
     doc.end();
-
-    stream.on("finish", () => resolve(fileName));
-    stream.on("error", reject);
   });
-};
+
+const escapeRegex = (value) =>
+  String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export const updateAvatar = async (req, res) => {
   try {
@@ -258,9 +243,12 @@ export const userProfileDownload = async (req, res) => {
     if (!userProfile)
       return res.status(400).json({ message: "Profile not found" });
 
-    const pdfPath = convertToPdf(userProfile);
-
-    return res.json({ message: "PDF generated successfully", pdfPath });
+    const pdfBuffer = await convertToPdfBuffer(userProfile);
+    return res
+      .status(200)
+      .setHeader("Content-Type", "application/pdf")
+      .setHeader("Content-Disposition", `attachment; filename=\"${user.username}-profile.pdf\"`)
+      .send(pdfBuffer);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -270,13 +258,18 @@ export const searchUsers = async (req, res) => {
   try {
     const { q } = req.query;
     if (!q) return res.status(200).json([]);
-    
+    const raw = String(q).trim().slice(0, 64);
+    if (!raw) return res.status(200).json([]);
+    const safe = escapeRegex(raw);
+
     const users = await User.find({
       $or: [
-        { name: { $regex: q, $options: "i" } },
-        { username: { $regex: q, $options: "i" } }
+        { name: { $regex: safe, $options: "i" } },
+        { username: { $regex: safe, $options: "i" } }
       ]
-    }).select("_id name username profilePicture");
+    })
+      .select("_id name username profilePicture")
+      .limit(25);
 
     return res.status(200).json(users);
   } catch (error) {

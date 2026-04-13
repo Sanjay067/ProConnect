@@ -1,5 +1,9 @@
 import User from "../models/users.model.js";
-import { accessCookieOptions, refreshCookieOptions } from "../utils/cookieOptions.js";
+import {
+  accessCookieOptions,
+  clearAuthCookieOptions,
+  refreshCookieOptions,
+} from "../utils/cookieOptions.js";
 
 import bcrypt from "bcrypt";
 import Profile from "../models/profile.model.js";
@@ -105,9 +109,9 @@ export const loginHandler = async (req, res) => {
       .cookie("accessToken", accessToken, accessCookieOptions())
       .cookie("refreshToken", refreshToken, refreshCookieOptions())
       .status(200)
-      .json({ message: "Login Successfully", accessToken });
+      .json({ message: "Login Successfully" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: "Login failed" });
   }
 };
 
@@ -125,11 +129,11 @@ export const logoutHandler = async (req, res) => {
     }
 
     return res
-      .clearCookie("accessToken")
-      .clearCookie("refreshToken")
+      .clearCookie("accessToken", clearAuthCookieOptions())
+      .clearCookie("refreshToken", clearAuthCookieOptions())
       .status(200)
       .json({ message: "Log out successful" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: "Logout failed" });
   }
 };

@@ -155,20 +155,23 @@ export const getComments = async (req, res) => {
     }).select("targetId");
     const likedCommentIds = new Set(likes.map((l) => String(l.targetId)));
 
-    // For each top-level comment, get reply count
-    const commentsWithReplies = await Promise.all(
-      comments.map(async (comment) => {
-        const replyCount = await Comment.countDocuments({
-          parentComment: comment._id,
+    const replyCounts = await Comment.aggregate([
+      {
+        $match: {
+          parentComment: { $in: commentIds },
           isDeleted: false,
-        });
-        return {
-          ...comment.toObject(),
-          replyCount,
-          isLiked: likedCommentIds.has(String(comment._id)),
-        };
-      }),
+        },
+      },
+      { $group: { _id: "$parentComment", count: { $sum: 1 } } },
+    ]);
+    const replyCountMap = new Map(
+      replyCounts.map((r) => [String(r._id), Number(r.count || 0)]),
     );
+    const commentsWithReplies = comments.map((comment) => ({
+      ...comment.toObject(),
+      replyCount: replyCountMap.get(String(comment._id)) || 0,
+      isLiked: likedCommentIds.has(String(comment._id)),
+    }));
 
     return res.status(200).json({
       commentCount: post.commentCount,

@@ -34,6 +34,9 @@ export const sendConnection = async (req, res) => {
       connectionReqSentTo: receiverId,
     });
   } catch (error) {
+    if (error?.code === 11000) {
+      return res.status(400).json({ message: "Request already exists" });
+    }
     return res.status(500).json({ message: error.message });
   }
 };
