@@ -39,12 +39,14 @@ const profileSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.profileFetched = true;
         state.message = "Profile fetched successfully";
         state.profile = action.payload;
       })
       .addCase(getUserProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.profileFetched = true;
         state.message = action.payload?.message || action.payload;
       })
       // Get all profiles cases

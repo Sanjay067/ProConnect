@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { loginUser, registerUser } from "@/config/redux/action/authAction";
+import { reset as resetAuth } from "@/config/redux/reducer/authReducer";
 import Loader from "@/components/Loader";
 import clientApi from "@/services/clientApi";
 
@@ -21,36 +22,46 @@ export default function Login() {
   });
 
   useEffect(() => {
-    const redirectToHome = () => router.replace("/home");
-
+    let cancelled = false;
     const checkCookieSession = async () => {
       try {
         await clientApi.get("/users/profiles/me");
-        redirectToHome();
+        if (!cancelled) router.replace("/home");
       } catch (error) {
-        // Not authenticated — stay on login page
+        if (!cancelled) dispatch(resetAuth());
       }
     };
-
-    if (authState.loggedIn) {
-      redirectToHome();
-      return;
-    }
-
     checkCookieSession();
-  }, [authState.loggedIn, router]);
+    return () => {
+      cancelled = true;
+    };
+  }, [router, dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLogin) {
-      dispatch(loginUser({ email: form.email, password: form.password }));
+      try {
+        await dispatch(
+          loginUser({ email: form.email, password: form.password }),
+        ).unwrap();
+        await clientApi.get("/users/profiles/me");
+        router.replace("/home");
+      } catch (error) {
+        // reducer message is enough for UI feedback
+      }
     } else {
-      dispatch(registerUser(form));
+      try {
+        await dispatch(registerUser(form)).unwrap();
+        await clientApi.get("/users/profiles/me");
+        router.replace("/home");
+      } catch (error) {
+        // reducer message is enough for UI feedback
+      }
     }
   };
 

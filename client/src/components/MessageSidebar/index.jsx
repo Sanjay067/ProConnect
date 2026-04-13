@@ -38,9 +38,9 @@ export default function MessageSidebar() {
   }, [messageSidebarOpen, messageRecipient, dispatch]);
 
   React.useEffect(() => {
-    if (!activePeer?._id) return;
+    if (!messageSidebarOpen || !activePeer?._id) return;
     dispatch(getMessagesByPeer(activePeer._id));
-  }, [activePeer?._id, dispatch]);
+  }, [messageSidebarOpen, activePeer?._id, dispatch]);
 
   // Auto-scroll to bottom whenever messages update
   React.useEffect(() => {

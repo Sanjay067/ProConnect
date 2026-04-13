@@ -21,6 +21,7 @@ export default function NetworkPage() {
     allProfiles,
     isLoading: profilesLoading,
     profile: currentUser,
+    profileFetched,
     profilesPagination,
   } = useSelector((state) => state.profile);
   const {
@@ -31,10 +32,10 @@ export default function NetworkPage() {
   const pendingReceived = overview?.pendingReceived || [];
 
   useEffect(() => {
-    dispatch(getUserProfile());
+    if (!profileFetched) dispatch(getUserProfile());
     dispatch(getAllProfiles({ page: 1, limit: 24, append: false }));
     dispatch(getConnectionsOverview());
-  }, [dispatch]);
+  }, [dispatch, profileFetched]);
 
   const loadMorePeople = async () => {
     if (!profilesPagination.hasMore || loadingMore || profilesLoading) return;

@@ -12,6 +12,7 @@ import {
   reset as resetPost,
   toggleMessageSidebar,
 } from "@/config/redux/reducer/postReducer";
+import { clearMessages } from "@/config/redux/reducer/messageReducer";
 import { useTheme } from "@/context/ThemeContext";
 
 export default function Navbar() {
@@ -19,27 +20,33 @@ export default function Navbar() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
   const { isDark, toggleTheme } = useTheme();
   const { searchResults, isLoading } = useSelector((state) => state.search);
   const { profile } = useSelector((state) => state.profile);
   const user = profile?.userId;
 
   const handleLogout = async () => {
+    setLogoutError("");
     setLoggingOut(true);
     try {
       await dispatch(logoutUser()).unwrap();
-    } catch (e) {
-      // Logout may fail if auth middleware rejects due to missing/expired token.
-      // We still clear client-side auth state and redirect.
-    } finally {
       dispatch(resetAuth());
       dispatch(resetProfile());
       dispatch(resetConnection());
       dispatch(resetPost());
+      dispatch(clearMessages());
       dispatch(clearSearch());
       // Brief delay so the user sees the logout animation
       await new Promise((r) => setTimeout(r, 600));
       router.replace("/login");
+    } catch (e) {
+      setLoggingOut(false);
+      setLogoutError(
+        e?.message ||
+          e?.response?.data?.message ||
+          "Logout failed. Please retry in a moment.",
+      );
     }
   };
 
@@ -65,6 +72,11 @@ export default function Navbar() {
         >
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/30" style={{ borderTopColor: "var(--accent)" }} />
           <p className="text-base font-medium text-white tracking-wide">Logging out…</p>
+        </div>
+      )}
+      {logoutError && (
+        <div className="mb-2 rounded-xl border px-3 py-2 text-sm" style={{ borderColor: "var(--border)", background: "var(--surface-soft)", color: "#ef4444" }}>
+          {logoutError}
         </div>
       )}
 

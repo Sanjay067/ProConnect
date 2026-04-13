@@ -3,7 +3,9 @@ import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import clientApi from "@/services/clientApi";
 import Loader from "@/components/Loader";
-import { getConnectionsOverview } from "@/config/redux/action/connectionAction";
+import { reset as resetAuth } from "@/config/redux/reducer/authReducer";
+import { reset as resetProfile } from "@/config/redux/reducer/profileReducer";
+import { reset as resetConnection } from "@/config/redux/reducer/connectionReducer";
 
 export default function ProtectedRoute({ children }) {
   const router = useRouter();
@@ -16,10 +18,12 @@ export default function ProtectedRoute({ children }) {
       try {
         await clientApi.get("/users/profiles/me");
         setIsAuthenticated(true);
-        dispatch(getConnectionsOverview());
       } catch (error) {
         console.log("Not authenticated:", error.response?.data);
-        router.push("/login");
+        dispatch(resetAuth());
+        dispatch(resetProfile());
+        dispatch(resetConnection());
+        router.replace("/login");
       } finally {
         setIsLoading(false);
       }
