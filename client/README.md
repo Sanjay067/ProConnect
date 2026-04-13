@@ -1,5 +1,4 @@
 <div align="center">
-/>
   <h1>ProConnect Frontend (Client)</h1>
 
   <p>
