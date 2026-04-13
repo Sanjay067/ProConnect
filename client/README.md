@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/640px-LinkedIn_logo_initials.png" alt="ProConnect Logo" width="80" />
   <h1>ProConnect Frontend (Client)</h1>
 
   <p>
