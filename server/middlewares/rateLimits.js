@@ -12,8 +12,17 @@ export const apiLimiter = rateLimit({
 /** Stricter limit for login / signup / refresh */
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: Number(process.env.AUTH_RATE_LIMIT_MAX || 40),
+  max: Number(process.env.AUTH_RATE_LIMIT_MAX || 20),
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: "Too many auth attempts, please try again later." },
+});
+
+/** Separate refresh limit to avoid exhausting login attempts */
+export const refreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: Number(process.env.REFRESH_RATE_LIMIT_MAX || 120),
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many refresh attempts, please try again later." },
 });
